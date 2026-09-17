@@ -6,7 +6,7 @@
     <title>VipFirestorm — Аддон для WoW</title>
     <style>
         :root {
-            --elwynn-card: rgba(10, 26, 18, 0.85);
+            --elwynn-card: rgba(10, 26, 18, 0.82);
             --elwynn-gold: #fbbf24;
             --elwynn-green: #4ade80;
             --elwynn-text: #f8fafc;
@@ -29,7 +29,12 @@
             scroll-behavior: smooth;
         }
 
-        /* Установка вашего локального файла background.jpg в качестве фона */
+        /* 
+          ВАШ ФОН НА ПЕРВОМ МЕСТЕ: 
+          Теперь сначала идет ваша картинка background.jpg, 
+          а поверх неё — легкое прозрачное затемнение (всего 30-50%), 
+          чтобы текст отлично читался, но картинку было видно идеально!
+        */
         body::before {
             content: '';
             position: fixed;
@@ -38,7 +43,7 @@
             width: 100vw;
             height: 100vh;
             background: 
-                linear-gradient(to bottom, rgba(5, 25, 18, 0.75), rgba(2, 12, 8, 0.9)),
+                linear-gradient(to bottom, rgba(5, 20, 14, 0.45), rgba(2, 10, 6, 0.65)),
                 url('background.jpg') no-repeat center center / cover;
             z-index: -999;
         }
@@ -52,11 +57,11 @@
             filter: blur(140px);
             z-index: -998;
             pointer-events: none;
-            opacity: 0.35;
+            opacity: 0.3;
             animation: sunFloat 14s ease-in-out infinite alternate;
         }
 
-        .ray-1 { top: -150px; left: -100px; background: rgba(251, 191, 36, 0.4); }
+        .ray-1 { top: -150px; left: -100px; background: rgba(251, 191, 36, 0.35); }
         .ray-2 { bottom: -150px; right: -100px; background: rgba(74, 222, 128, 0.3); animation-delay: -7s; }
 
         @keyframes sunFloat {
@@ -91,7 +96,7 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(251, 191, 36, 0.12);
+            background: rgba(10, 26, 18, 0.8);
             color: var(--elwynn-gold);
             border: 1px solid rgba(251, 191, 36, 0.35);
             padding: 10px 28px;
@@ -123,7 +128,7 @@
             line-height: 1.7;
             max-width: 780px;
             margin: 0 auto 40px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
         }
 
         .hero-buttons {
@@ -206,7 +211,7 @@
             font-weight: 800;
             color: #ffffff;
             position: relative;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
         }
 
         h2::after {
