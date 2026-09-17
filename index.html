@@ -6,13 +6,13 @@
     <title>VipFirestorm — Аддон для WoW</title>
     <style>
         :root {
-            --elwynn-bg: #f4f7f0;
-            --elwynn-card: rgba(255, 255, 255, 0.85);
-            --elwynn-sun: #d97706;
+            --elwynn-bg: #143822;
+            --elwynn-card: rgba(255, 255, 255, 0.9);
+            --elwynn-sun: #f59e0b;
             --elwynn-gold: #b45309;
-            --elwynn-green: #15803d;
+            --elwynn-green: #16a34a;
             --elwynn-text: #1e293b;
-            --elwynn-muted: #64748b;
+            --elwynn-muted: #475569;
         }
 
         *, *::before, *::after {
@@ -31,7 +31,7 @@
             scroll-behavior: smooth;
         }
 
-        /* Светлый, залитый солнцем и зеленью фон Элвиннского леса */
+        /* Насыщенный живописный фон Элвиннского леса с солнечными лучами */
         body::before {
             content: '';
             position: fixed;
@@ -40,40 +40,40 @@
             width: 100vw;
             height: 100vh;
             background: 
-                radial-gradient(circle at 15% 15%, rgba(251, 191, 36, 0.25) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(254, 240, 138, 0.4) 0%, transparent 70%),
-                linear-gradient(135deg, #fef9c3 0%, #dcfce7 50%, #f0fdf4 100%);
+                radial-gradient(circle at 10% 20%, rgba(250, 204, 21, 0.35) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(22, 163, 74, 0.4) 0%, transparent 55%),
+                radial-gradient(circle at 50% 50%, rgba(74, 222, 128, 0.25) 0%, transparent 70%),
+                linear-gradient(135deg, #064e3b 0%, #022c22 50%, #065f46 100%);
             z-index: -999;
         }
 
-        /* Теплые световые лучи (солнечные блики) */
+        /* Живые плавающие световые пятна (эффект лучей сквозь листву) */
         .sun-ray {
             position: fixed;
             width: 600px;
             height: 600px;
             border-radius: 50%;
-            filter: blur(130px);
+            filter: blur(140px);
             z-index: -998;
             pointer-events: none;
-            opacity: 0.5;
-            animation: sunFloat 15s ease-in-out infinite alternate;
+            opacity: 0.6;
+            animation: sunFloat 14s ease-in-out infinite alternate;
         }
 
-        .ray-1 { top: -200px; left: -100px; background: rgba(252, 211, 77, 0.4); }
-        .ray-2 { bottom: -200px; right: -100px; background: rgba(134, 239, 172, 0.35); animation-delay: -7s; }
+        .ray-1 { top: -150px; left: -100px; background: rgba(252, 211, 77, 0.45); }
+        .ray-2 { bottom: -150px; right: -100px; background: rgba(74, 222, 128, 0.4); animation-delay: -7s; }
 
         @keyframes sunFloat {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 40px) scale(1.12); }
+            100% { transform: translate(40px, 50px) scale(1.15); }
         }
 
-        /* Легкая декоративная сетка */
+        /* Тонкая сетка для объема */
         .bg-grid {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: linear-gradient(rgba(21, 128, 61, 0.03) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(21, 128, 61, 0.03) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 55px 55px;
             z-index: -997;
             pointer-events: none;
@@ -106,16 +106,16 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(180, 83, 9, 0.1);
+            background: rgba(255, 255, 255, 0.85);
             color: var(--elwynn-gold);
-            border: 1px solid rgba(180, 83, 9, 0.25);
+            border: 1px solid rgba(180, 83, 9, 0.3);
             padding: 10px 28px;
             border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            box-shadow: 0 4px 20px rgba(180, 83, 9, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             margin-bottom: 30px;
             backdrop-filter: blur(12px);
         }
@@ -125,18 +125,20 @@
             font-weight: 900;
             letter-spacing: -1px;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #1e293b 20%, #b45309 60%, #15803d 100%);
+            background: linear-gradient(135deg, #ffffff 20%, #fef08a 60%, #86efac 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            text-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            filter: drop-shadow(0 0 20px rgba(74, 222, 128, 0.3));
         }
 
         .hero-description {
             font-size: clamp(1.05rem, 2vw, 1.35rem);
-            color: var(--elwynn-muted);
+            color: #e2e8f0;
             line-height: 1.7;
             max-width: 780px;
             margin: 0 auto 40px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
         }
 
         .hero-buttons {
@@ -146,7 +148,7 @@
             flex-wrap: wrap;
         }
 
-        /* Кнопки в теплом солнечном стиле */
+        /* Кнопки */
         .btn {
             padding: 16px 34px;
             border-radius: 14px;
@@ -166,41 +168,41 @@
         .btn-primary {
             background: linear-gradient(135deg, #d97706, #b45309);
             color: #ffffff;
-            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.3);
+            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .btn-primary:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(217, 119, 6, 0.5);
+            box-shadow: 0 15px 35px rgba(217, 119, 6, 0.6);
             background: linear-gradient(135deg, #f59e0b, #d97706);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.9);
             color: var(--elwynn-text);
-            border: 1px solid rgba(21, 128, 61, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(22, 163, 74, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff;
             border-color: var(--elwynn-green);
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(21, 128, 61, 0.15);
+            box-shadow: 0 12px 30px rgba(22, 163, 74, 0.3);
             color: var(--elwynn-green);
         }
 
         .btn-download {
             background: linear-gradient(135deg, #16a34a, #15803d);
             color: #ffffff;
-            box-shadow: 0 10px 25px rgba(22, 163, 74, 0.3);
+            box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .btn-download:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(22, 163, 74, 0.5);
+            box-shadow: 0 15px 35px rgba(22, 163, 74, 0.6);
             background: linear-gradient(135deg, #22c55e, #16a34a);
         }
 
@@ -217,8 +219,9 @@
             font-size: clamp(2.2rem, 4vw, 3rem);
             margin-bottom: 60px;
             font-weight: 800;
-            color: #1e293b;
+            color: #ffffff;
             position: relative;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         h2::after {
@@ -226,7 +229,7 @@
             display: block;
             width: 100px;
             height: 3px;
-            background: linear-gradient(90deg, transparent, var(--elwynn-gold), transparent);
+            background: linear-gradient(90deg, transparent, #fcd34d, transparent);
             margin: 15px auto 0;
             border-radius: 2px;
         }
@@ -238,7 +241,7 @@
             margin-bottom: 100px;
         }
 
-        /* Карточки в стиле светлого дерева и стекла */
+        /* Карточки */
         .card {
             background: var(--elwynn-card);
             border-radius: 20px;
@@ -246,8 +249,8 @@
             backdrop-filter: blur(16px);
             position: relative;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid rgba(180, 83, 9, 0.15);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         }
 
         .card::before {
@@ -255,17 +258,16 @@
             position: absolute;
             inset: -1px;
             border-radius: 21px;
-            background: linear-gradient(135deg, rgba(217, 119, 6, 0.3), transparent, rgba(21, 128, 61, 0.2));
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), transparent, rgba(22, 163, 74, 0.3));
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.6;
             transition: opacity 0.4s;
         }
 
         .card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 25px 50px rgba(180, 83, 9, 0.15), 0 10px 20px rgba(0, 0, 0, 0.05);
-            border-color: rgba(217, 119, 6, 0.4);
-            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), 0 0 25px rgba(74, 222, 128, 0.2);
+            background: #ffffff;
         }
 
         .card:hover::before {
@@ -280,10 +282,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(220, 252, 231, 0.8));
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(220, 252, 231, 0.9));
             border-radius: 16px;
             border: 1px solid rgba(217, 119, 6, 0.3);
-            box-shadow: 0 6px 15px rgba(180, 83, 9, 0.1);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
             transition: transform 0.3s ease;
         }
 
@@ -294,7 +296,7 @@
         .card h3 {
             font-size: 1.4rem;
             margin-bottom: 12px;
-            color: #1e293b;
+            color: #0f172a;
         }
 
         .card p {
@@ -304,7 +306,7 @@
         }
 
         .card code {
-            background-color: rgba(241, 245, 249, 0.9);
+            background-color: #f1f5f9;
             color: var(--elwynn-gold);
             padding: 4px 9px;
             border-radius: 6px;
@@ -316,11 +318,11 @@
         /* Блок команд */
         .commands-section {
             background: var(--elwynn-card);
-            border: 1px solid rgba(21, 128, 61, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
             border-radius: 24px;
             padding: 60px 40px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
             position: relative;
         }
 
@@ -329,9 +331,9 @@
             position: absolute;
             inset: -1px;
             border-radius: 25px;
-            background: linear-gradient(135deg, rgba(21, 128, 61, 0.25), rgba(217, 119, 6, 0.15));
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.3), rgba(245, 158, 11, 0.2));
             z-index: -1;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .command-box {
@@ -344,19 +346,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 22px 30px;
             border-radius: 14px;
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
         }
 
         .command-row:hover {
-            border-color: rgba(21, 128, 61, 0.4);
+            border-color: rgba(22, 163, 74, 0.4);
             transform: translateX(6px);
             background-color: #ffffff;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
         .command-row code {
@@ -365,7 +367,7 @@
             padding: 8px 14px;
             border-radius: 8px;
             font-family: monospace;
-            border: 1px solid rgba(21, 128, 61, 0.2);
+            border: 1px solid rgba(22, 163, 74, 0.25);
             font-weight: 600;
         }
 
@@ -376,9 +378,9 @@
         footer {
             text-align: center;
             padding: 50px 20px;
-            border-top: 1px solid rgba(0, 0, 0, 0.06);
-            color: #64748b;
-            background-color: #eef2eb;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            background-color: #022c22;
             position: relative;
             z-index: 2;
         }
