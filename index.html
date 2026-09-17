@@ -32,7 +32,7 @@
             scroll-behavior: smooth;
         }
 
-        /* Фоновая картинка на весь экран через CSS (запасной вариант) */
+        /* Фоновая картинка на весь экран */
         .bg-image {
             position: fixed;
             top: 0;
@@ -314,8 +314,8 @@
         window.scrollTo(0, 0);
     </script>
 
-    <!-- Фоновые слои (картинка через тег img для обхода блокировок браузера) -->
-    <img src="bg.jpg" alt="Background" class="bg-image">
+    <!-- Фоновые слои с абсолютным путем относительно корня репозитория -->
+    <img src="./bg.jpg" alt="Background" class="bg-image">
     <div class="bg-overlay"></div>
     <div class="bg-grid"></div>
 
