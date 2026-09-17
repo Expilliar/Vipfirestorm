@@ -6,256 +6,225 @@
     <title>VipFirestorm — Создал Expilliar для Firestorm</title>
     <style>
         :root {
-            --bg-dark: #07090e;
-            --bg-card: #111622;
-            --border-color: #212d42;
+            --bg-deep: #030508;
+            --bg-card: rgba(13, 18, 28, 0.75);
+            --border-glow: rgba(245, 158, 11, 0.25);
             --accent-gold: #fbbf24;
             --accent-orange: #f59e0b;
-            --accent-red: #ef4444;
             --accent-blue: #38bdf8;
-            --text-main: #f1f5f9;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
 
-        * {
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        body {
+        html, body {
+            width: 100%;
+            min-height: 100vh;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-deep);
             color: var(--text-main);
-            line-height: 1.7;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        /* Плавные анимации появления */
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Полноэкранный фон с кинематографическим градиентом и сеткой */
+        .fullscreen-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 50% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+                radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+                linear-gradient(180deg, #030508 0%, #070b12 50%, #020407 100%);
+            z-index: -2;
         }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulseGlow {
-            0% { opacity: 0.05; transform: scale(1); }
-            50% { opacity: 0.12; transform: scale(1.05); }
-            100% { opacity: 0.05; transform: scale(1); }
-        }
-
-        /* Премиальный герой-баннер с анимированным фоном */
-        .hero {
-            background-image: linear-gradient(135deg, rgba(7, 9, 14, 0.85), rgba(7, 9, 14, 0.95)), url('bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            padding: 140px 20px 110px;
-            text-align: center;
-            position: relative;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .hero::before {
+        /* Текстурная сетка поверх фона */
+        .fullscreen-bg::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle at center, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
-            animation: pulseGlow 6s infinite ease-in-out;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
             pointer-events: none;
         }
 
-        .hero::after {
-            content: "";
-            position: absolute;
-            bottom: 0; left: 0; right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-orange), var(--accent-red), var(--accent-blue));
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.6);
+        /* Главный экран (Hero на весь экран) */
+        .hero-fullscreen {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            text-align: center;
         }
 
-        .hero-content {
-            position: relative;
+        .hero-container {
+            max-width: 900px;
             z-index: 2;
-            max-width: 850px;
-            margin: 0 auto;
-            animation: fadeInDown 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: fadeInScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             background: rgba(245, 158, 11, 0.1);
             color: var(--accent-gold);
-            border: 1px solid rgba(245, 158, 11, 0.3);
-            padding: 8px 20px;
-            border-radius: 30px;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            padding: 8px 22px;
+            border-radius: 50px;
             font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
-            margin-bottom: 20px;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.15);
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            font-size: 3.8rem;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #fff 30%, var(--accent-gold) 100%);
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 900;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff 20%, #fbbf24 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-weight: 900;
-            letter-spacing: -1px;
-            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
-        .hero p {
-            font-size: 1.25rem;
+        .hero-description {
+            font-size: clamp(1.05rem, 2vw, 1.35rem);
             color: var(--text-muted);
-            max-width: 700px;
+            line-height: 1.7;
+            max-width: 750px;
             margin: 0 auto 40px;
         }
 
         .hero-buttons {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 16px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 14px 28px;
-            border-radius: 10px;
+            padding: 15px 32px;
+            border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             font-size: 1rem;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Эффект блика на кнопках при наведении */
-        .btn::after {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: linear-gradient(60deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .btn:hover::after {
-            transform: translateX(100%);
+            backdrop-filter: blur(10px);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #07090e;
-            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3);
+            color: #030508;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .btn-primary:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(245, 158, 11, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.5);
             background: linear-gradient(135deg, #fbbf24, #f59e0b);
         }
 
         .btn-secondary {
-            background-color: rgba(33, 45, 66, 0.6);
+            background: rgba(13, 18, 28, 0.8);
             color: var(--text-main);
-            border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-secondary:hover {
-            background-color: rgba(33, 45, 66, 1);
+            background: rgba(25, 35, 52, 0.9);
             border-color: var(--accent-blue);
-            transform: translateY(-3px) scale(1.02);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
         }
 
         .btn-download {
             background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff;
-            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .btn-download:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5);
             background: linear-gradient(135deg, #34d399, #10b981);
         }
 
-        .container {
-            max-width: 1150px;
-            margin: 70px auto;
-            padding: 0 20px;
+        /* Контентные секции */
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 24px;
+            position: relative;
+            z-index: 2;
         }
 
         h2 {
             text-align: center;
-            font-size: 2.4rem;
-            margin-bottom: 50px;
-            color: #fff;
+            font-size: clamp(2.2rem, 4vw, 3rem);
+            margin-bottom: 60px;
             font-weight: 800;
             letter-spacing: -0.5px;
+            color: #fff;
             position: relative;
         }
 
         h2::after {
             content: '';
             display: block;
-            width: 60px;
+            width: 70px;
             height: 4px;
             background: var(--accent-gold);
             margin: 15px auto 0;
             border-radius: 2px;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
         }
 
-        /* Сетка карточек с каскадной анимацией */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
             gap: 30px;
-            margin-bottom: 70px;
+            margin-bottom: 100px;
         }
 
         .card {
             background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 35px 25px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 20px;
+            padding: 40px 30px;
+            backdrop-filter: blur(16px);
             position: relative;
             overflow: hidden;
-            opacity: 0;
-            animation: fadeInUp 0.8s ease forwards;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        /* Каскадная задержка появления для каждой карточки */
-        .card:nth-child(1) { animation-delay: 0.2s; }
-        .card:nth-child(2) { animation-delay: 0.4s; }
-        .card:nth-child(3) { animation-delay: 0.6s; }
-        .card:nth-child(4) { animation-delay: 0.8s; }
 
         .card::before {
             content: '';
@@ -267,9 +236,10 @@
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            border-color: rgba(245, 158, 11, 0.5);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(245, 158, 11, 0.08);
+            transform: translateY(-8px);
+            border-color: var(--border-glow);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.08);
+            background: rgba(18, 25, 39, 0.85);
         }
 
         .card:hover::before {
@@ -277,22 +247,17 @@
         }
 
         .card-icon {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            display: inline-block;
-            background: rgba(33, 45, 66, 0.5);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover .card-icon {
-            transform: scale(1.1) rotate(5deg);
+            font-size: 3rem;
+            margin-bottom: 22px;
+            display: inline-flex;
+            background: rgba(245, 158, 11, 0.08);
+            padding: 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(245, 158, 11, 0.15);
         }
 
         .card h3 {
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             margin-bottom: 12px;
             color: #fff;
             font-weight: 700;
@@ -300,107 +265,105 @@
 
         .card p {
             color: var(--text-muted);
-            font-size: 0.98rem;
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
         .card code {
-            background-color: rgba(7, 9, 14, 0.6);
+            background-color: rgba(3, 5, 8, 0.7);
             color: var(--accent-blue);
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
             font-family: monospace;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            font-size: 0.95rem;
         }
 
-        /* Блок команд */
+        /* Секция команд */
         .commands-section {
-            background: linear-gradient(145deg, #111622, #0d121c);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 50px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            animation: fadeInUp 1s ease 0.5s forwards;
-            opacity: 0;
+            background: rgba(13, 18, 28, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 60px 40px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
         }
 
         .command-box {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 18px;
         }
 
         .command-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(7, 9, 14, 0.7);
-            padding: 18px 25px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
+            background-color: rgba(3, 5, 8, 0.6);
+            padding: 20px 28px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             transition: all 0.3s ease;
         }
 
         .command-row:hover {
-            border-color: rgba(56, 189, 248, 0.5);
-            transform: translateX(5px);
-            background-color: rgba(15, 23, 42, 0.9);
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateX(6px);
+            background-color: rgba(10, 15, 25, 0.85);
         }
 
         .command-row code {
-            background-color: #161b26;
+            background-color: rgba(22, 27, 38, 0.9);
             color: #34d399;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
             font-family: 'Courier New', monospace;
             font-weight: bold;
             font-size: 1.05rem;
-            border: 1px solid rgba(52, 211, 153, 0.2);
+            border: 1px solid rgba(52, 211, 153, 0.25);
         }
 
         .command-row span {
             color: var(--text-muted);
             text-align: right;
-            font-size: 0.95rem;
+            font-size: 1rem;
         }
 
         footer {
             text-align: center;
-            padding: 40px;
-            border-top: 1px solid var(--border-color);
+            padding: 50px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
             color: #64748b;
-            font-size: 0.9rem;
-            background-color: #05070a;
+            font-size: 0.95rem;
+            background-color: #020305;
+            position: relative;
+            z-index: 2;
         }
 
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.6rem;
-            }
             .command-row {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+                gap: 12px;
             }
-            .command-row:hover {
-                transform: none;
-            }
-            .command-row span {
-                text-align: left;
-            }
-            .commands-section {
-                padding: 25px;
-            }
+            .command-row:hover { transform: none; }
+            .command-row span { text-align: left; }
+            .commands-section { padding: 30px 20px; }
+            .hero-fullscreen { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Шапка / Баннер с анимированным фоном -->
-    <header class="hero">
-        <div class="hero-content">
-            <span class="badge">Создал Expilliar для Firestorm</span>
+    <!-- Полноэкранный фоновый слой -->
+    <div class="fullscreen-bg"></div>
+
+    <!-- Hero-секция на весь экран -->
+    <header class="hero-fullscreen">
+        <div class="hero-container">
+            <div class="badge">✨ Создал Expilliar для Firestorm</div>
             <h1>VipFirestorm</h1>
-            <p>Максимальный игровой комфорт, мгновенная телепортация по классам, интеллектуальный автоинвайт и полный контроль над рейдом на серверах Firestorm WoW.</p>
+            <p class="hero-description">Максимальный игровой комфорт, мгновенная телепортация по классам, интеллектуальный автоинвайт и полный контроль над рейдом на серверах Firestorm WoW.</p>
             <div class="hero-buttons">
                 <a href="#features" class="btn btn-primary">⚡ Возможности</a>
                 <a href="#commands" class="btn btn-secondary">📜 Команды</a>
@@ -409,29 +372,25 @@
         </div>
     </header>
 
-    <!-- Основной контейнер с модулями -->
-    <main class="container" id="features">
+    <!-- Основной контент -->
+    <main class="content-container" id="features">
         <h2>Ключевые модули аддона</h2>
-        
         <div class="grid">
             <div class="card">
                 <div class="card-icon">🗺️</div>
                 <h3>Меню Телепортации</h3>
                 <p>Вызов по команде <code>/vf</code> или через иконку у мини-карты. Уникальный фон под класс персонажа, атмосферное оформление и быстрый доступ к банкам и столицам (Орибос, Вальдраккен, Дорногал).</p>
             </div>
-
             <div class="card">
                 <div class="card-icon">⚡</div>
                 <h3>Автоинвайт по ПМ</h3>
                 <p>Автоматически принимает в группу игроков, приславших ключевые слова (<code>+</code>, <code>inv</code>, <code>инв</code>, <code>плюс</code>) в личные сообщения. Управляется удобным переключателем ON/OFF.</p>
             </div>
-
             <div class="card">
                 <div class="card-icon">👥</div>
                 <h3>FastReparty</h3>
                 <p>Мгновенный ресет группы или рейда одной командой <code>/freparty</code>. Аддон запоминает всех участников, мгновенно распускает старый состав и автоматически рассылает новые приглашения.</p>
             </div>
-
             <div class="card">
                 <div class="card-icon">✉️</div>
                 <h3>Очистка почты</h3>
@@ -439,7 +398,6 @@
             </div>
         </div>
 
-        <!-- Раздел команд -->
         <section class="commands-section" id="commands">
             <h2>Основные слэш-команды</h2>
             <div class="command-box">
@@ -449,7 +407,7 @@
                 </div>
                 <div class="command-row">
                     <code>/freparty</code>
-                    <span>Быстрое пересоздание текущей группы или рейда (для лидера)</span>
+                    <span>Быстрое пересоздание текущей группы или рейда (for leader)</span>
                 </div>
                 <div class="command-row">
                     <code>ЛКМ / ПКМ по мини-карте</code>
@@ -459,7 +417,6 @@
         </section>
     </main>
 
-    <!-- Подвал -->
     <footer>
         <p>VipFirestorm Addon Presentation &copy; 2026. Создано элитными игроками для серверов Firestorm WoW.</p>
     </footer>
