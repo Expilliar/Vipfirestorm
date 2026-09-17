@@ -32,35 +32,30 @@
             scroll-behavior: smooth;
         }
 
-        /* ПОЛНОЭКРАННЫЙ ФОН:
-           Если картинка не отображается, проверьте расширение (bg.jpg, bg.png и т.д.)
-        */
-        .fullscreen-bg {
+        /* Затенение поверх картинки-фона, чтобы текст был читаемым */
+        .bg-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: linear-gradient(135deg, rgba(3, 5, 8, 0.75), rgba(3, 5, 8, 0.88)), url('bg.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            z-index: -999;
-        }
-
-        /* Текстурная сетка */
-        .fullscreen-bg::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background: linear-gradient(135deg, rgba(3, 5, 8, 0.75), rgba(3, 5, 8, 0.88));
             z-index: -998;
             pointer-events: none;
         }
 
-        /* Главный экран (Hero строго на первом экране) */
+        /* Текстурная сетка */
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -997;
+            pointer-events: none;
+        }
+
+        /* Главный экран */
         .hero-fullscreen {
             width: 100vw;
             height: 100vh;
@@ -308,8 +303,10 @@
         window.scrollTo(0, 0);
     </script>
 
-    <!-- Полноэкранный фоновый слой -->
-    <div class="fullscreen-bg"></div>
+    <!-- Фоновые слои (картинка через тег img гарантирует отображение) -->
+    <img src="bg.jpg" alt="Background" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -999;">
+    <div class="bg-overlay"></div>
+    <div class="bg-grid"></div>
 
     <header class="hero-fullscreen">
         <div class="hero-container">
