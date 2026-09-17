@@ -1,0 +1,207 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #0d1117;
+    color: #e6edf3;
+    line-height: 1.6;
+}
+
+.hero {
+    background-image: linear-gradient(rgba(13, 17, 23, 0.8), rgba(13, 17, 23, 0.95)), url('https://files.catbox.moe/7iz15b.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-bottom: 1px solid #30363d;
+    padding: 100px 20px;
+    text-align: center;
+    position: relative;
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f59e0b, #ef4444, #3b82f6);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.badge {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fbbf24;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+h1 {
+    font-size: 3rem;
+    margin: 20px 0 10px;
+    background: linear-gradient(90deg, #fbbf24, #f87171);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.hero p {
+    font-size: 1.15rem;
+    color: #8b949e;
+    max-width: 650px;
+    margin: 0 auto 30px;
+}
+
+.hero-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background-color: #f59e0b;
+    color: #0d1117;
+}
+
+.btn-primary:hover {
+    background-color: #d97706;
+}
+
+.btn-secondary {
+    background-color: #21262d;
+    color: #e6edf3;
+    border: 1px solid #30363d;
+}
+
+.btn-secondary:hover {
+    background-color: #30363d;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 50px auto;
+    padding: 0 20px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 40px;
+    color: #f0f6fc;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    margin-bottom: 60px;
+}
+
+.card {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 30px 20px;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: #f59e0b;
+}
+
+.card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    font-size: 1.25rem;
+    margin-bottom: 10px;
+    color: #f0f6fc;
+}
+
+.card p {
+    color: #8b949e;
+    font-size: 0.95rem;
+}
+
+.commands-section {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 40px;
+}
+
+.command-box {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.command-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #0d1117;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+}
+
+.command-row code {
+    background-color: #21262d;
+    color: #34d399;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.command-row span {
+    color: #8b949e;
+    text-align: right;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    border-top: 1px solid #30363d;
+    color: #484f58;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .command-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .command-row span {
+        text-align: left;
+    }
+    h1 {
+        font-size: 2.2rem;
+    }
+}
