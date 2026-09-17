@@ -32,21 +32,23 @@
             scroll-behavior: smooth;
         }
 
-        /* Полноэкранный фон с кинематографическим градиентом и сеткой */
+        /* ПОЛНОЭКРАННЫЙ ФОН: 
+           Замените 'bg.jpg' на ссылку на ваше изображение или оставьте имя файла, 
+           если картинка лежит в одной папке с index.html */
         .fullscreen-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: 
-                radial-gradient(circle at 50% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
-                radial-gradient(circle at 85% 80%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
-                linear-gradient(180deg, #030508 0%, #070b12 50%, #020407 100%);
+            background-image: linear-gradient(135deg, rgba(3, 5, 8, 0.85), rgba(3, 5, 8, 0.92)), url('bg.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             z-index: -2;
         }
 
-        /* Текстурная сетка поверх фона */
+        /* Текстурная сетка поверх вашего изображения для киберспортивного стиля */
         .fullscreen-bg::after {
             content: '';
             position: absolute;
@@ -335,7 +337,8 @@
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             color: #64748b;
             font-size: 0.95rem;
-            background-color: #020305;
+            background-color: rgba(2, 3, 5, 0.85);
+            backdrop-filter: blur(10px);
             position: relative;
             z-index: 2;
         }
@@ -355,7 +358,7 @@
 </head>
 <body>
 
-    <!-- Полноэкранный фоновый слой -->
+    <!-- Полноэкранный фоновый слой (подгружает вашу картинку bg.jpg) -->
     <div class="fullscreen-bg"></div>
 
     <!-- Hero-секция на весь экран -->
