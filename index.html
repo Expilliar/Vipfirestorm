@@ -32,23 +32,23 @@
             scroll-behavior: smooth;
         }
 
-        /* ПОЛНОЭКРАННЫЙ ФОН: 
-           Замените 'bg.jpg' на ссылку на ваше изображение или оставьте имя файла, 
-           если картинка лежит в одной папке с index.html */
+        /* ПОЛНОЭКРАННЫЙ ФОН:
+           Если картинка не отображается, проверьте расширение (bg.jpg, bg.png и т.д.)
+        */
         .fullscreen-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-image: linear-gradient(135deg, rgba(3, 5, 8, 0.85), rgba(3, 5, 8, 0.92)), url('bg.jpg');
+            background-image: linear-gradient(135deg, rgba(3, 5, 8, 0.75), rgba(3, 5, 8, 0.88)), url('bg.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            z-index: -2;
+            z-index: -999;
         }
 
-        /* Текстурная сетка поверх вашего изображения для киберспортивного стиля */
+        /* Текстурная сетка */
         .fullscreen-bg::after {
             content: '';
             position: absolute;
@@ -56,11 +56,11 @@
             background-image: linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
             background-size: 40px 40px;
-            z-index: -1;
+            z-index: -998;
             pointer-events: none;
         }
 
-        /* Главный экран (Hero на весь экран) */
+        /* Главный экран (Hero строго на первом экране) */
         .hero-fullscreen {
             width: 100vw;
             height: 100vh;
@@ -75,12 +75,6 @@
         .hero-container {
             max-width: 900px;
             z-index: 2;
-            animation: fadeInScale 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .badge {
@@ -180,7 +174,6 @@
             background: linear-gradient(135deg, #34d399, #10b981);
         }
 
-        /* Контентные секции */
         .content-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -194,7 +187,6 @@
             font-size: clamp(2.2rem, 4vw, 3rem);
             margin-bottom: 60px;
             font-weight: 800;
-            letter-spacing: -0.5px;
             color: #fff;
             position: relative;
         }
@@ -207,7 +199,6 @@
             background: var(--accent-gold);
             margin: 15px auto 0;
             border-radius: 2px;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
         }
 
         .grid {
@@ -223,29 +214,14 @@
             border-radius: 20px;
             padding: 40px 30px;
             backdrop-filter: blur(16px);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            transition: all 0.4s ease;
         }
 
         .card:hover {
             transform: translateY(-8px);
             border-color: var(--border-glow);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(245, 158, 11, 0.08);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
             background: rgba(18, 25, 39, 0.85);
-        }
-
-        .card:hover::before {
-            opacity: 1;
         }
 
         .card-icon {
@@ -262,12 +238,10 @@
             font-size: 1.4rem;
             margin-bottom: 12px;
             color: #fff;
-            font-weight: 700;
         }
 
         .card p {
             color: var(--text-muted);
-            font-size: 1rem;
             line-height: 1.6;
         }
 
@@ -277,18 +251,14 @@
             padding: 3px 8px;
             border-radius: 6px;
             font-family: monospace;
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            font-size: 0.95rem;
         }
 
-        /* Секция команд */
         .commands-section {
             background: rgba(13, 18, 28, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
             padding: 60px 40px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
         }
 
         .command-box {
@@ -305,13 +275,6 @@
             padding: 20px 28px;
             border-radius: 14px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-        }
-
-        .command-row:hover {
-            border-color: rgba(56, 189, 248, 0.4);
-            transform: translateX(6px);
-            background-color: rgba(10, 15, 25, 0.85);
         }
 
         .command-row code {
@@ -319,16 +282,11 @@
             color: #34d399;
             padding: 8px 14px;
             border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            font-size: 1.05rem;
-            border: 1px solid rgba(52, 211, 153, 0.25);
+            font-family: monospace;
         }
 
         .command-row span {
             color: var(--text-muted);
-            text-align: right;
-            font-size: 1rem;
         }
 
         footer {
@@ -336,32 +294,23 @@
             padding: 50px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             color: #64748b;
-            font-size: 0.95rem;
             background-color: rgba(2, 3, 5, 0.85);
-            backdrop-filter: blur(10px);
             position: relative;
             z-index: 2;
-        }
-
-        @media (max-width: 768px) {
-            .command-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-            .command-row:hover { transform: none; }
-            .command-row span { text-align: left; }
-            .commands-section { padding: 30px 20px; }
-            .hero-fullscreen { padding: 15px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Полноэкранный фоновый слой (подгружает вашу картинку bg.jpg) -->
+    <!-- Скрипт принудительного сброса прокрутки в самый верх -->
+    <script>
+        window.history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+    </script>
+
+    <!-- Полноэкранный фоновый слой -->
     <div class="fullscreen-bg"></div>
 
-    <!-- Hero-секция на весь экран -->
     <header class="hero-fullscreen">
         <div class="hero-container">
             <div class="badge">✨ Создал Expilliar для Firestorm</div>
@@ -375,7 +324,6 @@
         </div>
     </header>
 
-    <!-- Основной контент -->
     <main class="content-container" id="features">
         <h2>Ключевые модули аддона</h2>
         <div class="grid">
