@@ -6,13 +6,13 @@
     <title>VipFirestorm — Аддон для WoW</title>
     <style>
         :root {
-            --bg-deep: #030206;
-            --card-bg: rgba(12, 8, 22, 0.85);
-            --neon-gold: #fcd34d;
-            --neon-cyan: #22d3ee;
-            --neon-purple: #c084fc;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --elwynn-bg: #f4f7f0;
+            --elwynn-card: rgba(255, 255, 255, 0.85);
+            --elwynn-sun: #d97706;
+            --elwynn-gold: #b45309;
+            --elwynn-green: #15803d;
+            --elwynn-text: #1e293b;
+            --elwynn-muted: #64748b;
         }
 
         *, *::before, *::after {
@@ -25,13 +25,13 @@
             width: 100%;
             min-height: 100vh;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-deep);
-            color: var(--text-main);
+            background-color: var(--elwynn-bg);
+            color: var(--elwynn-text);
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        /* Автономный живой магический фон без внешних картинок */
+        /* Светлый, залитый солнцем и зеленью фон Элвиннского леса */
         body::before {
             content: '';
             position: fixed;
@@ -40,41 +40,41 @@
             width: 100vw;
             height: 100vh;
             background: 
-                radial-gradient(circle at 10% 15%, rgba(192, 132, 252, 0.18) 0%, transparent 45%),
-                radial-gradient(circle at 90% 85%, rgba(34, 211, 238, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(252, 211, 77, 0.08) 0%, transparent 60%),
-                linear-gradient(135deg, #020104 0%, #0a0514 50%, #020105 100%);
+                radial-gradient(circle at 15% 15%, rgba(251, 191, 36, 0.25) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(254, 240, 138, 0.4) 0%, transparent 70%),
+                linear-gradient(135deg, #fef9c3 0%, #dcfce7 50%, #f0fdf4 100%);
             z-index: -999;
         }
 
-        /* Динамические плавающие световые сферы */
-        .ambient-orb {
+        /* Теплые световые лучи (солнечные блики) */
+        .sun-ray {
             position: fixed;
-            width: 450px;
-            height: 450px;
+            width: 600px;
+            height: 600px;
             border-radius: 50%;
-            filter: blur(110px);
+            filter: blur(130px);
             z-index: -998;
             pointer-events: none;
             opacity: 0.5;
-            animation: orbMove 15s ease-in-out infinite alternate;
+            animation: sunFloat 15s ease-in-out infinite alternate;
         }
 
-        .orb-1 { top: -150px; left: -150px; background: rgba(168, 85, 247, 0.35); }
-        .orb-2 { bottom: -150px; right: -150px; background: rgba(6, 182, 212, 0.3); animation-delay: -7s; }
+        .ray-1 { top: -200px; left: -100px; background: rgba(252, 211, 77, 0.4); }
+        .ray-2 { bottom: -200px; right: -100px; background: rgba(134, 239, 172, 0.35); animation-delay: -7s; }
 
-        @keyframes orbMove {
+        @keyframes sunFloat {
             0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(50px, 40px) scale(1.15); }
+            100% { transform: translate(30px, 40px) scale(1.12); }
         }
 
-        /* Тонкая кибер-сетка */
+        /* Легкая декоративная сетка */
         .bg-grid {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: linear-gradient(rgba(192, 132, 252, 0.03) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(192, 132, 252, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
+            background-image: linear-gradient(rgba(21, 128, 61, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(21, 128, 61, 0.03) 1px, transparent 1px);
+            background-size: 55px 55px;
             z-index: -997;
             pointer-events: none;
         }
@@ -106,16 +106,16 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(252, 211, 77, 0.1);
-            color: var(--neon-gold);
-            border: 1px solid rgba(252, 211, 77, 0.35);
+            background: rgba(180, 83, 9, 0.1);
+            color: var(--elwynn-gold);
+            border: 1px solid rgba(180, 83, 9, 0.25);
             padding: 10px 28px;
             border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            box-shadow: 0 0 25px rgba(252, 211, 77, 0.15);
+            box-shadow: 0 4px 20px rgba(180, 83, 9, 0.1);
             margin-bottom: 30px;
             backdrop-filter: blur(12px);
         }
@@ -123,22 +123,20 @@
         h1 {
             font-size: clamp(3rem, 7vw, 5.5rem);
             font-weight: 900;
-            letter-spacing: -1.5px;
+            letter-spacing: -1px;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff 20%, var(--neon-gold) 60%, var(--neon-cyan) 100%);
+            background: linear-gradient(135deg, #1e293b 20%, #b45309 60%, #15803d 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-            filter: drop-shadow(0 0 30px rgba(252, 211, 77, 0.25));
+            text-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
 
         .hero-description {
             font-size: clamp(1.05rem, 2vw, 1.35rem);
-            color: var(--text-muted);
+            color: var(--elwynn-muted);
             line-height: 1.7;
             max-width: 780px;
             margin: 0 auto 40px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
         }
 
         .hero-buttons {
@@ -148,10 +146,10 @@
             flex-wrap: wrap;
         }
 
-        /* Кнопки */
+        /* Кнопки в теплом солнечном стиле */
         .btn {
             padding: 16px 34px;
-            border-radius: 16px;
+            border-radius: 14px;
             font-weight: 600;
             text-decoration: none;
             transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -166,43 +164,44 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #030206;
-            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: #ffffff;
+            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .btn-primary:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.6);
-            background: linear-gradient(135deg, #fcd34d, #f59e0b);
+            box-shadow: 0 15px 35px rgba(217, 119, 6, 0.5);
+            background: linear-gradient(135deg, #f59e0b, #d97706);
         }
 
         .btn-secondary {
-            background: rgba(12, 8, 22, 0.85);
-            color: var(--text-main);
-            border: 1px solid rgba(192, 132, 252, 0.25);
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--elwynn-text);
+            border: 1px solid rgba(21, 128, 61, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
         .btn-secondary:hover {
-            background: rgba(25, 16, 45, 0.95);
-            border-color: var(--neon-cyan);
+            background: rgba(255, 255, 255, 0.95);
+            border-color: var(--elwynn-green);
             transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(34, 211, 238, 0.3);
-            color: var(--neon-cyan);
+            box-shadow: 0 10px 25px rgba(21, 128, 61, 0.15);
+            color: var(--elwynn-green);
         }
 
         .btn-download {
-            background: linear-gradient(135deg, #06b6d4, #0284c7);
+            background: linear-gradient(135deg, #16a34a, #15803d);
             color: #ffffff;
-            box-shadow: 0 10px 30px rgba(6, 182, 212, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(22, 163, 74, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
 
         .btn-download:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(6, 182, 212, 0.6);
-            background: linear-gradient(135deg, #22d3ee, #06b6d4);
+            box-shadow: 0 15px 35px rgba(22, 163, 74, 0.5);
+            background: linear-gradient(135deg, #22c55e, #16a34a);
         }
 
         .content-container {
@@ -218,20 +217,18 @@
             font-size: clamp(2.2rem, 4vw, 3rem);
             margin-bottom: 60px;
             font-weight: 800;
-            color: #fff;
+            color: #1e293b;
             position: relative;
-            text-shadow: 0 5px 25px rgba(0, 0, 0, 0.6);
         }
 
         h2::after {
             content: '';
             display: block;
-            width: 90px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--neon-gold), var(--neon-cyan));
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--elwynn-gold), transparent);
             margin: 15px auto 0;
             border-radius: 2px;
-            box-shadow: 0 0 15px var(--neon-gold);
         }
 
         .grid {
@@ -241,40 +238,40 @@
             margin-bottom: 100px;
         }
 
-        /* Премиальные карточки с градиентными рамками */
+        /* Карточки в стиле светлого дерева и стекла */
         .card {
-            background: var(--card-bg);
-            border-radius: 24px;
+            background: var(--elwynn-card);
+            border-radius: 20px;
             padding: 40px 30px;
             backdrop-filter: blur(16px);
             position: relative;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(180, 83, 9, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
         }
 
         .card::before {
             content: '';
             position: absolute;
             inset: -1px;
-            border-radius: 25px;
-            background: linear-gradient(135deg, rgba(252, 211, 77, 0.35), rgba(34, 211, 238, 0.1), rgba(192, 132, 252, 0.3));
+            border-radius: 21px;
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.3), transparent, rgba(21, 128, 61, 0.2));
             z-index: -1;
             opacity: 0.5;
             transition: opacity 0.4s;
         }
 
         .card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(252, 211, 77, 0.2);
-            background: rgba(18, 12, 32, 0.95);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(180, 83, 9, 0.15), 0 10px 20px rgba(0, 0, 0, 0.05);
+            border-color: rgba(217, 119, 6, 0.4);
+            background: rgba(255, 255, 255, 0.95);
         }
 
         .card:hover::before {
             opacity: 1;
         }
 
-        /* Неоновые капсулы иконок */
         .card-icon {
             font-size: 2.3rem;
             margin-bottom: 24px;
@@ -283,10 +280,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, rgba(252, 211, 77, 0.15), rgba(192, 132, 252, 0.1));
-            border-radius: 20px;
-            border: 1px solid rgba(252, 211, 77, 0.3);
-            box-shadow: inset 0 0 15px rgba(252, 211, 77, 0.2), 0 8px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(220, 252, 231, 0.8));
+            border-radius: 16px;
+            border: 1px solid rgba(217, 119, 6, 0.3);
+            box-shadow: 0 6px 15px rgba(180, 83, 9, 0.1);
             transition: transform 0.3s ease;
         }
 
@@ -297,33 +294,33 @@
         .card h3 {
             font-size: 1.4rem;
             margin-bottom: 12px;
-            color: #fff;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+            color: #1e293b;
         }
 
         .card p {
-            color: var(--text-muted);
+            color: var(--elwynn-muted);
             line-height: 1.65;
             font-size: 0.95rem;
         }
 
         .card code {
-            background-color: rgba(3, 2, 6, 0.9);
-            color: var(--neon-cyan);
+            background-color: rgba(241, 245, 249, 0.9);
+            color: var(--elwynn-gold);
             padding: 4px 9px;
             border-radius: 6px;
             font-family: monospace;
-            border: 1px solid rgba(34, 211, 238, 0.25);
+            border: 1px solid rgba(217, 119, 6, 0.2);
+            font-weight: 600;
         }
 
         /* Блок команд */
         .commands-section {
-            background: var(--card-bg);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 28px;
+            background: var(--elwynn-card);
+            border: 1px solid rgba(21, 128, 61, 0.2);
+            border-radius: 24px;
             padding: 60px 40px;
             backdrop-filter: blur(20px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
             position: relative;
         }
 
@@ -331,10 +328,10 @@
             content: '';
             position: absolute;
             inset: -1px;
-            border-radius: 29px;
-            background: linear-gradient(135deg, rgba(34, 211, 238, 0.3), rgba(192, 132, 252, 0.2));
+            border-radius: 25px;
+            background: linear-gradient(135deg, rgba(21, 128, 61, 0.25), rgba(217, 119, 6, 0.15));
             z-index: -1;
-            opacity: 0.4;
+            opacity: 0.5;
         }
 
         .command-box {
@@ -347,39 +344,41 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(3, 2, 6, 0.8);
+            background-color: rgba(255, 255, 255, 0.8);
             padding: 22px 30px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
         }
 
         .command-row:hover {
-            border-color: rgba(34, 211, 238, 0.4);
+            border-color: rgba(21, 128, 61, 0.4);
             transform: translateX(6px);
-            background-color: rgba(10, 6, 18, 0.95);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            background-color: #ffffff;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
         }
 
         .command-row code {
-            background-color: rgba(15, 23, 42, 0.9);
-            color: var(--neon-gold);
+            background-color: #f1f5f9;
+            color: var(--elwynn-green);
             padding: 8px 14px;
             border-radius: 8px;
             font-family: monospace;
-            border: 1px solid rgba(252, 211, 77, 0.3);
+            border: 1px solid rgba(21, 128, 61, 0.2);
+            font-weight: 600;
         }
 
         .command-row span {
-            color: var(--text-muted);
+            color: var(--elwynn-muted);
         }
 
         footer {
             text-align: center;
             padding: 50px 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
             color: #64748b;
-            background-color: rgba(2, 1, 4, 0.95);
+            background-color: #eef2eb;
             position: relative;
             z-index: 2;
         }
@@ -401,16 +400,16 @@
         window.scrollTo(0, 0);
     </script>
 
-    <!-- Автономный живой фон (орбиты и сетка) -->
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
+    <!-- Солнечные лучи и фоновая сетка -->
+    <div class="sun-ray ray-1"></div>
+    <div class="sun-ray ray-2"></div>
     <div class="bg-grid"></div>
 
     <header class="hero-fullscreen">
         <div class="hero-container">
-            <div class="badge">✨ Создал Expilliar для Firestorm</div>
+            <div class="badge">☀️ Создано Expilliar для Firestorm WoW</div>
             <h1>VipFirestorm</h1>
-            <p class="hero-description">Максимальный игровой комфорт, мгновенная телепортация по классам, интеллектуальный автоинвайт и полный контроль над рейдом на серверах Firestorm WoW.</p>
+            <p class="hero-description">Эпический аддон для максимального игрового комфорта. Мгновенная телепортация по классам, умный автоинвайт и тотальный контроль над рейдом под лучами доброго солнца.</p>
             <div class="hero-buttons">
                 <a href="#features" class="btn btn-primary">⚡ Возможности</a>
                 <a href="#commands" class="btn btn-secondary">📜 Команды</a>
@@ -467,7 +466,5 @@
         <p>VipFirestorm Addon &copy; 2026. Создано Expilliar для Firestorm WoW.</p>
     </footer>
 
-</body>
-</html>
 </body>
 </html>
