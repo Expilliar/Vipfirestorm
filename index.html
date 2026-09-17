@@ -32,6 +32,17 @@
             scroll-behavior: smooth;
         }
 
+        /* Фоновая картинка на весь экран через CSS (запасной вариант) */
+        .bg-image {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: -999;
+        }
+
         /* Затенение поверх картинки-фона, чтобы текст был читаемым */
         .bg-overlay {
             position: fixed;
@@ -303,8 +314,8 @@
         window.scrollTo(0, 0);
     </script>
 
-    <!-- Фоновые слои (картинка через тег img гарантирует отображение) -->
-    <img src="bg.jpg" alt="Background" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -999;">
+    <!-- Фоновые слои (картинка через тег img для обхода блокировок браузера) -->
+    <img src="bg.jpg" alt="Background" class="bg-image">
     <div class="bg-overlay"></div>
     <div class="bg-grid"></div>
 
