@@ -76,6 +76,7 @@
             display: flex;
             justify-content: center;
             gap: 15px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -103,6 +104,16 @@
 
         .btn-secondary:hover {
             background-color: #30363d;
+        }
+
+        .btn-download {
+            background-color: #238636;
+            color: #ffffff;
+            border: 1px solid #2ea043;
+        }
+
+        .btn-download:hover {
+            background-color: #2ea043;
         }
 
         .container {
@@ -225,6 +236,7 @@
             <div class="hero-buttons">
                 <a href="#features" class="btn btn-primary">Возможности аддона</a>
                 <a href="#commands" class="btn btn-secondary">Команды</a>
+                <a href="VipFirestorm.zip" class="btn btn-download" download>📥 Скачать аддон</a>
             </div>
         </div>
     </header>
