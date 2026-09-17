@@ -6,9 +6,9 @@
     <title>VipFirestorm — Аддон для WoW</title>
     <style>
         :root {
-            --bg-base: #06040c;
-            --card-bg: rgba(14, 10, 24, 0.85);
-            --neon-gold: #fbbf24;
+            --bg-deep: #030206;
+            --card-bg: rgba(12, 8, 22, 0.85);
+            --neon-gold: #fcd34d;
             --neon-cyan: #22d3ee;
             --neon-purple: #c084fc;
             --text-main: #f8fafc;
@@ -25,13 +25,13 @@
             width: 100%;
             min-height: 100vh;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-base);
+            background-color: var(--bg-deep);
             color: var(--text-main);
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        /* Ультра-качественный фоновый слой с анимированными световыми орбитами и глубоким градиентом */
+        /* Автономный живой магический фон без внешних картинок */
         body::before {
             content: '';
             position: fixed;
@@ -40,41 +40,41 @@
             width: 100vw;
             height: 100vh;
             background: 
-                radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 85% 80%, rgba(34, 211, 238, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.08) 0%, transparent 60%),
-                linear-gradient(135deg, #050308 0%, #0d0817 50%, #040207 100%);
+                radial-gradient(circle at 10% 15%, rgba(192, 132, 252, 0.18) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(34, 211, 238, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(252, 211, 77, 0.08) 0%, transparent 60%),
+                linear-gradient(135deg, #020104 0%, #0a0514 50%, #020105 100%);
             z-index: -999;
         }
 
-        /* Плавающие световые шары для живого динамического фона */
-        .light-orb {
+        /* Динамические плавающие световые сферы */
+        .ambient-orb {
             position: fixed;
-            width: 400px;
-            height: 400px;
+            width: 450px;
+            height: 450px;
             border-radius: 50%;
-            filter: blur(100px);
+            filter: blur(110px);
             z-index: -998;
             pointer-events: none;
-            opacity: 0.4;
-            animation: orbFloat 12s ease-in-out infinite alternate;
+            opacity: 0.5;
+            animation: orbMove 15s ease-in-out infinite alternate;
         }
 
-        .orb-1 { top: -100px; left: -100px; background: rgba(168, 85, 247, 0.3); }
-        .orb-2 { bottom: -100px; right: -100px; background: rgba(34, 211, 238, 0.25); animation-delay: -6s; }
+        .orb-1 { top: -150px; left: -150px; background: rgba(168, 85, 247, 0.35); }
+        .orb-2 { bottom: -150px; right: -150px; background: rgba(6, 182, 212, 0.3); animation-delay: -7s; }
 
-        @keyframes orbFloat {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(40px) scale(1.1); }
+        @keyframes orbMove {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 40px) scale(1.15); }
         }
 
-        /* Футуристическая сетка */
+        /* Тонкая кибер-сетка */
         .bg-grid {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: linear-gradient(rgba(192, 132, 252, 0.025) 1px, transparent 1px),
-                              linear-gradient(90deg, rgba(192, 132, 252, 0.025) 1px, transparent 1px);
-            background-size: 60px 60px;
+            background-image: linear-gradient(rgba(192, 132, 252, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(192, 132, 252, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
             z-index: -997;
             pointer-events: none;
         }
@@ -106,16 +106,16 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            background: rgba(251, 191, 36, 0.1);
+            background: rgba(252, 211, 77, 0.1);
             color: var(--neon-gold);
-            border: 1px solid rgba(251, 191, 36, 0.3);
+            border: 1px solid rgba(252, 211, 77, 0.35);
             padding: 10px 28px;
             border-radius: 50px;
             font-size: 0.9rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 2px;
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.15);
+            box-shadow: 0 0 25px rgba(252, 211, 77, 0.15);
             margin-bottom: 30px;
             backdrop-filter: blur(12px);
         }
@@ -129,7 +129,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-            filter: drop-shadow(0 0 30px rgba(251, 191, 36, 0.25));
+            filter: drop-shadow(0 0 30px rgba(252, 211, 77, 0.25));
         }
 
         .hero-description {
@@ -148,7 +148,7 @@
             flex-wrap: wrap;
         }
 
-        /* Стильные интерактивные кнопки */
+        /* Кнопки */
         .btn {
             padding: 16px 34px;
             border-radius: 16px;
@@ -167,7 +167,7 @@
 
         .btn-primary {
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #030508;
+            color: #030206;
             box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
@@ -175,17 +175,17 @@
         .btn-primary:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 40px rgba(245, 158, 11, 0.6);
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            background: linear-gradient(135deg, #fcd34d, #f59e0b);
         }
 
         .btn-secondary {
-            background: rgba(18, 12, 30, 0.85);
+            background: rgba(12, 8, 22, 0.85);
             color: var(--text-main);
             border: 1px solid rgba(192, 132, 252, 0.25);
         }
 
         .btn-secondary:hover {
-            background: rgba(30, 20, 50, 0.95);
+            background: rgba(25, 16, 45, 0.95);
             border-color: var(--neon-cyan);
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(34, 211, 238, 0.3);
@@ -241,7 +241,7 @@
             margin-bottom: 100px;
         }
 
-        /* Премиальные карточки с градиентными рамками и подсветкой */
+        /* Премиальные карточки с градиентными рамками */
         .card {
             background: var(--card-bg);
             border-radius: 24px;
@@ -253,13 +253,12 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
-        /* Необычная рамка с переливом */
         .card::before {
             content: '';
             position: absolute;
             inset: -1px;
             border-radius: 25px;
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.4), rgba(34, 211, 238, 0.1), rgba(192, 132, 252, 0.3));
+            background: linear-gradient(135deg, rgba(252, 211, 77, 0.35), rgba(34, 211, 238, 0.1), rgba(192, 132, 252, 0.3));
             z-index: -1;
             opacity: 0.5;
             transition: opacity 0.4s;
@@ -267,27 +266,27 @@
 
         .card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(251, 191, 36, 0.2);
-            background: rgba(22, 16, 36, 0.95);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(252, 211, 77, 0.2);
+            background: rgba(18, 12, 32, 0.95);
         }
 
         .card:hover::before {
             opacity: 1;
         }
 
-        /* Новый вид иконок: парящие неоновые капсулы */
+        /* Неоновые капсулы иконок */
         .card-icon {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             margin-bottom: 24px;
             width: 75px;
             height: 75px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(192, 132, 252, 0.1));
+            background: linear-gradient(135deg, rgba(252, 211, 77, 0.15), rgba(192, 132, 252, 0.1));
             border-radius: 20px;
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            box-shadow: inset 0 0 15px rgba(251, 191, 36, 0.2), 0 8px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(252, 211, 77, 0.3);
+            box-shadow: inset 0 0 15px rgba(252, 211, 77, 0.2), 0 8px 20px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
         }
 
@@ -309,7 +308,7 @@
         }
 
         .card code {
-            background-color: rgba(6, 4, 12, 0.8);
+            background-color: rgba(3, 2, 6, 0.9);
             color: var(--neon-cyan);
             padding: 4px 9px;
             border-radius: 6px;
@@ -348,7 +347,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(6, 4, 12, 0.75);
+            background-color: rgba(3, 2, 6, 0.8);
             padding: 22px 30px;
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.06);
@@ -358,7 +357,7 @@
         .command-row:hover {
             border-color: rgba(34, 211, 238, 0.4);
             transform: translateX(6px);
-            background-color: rgba(12, 8, 22, 0.95);
+            background-color: rgba(10, 6, 18, 0.95);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }
 
@@ -368,7 +367,7 @@
             padding: 8px 14px;
             border-radius: 8px;
             font-family: monospace;
-            border: 1px solid rgba(251, 191, 36, 0.3);
+            border: 1px solid rgba(252, 211, 77, 0.3);
         }
 
         .command-row span {
@@ -380,7 +379,7 @@
             padding: 50px 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.06);
             color: #64748b;
-            background-color: rgba(3, 2, 6, 0.95);
+            background-color: rgba(2, 1, 4, 0.95);
             position: relative;
             z-index: 2;
         }
@@ -396,15 +395,15 @@
 </head>
 <body>
 
-    <!-- Скрипт принудительного сброса прокрутки в самый верх -->
+    <!-- Скрипт мгновенного сброса прокрутки наверх -->
     <script>
         window.history.scrollRestoration = 'manual';
         window.scrollTo(0, 0);
     </script>
 
-    <!-- Живые световые орбиты и фоновая сетка -->
-    <div class="light-orb orb-1"></div>
-    <div class="light-orb orb-2"></div>
+    <!-- Автономный живой фон (орбиты и сетка) -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
     <div class="bg-grid"></div>
 
     <header class="hero-fullscreen">
@@ -468,5 +467,7 @@
         <p>VipFirestorm Addon &copy; 2026. Создано Expilliar для Firestorm WoW.</p>
     </footer>
 
+</body>
+</html>
 </body>
 </html>
