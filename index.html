@@ -19,8 +19,8 @@
         }
 
         .hero {
-            /* Используем прямую ссылку на вашу картинку bg.jpg из репозитория GitHub */
-            background-image: linear-gradient(rgba(13, 17, 23, 0.8), rgba(13, 17, 23, 0.95)), url('https://raw.githubusercontent.com/expilliar/VipFirestorm/main/bg.jpg');
+            /* Локальный путь к картинке bg.jpg, которая лежит в корне репозитория */
+            background-image: linear-gradient(rgba(13, 17, 23, 0.8), rgba(13, 17, 23, 0.95)), url('bg.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -180,7 +180,6 @@
         }
 
         .command-row {
-            dir: ltr;
             display: flex;
             justify-content: space-between;
             align-items: center;
