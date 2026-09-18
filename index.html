@@ -391,6 +391,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .modal-form.active { display: block; animation: fadeUp .35s; }
 .modal-submit { width: 100%; margin-top: 8px; padding: 14px 22px; border-radius: 12px; font: inherit; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .88rem; cursor: pointer; border: 1px solid #ffb37a; background: linear-gradient(135deg, #ff5c2b, #ff9500); color: #1a0a05; transition: all .25s; }
 .modal-submit:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(255,92,43,.6); }
+.modal-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 .modal-note { margin-top: 16px; padding: 10px 14px; border-radius: 10px; background: rgba(255,140,90,.06); font-size: .76rem; color: var(--text-mute); text-align: center; }
 .modal-msg { margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: .82rem; display: none; text-align: center; }
 .modal-msg.show { display: block; }
@@ -986,7 +987,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://smtpjs.com/v3/smtp.js"></script>
 <script>
 /* ============================================================
    FIREBASE
@@ -994,19 +995,15 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 const FB_URL = 'https://vipfirestorm-ee1f6-default-rtdb.firebaseio.com';
 
 /* ============================================================
-   EMAILJS — рассылка (ЗАМЕНИТЕ НА СВОИ КЛЮЧИ!)
+   SMTP (mail.ru) — рассылка
    ============================================================ */
-const EMAILJS_CONFIG = {
-  publicKey: 'ВАШ_PUBLIC_KEY_С_SITE_EMAILJS_COM',
-  serviceId: 'ВАШ_SERVICE_ID',
-  codeTemplateId: 'template_verification_code',
-  updateTemplateId: 'template_update_notify'
+const SMTP_CONFIG = {
+  host: 'smtp.mail.ru',
+  username: 'thranduil1991@mail.ru',
+  password: '9a00zVCiWKYvzgrIE3aQ',
+  fromName: 'VipFirestorm'
 };
 const CODE_TTL_MS = 10 * 60 * 1000;
-
-if (typeof emailjs !== 'undefined') {
-  try { emailjs.init({ publicKey: EMAILJS_CONFIG.publicKey }); } catch(e) { console.warn('[EmailJS] init:', e); }
-}
 
 window.addEventListener('error', e => console.error('[VF Error]', e.message));
 window.addEventListener('unhandledrejection', e => console.error('[VF Promise]', e.reason));
@@ -1967,19 +1964,34 @@ async function sendVerificationCode() {
 
   let sent = false;
   try {
-    if (typeof emailjs === 'undefined') throw new Error('EmailJS SDK не загружен');
-    if (EMAILJS_CONFIG.publicKey.startsWith('ВАШ_')) throw new Error('EmailJS не настроен');
-    await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.codeTemplateId, {
-      to_email: email,
-      to_name: me.nickname,
-      verification_code: code,
-      site_name: 'VipFirestorm',
-      expires_minutes: '10',
-      background_url: location.origin + location.pathname.replace(/[^/]*$/, '') + 'background.jpg'
+    if (typeof Email === 'undefined') throw new Error('SMTP.js SDK не загружен');
+    const bgUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'background.jpg';
+    const html = `
+      <div style="margin:0;padding:0;background:#08050e;background-image:url('${bgUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;">
+        <div style="max-width:600px;margin:0 auto;padding:40px 24px;background:rgba(8,5,14,.78);">
+          <div style="background:linear-gradient(160deg,rgba(30,18,45,.94),rgba(12,8,22,.96));border:1px solid rgba(255,140,90,.35);border-radius:24px;padding:40px 32px;color:#f4ecff;font-family:Arial,sans-serif;text-align:center;">
+            <div style="font-size:44px;margin-bottom:12px;">🔥</div>
+            <h1 style="font-family:Arial,sans-serif;font-size:24px;margin:0 0 12px;color:#ffb347;letter-spacing:.04em;">VipFirestorm</h1>
+            <p style="font-size:15px;color:#a396b8;margin:0 0 26px;">Привет, ${escapeHtml(me.nickname)}!<br>Ваш код подтверждения почты:</p>
+            <div style="display:inline-block;padding:20px 36px;background:linear-gradient(135deg,rgba(255,92,43,.18),rgba(255,179,71,.08));border:2px solid #ffb347;border-radius:16px;font-size:38px;font-weight:800;color:#ffb347;letter-spacing:12px;font-family:Courier,monospace;">${code}</div>
+            <p style="font-size:13px;color:#6d6280;margin:26px 0 0;">Код действителен 10 минут.<br>Если вы не запрашивали код — просто игнорируйте письмо.</p>
+            <div style="margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#6d6280;">© VipFirestorm</div>
+          </div>
+        </div>
+      </div>`;
+    const result = await Email.send({
+      Host: SMTP_CONFIG.host,
+      Username: SMTP_CONFIG.username,
+      Password: SMTP_CONFIG.password,
+      To: email,
+      From: SMTP_CONFIG.fromName + ' <' + SMTP_CONFIG.username + '>',
+      Subject: '🔐 Код подтверждения VipFirestorm',
+      Body: html
     });
+    if (result && String(result).toLowerCase() !== 'ok') throw new Error(String(result));
     sent = true;
   } catch (e) {
-    console.warn('[EmailJS] Не удалось отправить:', e.message);
+    console.warn('[SMTP] Не удалось отправить:', e.message);
   }
 
   btn.disabled = false;
@@ -1994,7 +2006,7 @@ async function sendVerificationCode() {
     setSubStatus('✅ Код отправлен! Проверьте почту (в т.ч. папку «Спам»)', 'ok');
     setTimeout(() => { try { document.getElementById('subCodeInput').focus(); } catch(e){} }, 200);
   } else {
-    setSubStatus('⚠️ Не удалось отправить письмо. Обратитесь к Создателю для настройки EmailJS.', 'err');
+    setSubStatus('⚠️ Не удалось отправить письмо. Проверьте интернет или обратитесь к Создателю.', 'err');
   }
 }
 
@@ -2072,12 +2084,12 @@ function updateSubscriptionUI() {
 }
 
 async function notifyAllSubscribers(updateData) {
-  if (typeof emailjs === 'undefined') { console.warn('[Notify] EmailJS не загружен'); return; }
-  if (EMAILJS_CONFIG.publicKey.startsWith('ВАШ_')) { console.warn('[Notify] EmailJS не настроен'); return; }
+  if (typeof Email === 'undefined') { console.warn('[Notify] SMTP.js не загружен'); return; }
   const users = loadUsers();
   const subscribers = users.filter(u => u.emailVerified && u.email && u.email !== '');
   console.log('[Notify] Подписчиков:', subscribers.length);
   if (!subscribers.length) return;
+
   const bodyText = String(updateData.body || '')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/p>/gi, '\n')
@@ -2088,25 +2100,47 @@ async function notifyAllSubscribers(updateData) {
     .replace(/&gt;/g, '>')
     .replace(/\n{3,}/g, '\n\n')
     .trim()
-    .slice(0, 800);
-  const baseParams = {
-    subject: '📢 Новое обновление: ' + (updateData.title || 'Без заголовка'),
-    update_title: updateData.title || 'Без заголовка',
-    update_body: bodyText,
-    update_author: updateData.author || 'Создатель',
-    update_date: formatDateTime(updateData.createdAt || Date.now()),
-    site_name: 'VipFirestorm',
-    background_url: location.origin + location.pathname.replace(/[^/]*$/, '') + 'background.jpg'
-  };
+    .slice(0, 2000);
+
+  const bgUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'background.jpg';
+  const title = escapeHtml(updateData.title || 'Без заголовка');
+  const author = escapeHtml(updateData.author || 'Создатель');
+  const dateStr = formatDateTime(updateData.createdAt || Date.now());
+
   let success = 0, fail = 0;
   for (const sub of subscribers) {
+    const html = `
+      <div style="margin:0;padding:0;background:#08050e;background-image:url('${bgUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;">
+        <div style="max-width:640px;margin:0 auto;padding:40px 24px;background:rgba(8,5,14,.78);">
+          <div style="background:linear-gradient(160deg,rgba(30,18,45,.94),rgba(12,8,22,.96));border:1px solid rgba(255,140,90,.35);border-radius:24px;padding:36px 32px;color:#f4ecff;font-family:Arial,sans-serif;">
+            <div style="text-align:center;margin-bottom:20px;">
+              <div style="font-size:36px;">📢</div>
+              <h1 style="font-family:Arial,sans-serif;font-size:22px;margin:8px 0 0;color:#ffb347;letter-spacing:.04em;">VipFirestorm</h1>
+            </div>
+            <p style="font-size:14px;color:#a396b8;margin:0 0 18px;">Привет, ${escapeHtml(sub.nickname)}!</p>
+            <div style="padding:14px 18px;background:rgba(255,179,71,.1);border:1px solid rgba(255,179,71,.35);border-radius:14px;margin-bottom:20px;">
+              <div style="font-size:13px;color:#a396b8;margin-bottom:6px;">Новое обновление</div>
+              <div style="font-size:19px;font-weight:700;color:#ffb347;">${title}</div>
+              <div style="font-size:12px;color:#6d6280;margin-top:6px;">${dateStr} · ${author}</div>
+            </div>
+            <div style="font-size:15px;color:#d7c9e8;line-height:1.7;white-space:pre-wrap;word-break:break-word;">${bodyText}</div>
+            <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#6d6280;text-align:center;">© VipFirestorm · Вы получили это письмо, т.к. подписаны на обновления</div>
+          </div>
+        </div>
+      </div>`;
     try {
-      await emailjs.send(EMAILJS_CONFIG.serviceId, EMAILJS_CONFIG.updateTemplateId, Object.assign({}, baseParams, {
-        to_email: sub.email,
-        to_name: sub.nickname
-      }));
+      const result = await Email.send({
+        Host: SMTP_CONFIG.host,
+        Username: SMTP_CONFIG.username,
+        Password: SMTP_CONFIG.password,
+        To: sub.email,
+        From: SMTP_CONFIG.fromName + ' <' + SMTP_CONFIG.username + '>',
+        Subject: '📢 Новое обновление: ' + title,
+        Body: html
+      });
+      if (result && String(result).toLowerCase() !== 'ok') throw new Error(String(result));
       success++;
-      await new Promise(r => setTimeout(r, 250));
+      await new Promise(r => setTimeout(r, 400));
     } catch (e) {
       console.warn('[Notify] Ошибка для', sub.email, e.message);
       fail++;
