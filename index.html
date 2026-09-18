@@ -269,22 +269,43 @@ body {
 .chip b { color: #ffb37a; font-weight: 600; font-variant-numeric: tabular-nums; }
 .chip svg { color: #ffb37a; flex-shrink: 0; }
 
-/* Discord badge */
+/* Discord badge (кликабельный) */
 .chip-discord {
+  text-decoration: none;
   background: linear-gradient(135deg, rgba(88,101,242,.12), rgba(255,92,43,.08));
   border-color: rgba(88,101,242,.32);
   color: #c9d1ff;
-  cursor: default;
+  cursor: pointer;
   transition: all .25s;
 }
 .chip-discord:hover {
-  background: linear-gradient(135deg, rgba(88,101,242,.22), rgba(255,92,43,.14));
-  border-color: rgba(88,101,242,.55);
+  background: linear-gradient(135deg, rgba(88,101,242,.25), rgba(255,92,43,.16));
+  border-color: rgba(88,101,242,.6);
   color: #fff;
-  box-shadow: 0 0 20px rgba(88,101,242,.35);
+  box-shadow: 0 0 20px rgba(88,101,242,.4);
+  transform: translateY(-1px);
 }
 .chip-discord svg { color: #7c8eff !important; }
 .chip-discord b { color: #fff !important; font-weight: 700; }
+
+/* YouTube badge (кликабельный) */
+.chip-youtube {
+  text-decoration: none;
+  background: linear-gradient(135deg, rgba(255,0,0,.14), rgba(255,92,43,.06));
+  border-color: rgba(255,0,0,.35);
+  color: #ffc9c9;
+  cursor: pointer;
+  transition: all .25s;
+}
+.chip-youtube:hover {
+  background: linear-gradient(135deg, rgba(255,0,0,.26), rgba(255,92,43,.14));
+  border-color: rgba(255,0,0,.65);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(255,0,0,.4);
+  transform: translateY(-1px);
+}
+.chip-youtube svg { color: #ff2e2e !important; }
+.chip-youtube b { color: #fff !important; font-weight: 700; }
 
 .music-btn {
   display: inline-flex;
@@ -590,7 +611,7 @@ body {
   .crumb { font-size: .68rem; }
   .chips { gap: 6px; }
   .chip { padding: 6px 10px; font-size: .7rem; }
-  .chip-discord span { display: none; }
+  .chip-discord span, .chip-youtube span { display: none; }
   .hero { padding: 34px 26px 28px; border-radius: 24px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn { justify-content: center; }
@@ -697,13 +718,27 @@ body {
             Скачали: <b data-count>6</b>
           </div>
 
-          <!-- Discord badge -->
-          <div class="chip chip-discord" title="Обратная связь Discord — Expilliar">
+          <!-- Discord badge (кликабельный) -->
+          <a class="chip chip-discord"
+             href="https://discordapp.com/users/565988667118714883"
+             target="_blank" rel="noopener"
+             title="Обратная связь Discord — Expilliar">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
             </svg>
-            <span>Обратная связь Discord — <b>Expilliar</b></span>
-          </div>
+            <span>Discord — <b>Expilliar</b></span>
+          </a>
+
+          <!-- YouTube badge (кликабельный) -->
+          <a class="chip chip-youtube"
+             href="https://www.youtube.com/@Expilliar"
+             target="_blank" rel="noopener"
+             title="YouTube-канал Expilliar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            <span>YouTube — <b>Expilliar</b></span>
+          </a>
 
           <div class="chip">Firestorm</div>
 
@@ -764,7 +799,7 @@ body {
 
         <div class="hero-stats">
           <div class="hs"><b data-count>6</b><span>Скачали аддон</span></div>
-          <div class="hs"><b>v3.4</b><span>Версия ядра</span></div>
+          <div class="hs"><b>v3.4</b><span>Версия Аддона</span></div>
           <div class="hs"><b>17.09.2026</b><span>Последнее обновление</span></div>
         </div>
       </section>
@@ -843,14 +878,6 @@ body {
 
     /* ============================================================
        СЧЁТЧИК ЗАГРУЗОК — РЕАЛЬНЫЙ, ЧЕРЕЗ СЕРВЕРНЫЙ API
-       ------------------------------------------------------------
-       Используем бесплатный abacus.jasoncameron.dev.
-       Счётчик живёт на сервере → цифра ОДНА для всех устройств.
-       "1 IP = 1 раз" делаем через флаг в localStorage:
-         • если с этого браузера уже кликали — не инкрементим
-         • если нет — вызываем /hit, инкрементим на сервере, ставим флаг
-       BASE_OFFSET = 6 — стартовое значение (то, что было у тебя).
-       Если хочешь начать с нуля — поставь 0.
        ============================================================ */
     const BASE_OFFSET = 6;
     const API_NS  = 'vipfirestorm-expilliar';
@@ -867,7 +894,6 @@ body {
           return typeof d.value === 'number' ? d.value : 0;
         }
         if (r.status === 404) {
-          // Счётчик ещё не создан — создаём первым hit'ом
           const h = await fetch(`${API_URL}/hit/${API_NS}/${API_KEY}`, { cache: 'no-store' });
           if (h.ok) {
             const hd = await h.json();
@@ -909,7 +935,6 @@ body {
     }
 
     async function registerDownload() {
-      // Если с этого устройства уже кликали — не инкрементим
       if (localStorage.getItem(KEY_DONE)) {
         console.log('[Counter] С этого устройства уже засчитано — пропускаем.');
         return;
@@ -922,25 +947,15 @@ body {
       }
     }
 
-    // Клик по кнопке "Скачать аддон" — инкремент
     document.querySelectorAll('.js-download').forEach(btn => {
       btn.addEventListener('click', registerDownload);
     });
 
     initCounter();
-
-    // Раз в 30 секунд обновляем показания (на случай, если кто-то ещё качает прямо сейчас)
     setInterval(initCounter, 30000);
 
     /* ============================================================
        МУЗЫКА
-       ------------------------------------------------------------
-       Схема:
-       1) Сразу пробуем со звуком.
-       2) Если браузер запретил — играем muted (это разрешено везде).
-       3) При первом же НАСТОЯЩЕМ жесте (клик/клавиша/тап/скролл на мобиле)
-          снимаем mute. Плюс параллельно пробуем Web Audio API —
-          некоторые браузеры охотнее разрешают звук через AudioContext.
        ============================================================ */
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
@@ -968,7 +983,6 @@ body {
       }
     }
 
-    // Web Audio API — «разогрев» контекста (в некоторых браузерах помогает)
     let audioCtx = null;
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -981,12 +995,10 @@ body {
       if (soundUnlocked) return;
       soundUnlocked = true;
 
-      // 1) Пробуем разбудить AudioContext
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume().catch(() => {});
       }
 
-      // 2) Снимаем mute и гарантируем play
       bgMusic.muted = false;
       if (bgMusic.paused) {
         bgMusic.play().then(() => {
@@ -1002,7 +1014,6 @@ body {
         console.log('[Music] 🔊 Размьючено');
       }
 
-      // Отписываемся
       GESTURE_EVENTS.forEach(evt => {
         document.removeEventListener(evt, unlockAudio, true);
         window.removeEventListener(evt, unlockAudio, true);
@@ -1019,7 +1030,6 @@ body {
       window.addEventListener(evt, unlockAudio, { capture: true, passive: true });
     });
 
-    // Стартовая попытка
     bgMusic.muted = false;
     const initialPlay = bgMusic.play();
     if (initialPlay && typeof initialPlay.then === 'function') {
@@ -1040,7 +1050,6 @@ body {
       });
     }
 
-    // Кнопка в топбаре
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
