@@ -269,7 +269,6 @@ body {
 .chip b { color: #ffb37a; font-weight: 600; font-variant-numeric: tabular-nums; }
 .chip svg { color: #ffb37a; flex-shrink: 0; }
 
-/* Discord badge (кликабельный) */
 .chip-discord {
   text-decoration: none;
   background: linear-gradient(135deg, rgba(88,101,242,.12), rgba(255,92,43,.08));
@@ -288,7 +287,6 @@ body {
 .chip-discord svg { color: #7c8eff !important; }
 .chip-discord b { color: #fff !important; font-weight: 700; }
 
-/* YouTube badge (кликабельный) */
 .chip-youtube {
   text-decoration: none;
   background: linear-gradient(135deg, rgba(255,0,0,.14), rgba(255,92,43,.06));
@@ -346,6 +344,7 @@ body {
 }
 .music-btn svg { width: 16px; height: 16px; }
 
+/* ============== HERO ============== */
 .hero {
   position: relative;
   padding: 52px 48px 40px;
@@ -371,6 +370,18 @@ body {
   -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 75%);
   pointer-events: none;
 }
+
+/* Двухколоночный layout внутри hero */
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+
+.hero-left { min-width: 0; }
 
 .hero-eyebrow {
   display: inline-flex;
@@ -398,7 +409,7 @@ body {
 
 .hero-title {
   font-family: 'Unbounded', sans-serif;
-  font-size: clamp(1.9rem, 5vw, 3.4rem);
+  font-size: clamp(1.9rem, 4vw, 3rem);
   font-weight: 800;
   letter-spacing: -.035em;
   line-height: 1.05;
@@ -413,14 +424,14 @@ body {
 }
 
 .hero-lead {
-  font-size: 1rem;
+  font-size: .98rem;
   color: var(--text-dim);
-  max-width: 620px;
+  max-width: 540px;
   line-height: 1.7;
-  margin-bottom: 34px;
+  margin-bottom: 32px;
 }
 
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 42px; }
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
 
 .btn {
   display: inline-flex;
@@ -487,6 +498,85 @@ body {
   text-transform: uppercase;
 }
 
+/* ---------- ПРАВАЯ КОЛОНКА С ВИДЕО ---------- */
+.hero-right { min-width: 0; }
+
+.video-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  background: rgba(255,140,90,.08);
+  border: 1px solid rgba(255,140,90,.25);
+  font-size: .74rem;
+  color: #ffb37a;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+  font-family: 'Unbounded', sans-serif;
+}
+.video-label::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff5c2b, #ffb347);
+  box-shadow: 0 0 10px #ff5c2b;
+  animation: pulse 2s infinite;
+}
+
+.video-frame {
+  position: relative;
+  border-radius: 22px;
+  padding: 10px;
+  background: linear-gradient(160deg, rgba(255,140,90,.14), rgba(162,89,255,.1));
+  border: 1px solid rgba(255,140,90,.24);
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.03),
+    0 0 60px rgba(255,92,43,.12);
+  transition: all .35s cubic-bezier(.5,0,.2,1);
+}
+.video-frame:hover {
+  border-color: rgba(255,140,90,.4);
+  box-shadow:
+    0 34px 70px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,180,140,.15),
+    0 0 80px rgba(255,92,43,.22);
+  transform: translateY(-2px);
+}
+.video-frame::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -30%;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(255,92,43,.32), transparent 65%);
+  opacity: .5;
+  pointer-events: none;
+  z-index: 2;
+  border-radius: 50%;
+}
+
+.video-embed {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;
+  z-index: 1;
+}
+.video-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* ПАНЕЛИ */
 .panels { display: flex; flex-direction: column; gap: 20px; }
 .panel { display: none; }
 .panel.active { display: block; animation: fadeUp .55s cubic-bezier(.2,.9,.3,1); }
@@ -587,6 +677,20 @@ body {
   font-weight: 500;
 }
 
+/* ============== АДАПТИВ ============== */
+@media (max-width: 1180px) {
+  .hero-inner { gap: 36px; }
+  .hero-title { font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
+}
+
+@media (max-width: 980px) {
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  .hero-right { max-width: 640px; }
+}
+
 @media (max-width: 860px) {
   .app { padding: 16px 16px 110px; }
   .rail {
@@ -612,12 +716,14 @@ body {
   .chips { gap: 6px; }
   .chip { padding: 6px 10px; font-size: .7rem; }
   .chip-discord span, .chip-youtube span { display: none; }
-  .hero { padding: 34px 26px 28px; border-radius: 24px; }
+  .hero { padding: 30px 22px 26px; border-radius: 24px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn { justify-content: center; }
   .hero-stats { gap: 18px 32px; }
   .cards { grid-template-columns: 1fr; }
   .bg-image { transition: none; }
+  .video-frame { padding: 8px; border-radius: 18px; }
+  .video-embed { border-radius: 12px; }
 }
 </style>
 </head>
@@ -718,7 +824,6 @@ body {
             Скачали: <b data-count>6</b>
           </div>
 
-          <!-- Discord badge (кликабельный) -->
           <a class="chip chip-discord"
              href="https://discordapp.com/users/565988667118714883"
              target="_blank" rel="noopener"
@@ -729,7 +834,6 @@ body {
             <span>Discord — <b>Expilliar</b></span>
           </a>
 
-          <!-- YouTube badge (кликабельный) -->
           <a class="chip chip-youtube"
              href="https://www.youtube.com/@Expilliar"
              target="_blank" rel="noopener"
@@ -759,48 +863,73 @@ body {
       </header>
 
       <section class="hero">
-        <span class="hero-eyebrow">Эксклюзивный аддон · Firestorm</span>
-        <h1 class="hero-title">
-          Уникальный аддон<br>
-          <span class="grad">для сервера Firestorm</span>
-        </h1>
-        <p class="hero-lead">
-          Комплексный интерфейс для мгновенной телепортации, автоматизации рейдов и умного управления группами. Создан для максимальной скорости и стабильности — без просадок FPS и лишних кликов.
-        </p>
+        <div class="hero-inner">
 
-        <div class="hero-actions">
-          <a class="btn btn-primary js-download"
-             href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing"
-             target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Скачать аддон
-          </a>
+          <!-- ЛЕВАЯ КОЛОНКА — ТЕКСТ -->
+          <div class="hero-left">
+            <span class="hero-eyebrow">Эксклюзивный аддон · Firestorm</span>
+            <h1 class="hero-title">
+              Уникальный аддон<br>
+              <span class="grad">для сервера Firestorm</span>
+            </h1>
+            <p class="hero-lead">
+              Комплексный интерфейс для мгновенной телепортации, автоматизации рейдов и умного управления группами. Создан для максимальной скорости и стабильности — без просадок FPS и лишних кликов.
+            </p>
 
-          <button class="btn btn-ghost" onclick="switchTab('commands', document.querySelectorAll('.nav-item')[3])">
-            Список команд
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6"/>
-            </svg>
-          </button>
+            <div class="hero-actions">
+              <a class="btn btn-primary js-download"
+                 href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing"
+                 target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                Скачать аддон
+              </a>
 
-          <a class="btn btn-primary"
-             href="https://firestorm-servers.com/ru/teasing"
-             target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="6 4 20 12 6 20 6 4"/>
-            </svg>
-            Начать играть
-          </a>
-        </div>
+              <button class="btn btn-ghost" onclick="switchTab('commands', document.querySelectorAll('.nav-item')[3])">
+                Список команд
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="9 18 15 12 9 6"/>
+                </svg>
+              </button>
 
-        <div class="hero-stats">
-          <div class="hs"><b data-count>6</b><span>Скачали аддон</span></div>
-          <div class="hs"><b>v3.4</b><span>Версия Аддона</span></div>
-          <div class="hs"><b>17.09.2026</b><span>Последнее обновление</span></div>
+              <a class="btn btn-primary"
+                 href="https://firestorm-servers.com/ru/teasing"
+                 target="_blank" rel="noopener">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="6 4 20 12 6 20 6 4"/>
+                </svg>
+                Начать играть
+              </a>
+            </div>
+
+            <div class="hero-stats">
+              <div class="hs"><b data-count>6</b><span>Скачали аддон</span></div>
+              <div class="hs"><b>v3.4</b><span>Версия Аддона</span></div>
+              <div class="hs"><b>17.09.2026</b><span>Последнее обновление</span></div>
+            </div>
+          </div>
+
+          <!-- ПРАВАЯ КОЛОНКА — ВИДЕО -->
+          <div class="hero-right">
+            <div class="video-label">Визуальная информация об Аддоне</div>
+
+            <div class="video-frame">
+              <div class="video-embed">
+                <!-- Без autoplay: видео запустится только когда пользователь сам нажмёт play -->
+                <iframe
+                  src="https://www.youtube.com/embed/-NZJbbG1BLY"
+                  title="Визуальная информация о VipFirestorm"
+                  loading="lazy"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen></iframe>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
