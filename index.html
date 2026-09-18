@@ -1,615 +1,909 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VipFirestorm // Next-Gen HUD Interface</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VipFirestorm — Командный центр</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Unbounded:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        :root {
-            --neon-gold: #ffb703;
-            --neon-cyan: #00f5d4;
-            --neon-red: #f72585;
-            --bg-deep: #050508;
-            --panel-bg: rgba(10, 10, 18, 0.82);
-            --border-glow: rgba(0, 245, 212, 0.3);
-        }
+:root {
+  --bg: #08050e;
+  --text: #f4ecff;
+  --text-dim: #a396b8;
+  --text-mute: #6d6280;
+  --line: rgba(255,255,255,0.07);
+  --surface: rgba(255,255,255,0.03);
+  --surface-hi: rgba(255,255,255,0.06);
+  --coral: #ff5c2b;
+  --amber: #ffb347;
+  --rose: #ff2e63;
+  --violet: #a259ff;
+}
 
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
+html { scroll-behavior: smooth; }
 
-        body, html {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Rajdhani', sans-serif;
-            background-color: var(--bg-deep);
-            color: #fff;
-        }
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Sora', system-ui, -apple-system, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
-        /* 100% НАДЕЖНЫЙ ФОН + ЭФФЕКТ КИНЕМАТОГРАФИЧНОГО ПАРАЛЛАКСА */
-        .absolute-bg-container {
-            position: fixed;
-            top: -10px;
-            left: -10px;
-            width: calc(100vw + 20px);
-            height: calc(100vh + 20px);
-            z-index: -999;
-            overflow: hidden;
-        }
+::selection { background: rgba(255,92,43,.35); color: #fff; }
 
-        .absolute-bg-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.5) contrast(1.2) saturate(1.1);
-            transform: scale(1.05);
-            transition: transform 0.2s ease-out;
-        }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,140,90,.18);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(255,140,90,.4); background-clip: content-box; }
 
-        .cyber-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-image: 
-                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            z-index: -998;
-            pointer-events: none;
-        }
+/* ============== ФОН ============== */
+.ambient {
+  position: fixed; inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: .45;
+  will-change: transform;
+}
+.b1 { width: 640px; height: 640px; background: #ff4d1e; top: -240px; left: -180px; animation: drift1 26s ease-in-out infinite; }
+.b2 { width: 540px; height: 540px; background: #7b2cff; bottom: -200px; right: -140px; animation: drift2 30s ease-in-out infinite; }
+.b3 { width: 480px; height: 480px; background: #ff2e63; top: 42%; left: 40%; opacity: .2; animation: drift3 34s ease-in-out infinite; }
 
-        /* ЧАСТИЦЫ МАГИИ (КАНВАС) */
-        #particleCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vw;
-            z-index: -997;
-            pointer-events: none;
-        }
+@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(140px,90px) scale(1.15)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-110px,-80px) scale(1.1)} }
+@keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-90px,110px) scale(.9)} }
 
-        /* ГЛАВНЫЙ СЕКРЕТНЫЙ ИНТЕРФЕЙС (КОСМОПОРТ / HUD) */
-        .app-wrapper {
-            width: 100vw;
-            height: 100vh;
-            display: grid;
-            grid-template-rows: 80px 1fr 60px;
-            grid-template-columns: 280px 1fr 320px;
-            grid-template-areas: 
-                "top top top"
-                "left center right"
-                "bottom bottom bottom";
-            padding: 20px;
-            gap: 20px;
-            backdrop-filter: blur(4px);
-        }
+.grain {
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: .05;
+  mix-blend-mode: overlay;
+}
 
-        /* ТОПБАР */
-        .hud-top {
-            grid-area: top;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(0, 245, 212, 0.1);
-            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+#embers {
+  position: fixed; inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+/* ============== СЕТКА ============== */
+.app {
+  position: relative;
+  z-index: 2;
+  min-height: 100vh;
+  padding: 24px 24px 24px 124px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-        .logo-icon {
-            width: 42px;
-            height: 42px;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-gold));
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            color: #000;
-            font-size: 1.2rem;
-            box-shadow: 0 0 15px var(--neon-cyan);
-            animation: pulseLogo 3s infinite alternate;
-        }
+/* ============== САЙДБАР ============== */
+.rail {
+  position: fixed;
+  top: 24px; left: 24px; bottom: 24px;
+  width: 76px;
+  z-index: 50;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(30,18,45,.72), rgba(12,6,22,.78));
+  border: 1px solid var(--line);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+  transition: width .45s cubic-bezier(.5,0,.15,1);
+}
 
-        @keyframes pulseLogo {
-            0% { box-shadow: 0 0 10px var(--neon-cyan); }
-            100% { box-shadow: 0 0 25px var(--neon-gold); }
-        }
+@media (hover: hover) {
+  .rail:hover { width: 250px; }
+  .rail:hover .nav-lbl,
+  .rail:hover .brand-txt,
+  .rail:hover .rail-foot-txt { opacity: 1; }
+}
 
-        .logo-text h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.4rem;
-            letter-spacing: 2px;
-            background: linear-gradient(90deg, #fff, var(--neon-cyan));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 8px 20px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 16px;
+  white-space: nowrap;
+}
+.brand-mark {
+  width: 40px; height: 40px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff5c2b, #ffb347);
+  display: grid; place-items: center;
+  box-shadow: 0 8px 24px rgba(255,92,43,.4), inset 0 1px 0 rgba(255,255,255,.35);
+  color: #1a0a05;
+}
+.brand-mark svg { width: 20px; height: 20px; }
+.brand-txt { opacity: 0; transition: opacity .3s .05s; }
+.brand-txt strong {
+  display: block;
+  font-family: 'Unbounded', sans-serif;
+  font-size: .92rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+.brand-txt span {
+  font-size: .68rem;
+  color: var(--text-mute);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
 
-        .logo-text span {
-            font-size: 0.8rem;
-            color: #8d99ae;
-            letter-spacing: 1px;
-        }
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  overflow: hidden;
+}
+.nav-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: 14px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all .25s;
+}
+.nav-item:hover {
+  background: var(--surface-hi);
+  color: var(--text);
+}
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(255,92,43,.18), rgba(255,46,99,.06));
+  border-color: rgba(255,140,90,.22);
+  color: #ffc7a3;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 22%; bottom: 22%;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, #ff5c2b, #ffb347);
+  box-shadow: 0 0 12px #ff5c2b;
+}
+.nav-ico {
+  width: 28px; height: 28px;
+  flex-shrink: 0;
+  display: grid; place-items: center;
+}
+.nav-ico svg { width: 19px; height: 19px; }
+.nav-lbl { opacity: 0; transition: opacity .3s .05s; }
 
-        .system-stats {
-            display: flex;
-            gap: 25px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-        }
+.rail-foot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 8px 4px;
+  border-top: 1px solid var(--line);
+  white-space: nowrap;
+}
+.pulse-dot {
+  width: 10px; height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: pulse 2s infinite;
+}
+.rail-foot-txt { opacity: 0; transition: opacity .3s .05s; font-size: .75rem; line-height: 1.3; }
+.rail-foot-txt b { display: block; color: var(--text); font-size: .8rem; font-weight: 600; }
+.rail-foot-txt span { color: var(--text-mute); }
 
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(74,222,128,.55); }
+  70% { box-shadow: 0 0 0 12px rgba(74,222,128,0); }
+  100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+}
 
-        .stat-item span:first-child { color: #8d99ae; font-size: 0.7rem; }
-        .stat-item span:last-child { color: var(--neon-cyan); font-weight: 700; text-shadow: 0 0 8px var(--border-glow); }
+/* ============== ОСНОВНАЯ ОБЛАСТЬ ============== */
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
 
-        /* ЛЕВАЯ ПАНЕЛЬ НАВИГАЦИИ */
-        .hud-left {
-            grid-area: left;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            animation: slideLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+/* ТОПБАР */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 22px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.025);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.crumb {
+  font-size: .78rem;
+  color: var(--text-mute);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.crumb b { color: var(--text); font-weight: 600; }
 
-        .nav-btn {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #ccd6f6;
-            padding: 14px 18px;
-            border-radius: 8px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-align: left;
-        }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 100px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--line);
+  font-size: .76rem;
+  color: var(--text-dim);
+  font-weight: 500;
+  letter-spacing: .02em;
+}
+.chip-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+  animation: pulse 2s infinite;
+}
 
-        .nav-btn:hover, .nav-btn.active {
-            background: rgba(0, 245, 212, 0.1);
-            border-color: var(--neon-cyan);
-            color: var(--neon-cyan);
-            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
-            transform: translateX(5px);
-        }
+/* HERO */
+.hero {
+  position: relative;
+  padding: 52px 48px 40px;
+  border-radius: 30px;
+  background:
+    radial-gradient(ellipse 720px 420px at 12% -10%, rgba(255,92,43,.22), transparent 65%),
+    radial-gradient(ellipse 620px 420px at 88% 110%, rgba(162,89,255,.18), transparent 65%),
+    rgba(255,255,255,.02);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 75%);
+  pointer-events: none;
+}
 
-        /* ЦЕНТРАЛЬНАЯ КОНСОЛЬ (ДИНАМИЧЕСКИЙ КОНТЕНТ) */
-        .hud-center {
-            grid-area: center;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 30px;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
-            animation: fadeInCenter 0.8s ease;
-        }
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  border-radius: 100px;
+  background: rgba(255,140,90,.08);
+  border: 1px solid rgba(255,140,90,.22);
+  font-size: .76rem;
+  color: #ffb37a;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  margin-bottom: 26px;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #ff5c2b;
+  box-shadow: 0 0 10px #ff5c2b;
+  animation: pulse 2s infinite;
+}
 
-        .content-panel {
-            display: none;
-            animation: fadeTab 0.4s ease-out forwards;
-        }
-        .content-panel.active {
-            display: block;
-        }
+.hero-title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2rem, 5.2vw, 3.6rem);
+  font-weight: 800;
+  letter-spacing: -.035em;
+  line-height: 1.03;
+  margin-bottom: 22px;
+}
+.hero-title .grad {
+  background: linear-gradient(110deg, #ff5c2b 0%, #ffb347 45%, #ff2e63 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
 
-        @keyframes fadeTab {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.hero-lead {
+  font-size: 1rem;
+  color: var(--text-dim);
+  max-width: 620px;
+  line-height: 1.7;
+  margin-bottom: 34px;
+}
 
-        .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 42px;
+}
 
-        .panel-title::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, var(--neon-cyan), transparent);
-        }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 14px;
+  font: inherit;
+  font-weight: 600;
+  font-size: .9rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all .25s cubic-bezier(.5,0,.2,1);
+  white-space: nowrap;
+  letter-spacing: .01em;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #ff5c2b, #ff9500);
+  color: #1a0a05;
+  box-shadow: 0 10px 32px rgba(255,92,43,.38), inset 0 1px 0 rgba(255,255,255,.45);
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 44px rgba(255,92,43,.55), inset 0 1px 0 rgba(255,255,255,.55);
+}
+.btn-ghost {
+  background: rgba(255,255,255,.04);
+  border-color: var(--line);
+  color: var(--text);
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,.08);
+  border-color: rgba(255,180,140,.3);
+  transform: translateY(-2px);
+}
+.btn svg { flex-shrink: 0; }
 
-        .panel-desc {
-            color: #8d99ae;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 56px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line);
+}
+.hs { min-width: 110px; }
+.hs b {
+  display: block;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  background: linear-gradient(135deg, #fff, #ffb37a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+.hs span {
+  font-size: .7rem;
+  color: var(--text-mute);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
 
-        /* КАРТОЧКИ ФИЧ В НОВОМ ДИЗАЙНЕ */
-        .feature-grid-matrix {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-        }
+/* ПАНЕЛИ */
+.panels { display: flex; flex-direction: column; gap: 20px; }
 
-        .matrix-card {
-            background: rgba(5, 5, 10, 0.6);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 10px;
-            padding: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
+.panel { display: none; }
+.panel.active { display: block; animation: fadeUp .55s cubic-bezier(.2,.9,.3,1); }
 
-        .matrix-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 3px; height: 100%;
-            background: var(--neon-cyan);
-            opacity: 0.5;
-            transition: opacity 0.3s;
-        }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
-        .matrix-card:hover {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 10px 30px rgba(0, 245, 212, 0.15);
-            transform: translateY(-4px);
-        }
-        .matrix-card:hover::before { opacity: 1; }
+.panel-head { margin-bottom: 26px; }
+.panel-head h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -.025em;
+  margin-bottom: 10px;
+}
+.panel-head p {
+  color: var(--text-dim);
+  max-width: 680px;
+  line-height: 1.65;
+  font-size: .95rem;
+}
 
-        .matrix-card h4 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            margin-bottom: 8px;
-            color: var(--neon-gold);
-        }
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
 
-        .matrix-card p {
-            font-size: 0.95rem;
-            color: #a0aec0;
-            line-height: 1.5;
-        }
+.card {
+  position: relative;
+  padding: 26px;
+  border-radius: 22px;
+  background: linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.012));
+  border: 1px solid var(--line);
+  overflow: hidden;
+  transition: all .35s cubic-bezier(.5,0,.2,1);
+}
+.card::after {
+  content: '';
+  position: absolute;
+  top: -60%; right: -30%;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(255,92,43,.32), transparent 60%);
+  opacity: 0;
+  transition: opacity .4s;
+  pointer-events: none;
+}
+.card:hover {
+  border-color: rgba(255,150,100,.28);
+  background: linear-gradient(160deg, rgba(255,140,90,.08), rgba(255,255,255,.02));
+  transform: translateY(-4px);
+  box-shadow: 0 24px 48px rgba(0,0,0,.45), 0 0 0 1px rgba(255,150,100,.12);
+}
+.card:hover::after { opacity: 1; }
 
-        /* ПРАВАЯ ПАНЕЛЬ (ТЕЛЕМЕТРИЯ И КНОПКА СКАЧИВАНИЯ) */
-        .hud-right {
-            grid-area: right;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-            animation: slideRight 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-        }
+.card-ico {
+  width: 46px; height: 46px;
+  border-radius: 13px;
+  display: grid; place-items: center;
+  background: rgba(255,140,90,.1);
+  border: 1px solid rgba(255,140,90,.2);
+  color: #ffb37a;
+  font-size: 1.15rem;
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+.card h3 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -.015em;
+  margin-bottom: 10px;
+  color: var(--text);
+  position: relative;
+  z-index: 1;
+}
+.card p {
+  color: var(--text-dim);
+  font-size: .88rem;
+  line-height: 1.65;
+  position: relative;
+  z-index: 1;
+}
+.card code {
+  font-family: 'Sora', monospace;
+  background: rgba(255,140,90,.12);
+  border: 1px solid rgba(255,140,90,.2);
+  color: #ffb37a;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: .82rem;
+}
 
-        .download-box {
-            text-align: center;
-            background: linear-gradient(135deg, rgba(0, 245, 212, 0.1), rgba(255, 183, 3, 0.05));
-            border: 1px solid var(--neon-cyan);
-            border-radius: 10px;
-            padding: 25px 15px;
-            box-shadow: inset 0 0 20px rgba(0, 245, 212, 0.1);
-        }
+/* ФУТЕР */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 24px;
+  border-radius: 20px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--line);
+  font-size: .76rem;
+  color: var(--text-mute);
+  letter-spacing: .05em;
+  flex-wrap: wrap;
+}
+.footer-status { display: inline-flex; align-items: center; gap: 10px; }
+.footer-status::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 8px #4ade80;
+}
 
-        .dl-btn {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, var(--neon-cyan), #0077b6);
-            color: #000;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            padding: 16px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
-            transition: all 0.3s ease;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
+/* ============== МОБИЛЬНАЯ ВЕРСИЯ ============== */
+@media (max-width: 860px) {
+  .app { padding: 16px 16px 110px; }
 
-        .dl-btn:hover {
-            background: linear-gradient(135deg, #fff, var(--neon-cyan));
-            box-shadow: 0 0 35px var(--neon-cyan);
-            transform: scale(1.03);
-        }
+  .rail {
+    top: auto;
+    left: 16px; right: 16px; bottom: 16px;
+    width: auto;
+    height: 72px;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 22px;
+  }
+  @media (hover: hover) {
+    .rail:hover { width: auto; }
+  }
+  .brand { padding: 0 12px 0 0; border-bottom: none; border-right: 1px solid var(--line); margin: 0 8px 0 0; }
+  .brand-txt { display: none; }
+  .nav { flex-direction: row; flex: 1; justify-content: space-around; gap: 4px; overflow: visible; }
+  .nav-item { padding: 10px; }
+  .nav-item.active::before { display: none; }
+  .nav-lbl { display: none; }
+  .rail-foot { display: none; }
 
-        /* НИЖНИЙ СТАТУС БАР */
-        .hud-bottom {
-            grid-area: bottom;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 25px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.75rem;
-            color: #8d99ae;
-        }
+  .topbar { padding: 12px 16px; }
+  .crumb { font-size: .7rem; }
+  .chips { gap: 6px; }
+  .chip { padding: 6px 10px; font-size: .7rem; }
+  .chip:nth-child(3) { display: none; }
 
-        .terminal-log {
-            color: var(--neon-cyan);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+  .hero { padding: 34px 26px 28px; border-radius: 24px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .btn { justify-content: center; }
+  .hero-stats { gap: 18px 32px; }
 
-        .terminal-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--neon-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--neon-cyan);
-            animation: blink 1.5s infinite;
-        }
-
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.2; }
-        }
-
-        @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes slideLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeInCenter { from { transform: scale(0.97); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* АДАПТИВНОСТЬ ПОД МОБИЛКИ */
-        @media(max-width: 900px) {
-            .app-wrapper {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto auto auto auto;
-                grid-template-areas: "top" "center" "left" "right";
-                overflow-y: auto;
-                height: auto;
-            }
-            body, html { overflow-y: auto; }
-        }
-    </style>
+  .cards { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
 
-    <!-- ФОН (абсолютная страховка) -->
-    <div class="absolute-bg-container">
-        <img src="background.jpg" alt="Background HUD Image" id="bgImage">
-    </div>
-    <div class="cyber-grid"></div>
-    <canvas id="particleCanvas"></canvas>
+  <div class="ambient">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="grain"></div>
+  </div>
+  <canvas id="embers"></canvas>
 
-    <!-- ИНТЕРФЕЙС ПРИЛОЖЕНИЯ -->
-    <div class="app-wrapper">
+  <div class="app">
 
-        <!-- ТОПБАР -->
-        <header class="hud-top">
-            <div class="logo-area">
-                <div class="logo-icon">VF</div>
-                <div class="logo-text">
-                    <h1>VIP FIRESTORM</h1>
-                    <span>EXPILLEAR PROJECT // v3.4 CORE</span>
-                </div>
-            </div>
-            <div class="system-stats">
-                <div class="stat-item">
-                    <span>STATUS</span>
-                    <span>ONLINE [99.8%]</span>
-                </div>
-                <div class="stat-item">
-                    <span>LATENCY</span>
-                    <span>14ms</span>
-                </div>
-                <div class="stat-item">
-                    <span>CORE</span>
-                    <span>STABLE</span>
-                </div>
-            </div>
-        </header>
+    <!-- ============ САЙДБАР ============ -->
+    <aside class="rail">
+      <div class="brand">
+        <div class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2L22 12L12 22L2 12L12 2Z" opacity=".28"/>
+            <path d="M12 7L17 12L12 17L7 12L12 7Z"/>
+          </svg>
+        </div>
+        <div class="brand-txt">
+          <strong>Firestorm</strong>
+          <span>VIP Core v3.4</span>
+        </div>
+      </div>
 
-        <!-- ЛЕВАЯ НАВИГАЦИЯ -->
-        <nav class="hud-left">
-            <button class="nav-btn active" onclick="switchPanel('features', this)">⚡ Модули системы</button>
-            <button class="nav-btn" onclick="switchPanel('teleport', this)">🗺️ Телепортация</button>
-            <button class="nav-btn" onclick="switchPanel('automation', this)">🤖 Автоматизация</button>
-            <button class="nav-btn" onclick="switchPanel('commands', this)">💻 Слэш-команды</button>
-        </nav>
+      <nav class="nav">
+        <button class="nav-item active" onclick="switchTab('features', this)">
+          <span class="nav-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+          </span>
+          <span class="nav-lbl">Модули системы</span>
+        </button>
 
-        <!-- ЦЕНТРАЛЬНАЯ КОНСОЛЬ -->
-        <main class="hud-center">
-            
-            <!-- ВКЛАДКА 1: ФИЧИ -->
-            <div id="panel-features" class="content-panel active">
-                <h2 class="panel-title">Модули аддона</h2>
-                <p class="panel-desc">Передовая сборка скриптов для максимального комфорта в World of Warcraft Firestorm. Полный контроль над игровыми механиками без просадки FPS.</p>
-                
-                <div class="feature-grid-matrix">
-                    <div class="matrix-card">
-                        <h4>Классовый Телепорт</h4>
-                        <p>Интерфейс мгновенного доступа ко всем ключевым точкам мира под специализацию вашего персонажа.</p>
-                    </div>
-                    <div class="matrix-card">
-                        <h4>Авто-прием ПМ</h4>
-                        <p>Интеллектуальная система приема в группу по ключевым словам в личных сообщениях с фильтрацией спама.</p>
-                    </div>
-                    <div class="matrix-card">
-                        <h4>FastReparty</h4>
-                        <p>Мгновенный перезапуск рейдовых групп одной кнопкой с сохранением состава.</p>
-                    </div>
-                    <div class="matrix-card">
-                        <h4>Лот-контроль</h4>
-                        <p>Автоматическая очистка почты, сбор золота и быстрый менеджмент сумок в один клик.</p>
-                    </div>
-                </div>
-            </div>
+        <button class="nav-item" onclick="switchTab('teleport', this)">
+          <span class="nav-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="9"/>
+              <circle cx="12" cy="12" r="3.2"/>
+              <path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+            </svg>
+          </span>
+          <span class="nav-lbl">Телепортация</span>
+        </button>
 
-            <!-- ВКЛАДКА 2: ТЕЛЕПОРТАЦИЯ -->
-            <div id="panel-teleport" class="content-panel">
-                <h2 class="panel-title">Система Телепортации</h2>
-                <p class="panel-desc">Быстрый переход между локациями дополнений. Забудьте про долгое ожидание и поиск порталов в столицах.</p>
-                <div class="feature-grid-matrix">
-                    <div class="matrix-card">
-                        <h4>Штормград / Огриммар</h4>
-                        <p>Моментальный прыжок к основным вендорам и аукционам.</p>
-                    </div>
-                    <div class="matrix-card">
-                        <h4>Зоны актуальных патчей</h4>
-                        <p>Прямой доступ к локациям текущего контента Firestorm.</p>
-                    </div>
-                </div>
-            </div>
+        <button class="nav-item" onclick="switchTab('automation', this)">
+          <span class="nav-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/>
+            </svg>
+          </span>
+          <span class="nav-lbl">Автоматизация</span>
+        </button>
 
-            <!-- ВКЛАДКА 3: АВТОМАТИЗАЦИЯ -->
-            <div id="panel-automation" class="content-panel">
-                <h2 class="panel-title">Модули Автоматизации</h2>
-                <p class="panel-desc">Скрипты, ускоряющие рутинные действия в рейдах и подземельях на 300%.</p>
-                <div class="feature-grid-matrix">
-                    <div class="matrix-card">
-                        <h4>Авто-приглашение</h4>
-                        <p>Активация по фразам: <code>+</code>, <code>inv</code>, <code>инв</code>.</p>
-                    </div>
-                    <div class="matrix-card">
-                        <h4>Умный Ресет</h4>
-                        <p>Мгновенный сброс подземелий в пати-моде.</p>
-                    </div>
-                </div>
-            </div>
+        <button class="nav-item" onclick="switchTab('commands', this)">
+          <span class="nav-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="16" rx="2.5"/>
+              <path d="M7 9l3 3-3 3M13 15h4"/>
+            </svg>
+          </span>
+          <span class="nav-lbl">Команды</span>
+        </button>
+      </nav>
 
-            <!-- ВКЛАДКА 4: КОМАНДЫ -->
-            <div id="panel-commands" class="content-panel">
-                <h2 class="panel-title">Интерфейсные Команды</h2>
-                <p class="panel-desc">Список консольных команд для управления аддоном прямо из чата игры:</p>
-                <div class="feature-grid-matrix">
-                    <div class="matrix-card">
-                        <h4>/vf или /vipf</h4>
-                        <p>Открытие главного графического меню телепортации.</p>
-                    </div>
-                    <div class="matrix-card">
-                        <h4>/freparty</h4>
-                        <p>Мгновенное пересоздание рейдовой группы.</p>
-                    </div>
-                </div>
-            </div>
+      <div class="rail-foot">
+        <div class="pulse-dot"></div>
+        <div class="rail-foot-txt">
+          <b>Онлайн</b>
+          <span>Синхронизировано</span>
+        </div>
+      </div>
+    </aside>
 
-        </main>
+    <!-- ============ ОСНОВНАЯ ОБЛАСТЬ ============ -->
+    <main class="main">
 
-        <!-- ПРАВАЯ ПАНЕЛЬ -->
-        <aside class="hud-right">
-            <div>
-                <h3 style="font-family:'Orbitron',sans-serif; font-size:1rem; margin-bottom:15px; color:var(--neon-gold);">ТЕЛЕМЕТРИЯ СЕТИ</h3>
-                <p style="font-size:0.85rem; color:#8d99ae; line-height:1.5; margin-bottom: 20px;">Пакеты данных синхронизированы с серверами Firestorm. Угрозы вредоносного ПО не обнаружены.</p>
-            </div>
-            
-            <div class="download-box">
-                <span style="font-family:'Orbitron',sans-serif; font-size:0.75rem; color:var(--neon-cyan);">READY FOR DEPLOYMENT</span>
-                <a href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing" target="_blank" class="dl-btn">📥 СКАЧАТЬ АДДОН</a>
-            </div>
-        </aside>
+      <header class="topbar">
+        <div class="crumb">Firestorm · <b>Командный центр</b></div>
+        <div class="chips">
+          <div class="chip"><span class="chip-dot"></span>Online</div>
+          <div class="chip">Ping 14ms</div>
+          <div class="chip">Core Stable</div>
+        </div>
+      </header>
 
-        <!-- НИЖНИЙ БАР -->
-        <footer class="hud-bottom">
-            <div class="terminal-log">
-                <div class="terminal-dot"></div>
-                <span>SYSTEM CORE: background.jpg successfully bound to viewport layer.</span>
-            </div>
-            <div>EXPILLEAR SYSTEMS &copy; 2026</div>
-        </footer>
+      <!-- HERO -->
+      <section class="hero">
+        <span class="hero-eyebrow">Эксклюзивная сборка · Firestorm</span>
+        <h1 class="hero-title">
+          Командный центр<br>
+          <span class="grad">VIP Firestorm</span>
+        </h1>
+        <p class="hero-lead">
+          Комплексный интерфейс для мгновенной телепортации, автоматизации рейдов и умного управления группами. Построен для максимальной скорости и стабильности — без просадок FPS и лишних кликов.
+        </p>
 
-    </div>
+        <div class="hero-actions">
+          <a class="btn btn-primary"
+             href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing"
+             target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            Скачать сборку
+          </a>
+          <button class="btn btn-ghost" onclick="switchTab('commands', document.querySelectorAll('.nav-item')[3])">
+            Список команд
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
+          </button>
+        </div>
 
-    <!-- СКРИПТЫ ИНТЕРАКТИВА (ПЕРЕКЛЮЧАТЕЛИ И ЧАСТИЦЫ) -->
-    <script>
-        function switchPanel(panelId, btnElement) {
-            // Переключение вкладок
-            document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById('panel-' + panelId).classList.add('active');
+        <div class="hero-stats">
+          <div class="hs"><b>99.8%</b><span>Аптайм ядра</span></div>
+          <div class="hs"><b>14ms</b><span>Пинг до сервера</span></div>
+          <div class="hs"><b>v3.4</b><span>Версия ядра</span></div>
+          <div class="hs"><b>24/7</b><span>Синхронизация</span></div>
+        </div>
+      </section>
 
-            // Переключение стилей кнопок
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
+      <!-- ПАНЕЛИ -->
+      <section class="panels">
+
+        <!-- МОДУЛИ -->
+        <div class="panel active" id="panel-features">
+          <div class="panel-head">
+            <h2>Модули системы</h2>
+            <p>Передовая сборка скриптов для максимального комфорта в World of Warcraft Firestorm. Полный контроль над игровыми механиками — от телепортации до лот-контроля.</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <div class="card-ico">◈</div>
+              <h3>Классовый телепорт</h3>
+              <p>Интерфейс мгновенного доступа ко всем ключевым точкам мира под специализацию вашего персонажа.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">✉</div>
+              <h3>Авто-приём ПМ</h3>
+              <p>Интеллектуальная система приёма в группу по ключевым словам в личных сообщениях с фильтрацией спама.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">⟳</div>
+              <h3>FastReparty</h3>
+              <p>Мгновенный перезапуск рейдовых групп одной кнопкой с полным сохранением состава.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">⛁</div>
+              <h3>Лот-контроль</h3>
+              <p>Автоматическая очистка почты, сбор золота и быстрый менеджмент сумок в один клик.</p>
+            </article>
+          </div>
+        </div>
+
+        <!-- ТЕЛЕПОРТ -->
+        <div class="panel" id="panel-teleport">
+          <div class="panel-head">
+            <h2>Система телепортации</h2>
+            <p>Быстрый переход между локациями дополнений. Забудьте про долгое ожидание и поиск порталов в столицах.</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <div class="card-ico">⬢</div>
+              <h3>Штормград / Огриммар</h3>
+              <p>Моментальный прыжок к основным вендорам, аукционам и банковским слотам вашей фракции.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">✦</div>
+              <h3>Актуальные зоны</h3>
+              <p>Прямой доступ к локациям текущего контента Firestorm без промежуточных точек.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">◉</div>
+              <h3>Рейдовые порталы</h3>
+              <p>Быстрое перемещение ко входам рейдов и подземелий актуального сезона.</p>
+            </article>
+          </div>
+        </div>
+
+        <!-- АВТОМАТИЗАЦИЯ -->
+        <div class="panel" id="panel-automation">
+          <div class="panel-head">
+            <h2>Модули автоматизации</h2>
+            <p>Скрипты, ускоряющие рутинные действия в рейдах и подземельях. Настройте один раз — работает каждый день.</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <div class="card-ico">⚡</div>
+              <h3>Авто-приглашение</h3>
+              <p>Активация по фразам <code>+</code> <code>inv</code> <code>инв</code> с настраиваемым списком ключевых слов.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">⟳</div>
+              <h3>Умный ресет</h3>
+              <p>Мгновенный сброс подземелий в пати-моде с автоматическим подтверждением.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">⌘</div>
+              <h3>Менеджер группы</h3>
+              <p>Автоматическое назначение ролей, исключение неактивных игроков и приглашение замен.</p>
+            </article>
+          </div>
+        </div>
+
+        <!-- КОМАНДЫ -->
+        <div class="panel" id="panel-commands">
+          <div class="panel-head">
+            <h2>Интерфейсные команды</h2>
+            <p>Список консольных команд для управления аддоном прямо из чата игры. Все команды работают без открытия меню.</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <div class="card-ico">⌘</div>
+              <h3>/vf или /vipf</h3>
+              <p>Открытие главного графического меню телепортации.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">⟳</div>
+              <h3>/freparty</h3>
+              <p>Мгновенное пересоздание рейдовой группы с сохранением состава.</p>
+            </article>
+            <article class="card">
+              <div class="card-ico">⚡</div>
+              <h3>/vfa</h3>
+              <p>Открытие панели автоматизации и фильтров авто-приглашения.</p>
+            </article>
+          </div>
+        </div>
+
+      </section>
+
+      <footer class="footer">
+        <span>EXPILLEAR SYSTEMS © 2026</span>
+        <span class="footer-status">Все системы работают штатно</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    /* Переключение панелей */
+    function switchTab(id, el) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('panel-' + id);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      if (el && el.classList) el.classList.add('active');
+    }
+
+    /* Уголёк-частицы */
+    const canvas = document.getElementById('embers');
+    const ctx = canvas.getContext('2d');
+    let W = 0, H = 0;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    function spawnEmber(fromBottom) {
+      return {
+        x: Math.random() * W,
+        y: fromBottom ? H + Math.random() * 120 : Math.random() * H,
+        r: Math.random() * 2 + 0.6,
+        vy: -(0.2 + Math.random() * 0.7),
+        vx: (Math.random() - 0.5) * 0.35,
+        hue: 15 + Math.random() * 30,
+        alpha: 0.25 + Math.random() * 0.5,
+        flick: Math.random() * Math.PI * 2
+      };
+    }
+
+    const embers = [];
+    const COUNT = Math.min(70, Math.floor(window.innerWidth / 22));
+    for (let i = 0; i < COUNT; i++) embers.push(spawnEmber(false));
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+
+      for (const e of embers) {
+        e.flick += 0.05;
+        const a = e.alpha * (0.65 + 0.35 * Math.sin(e.flick));
+
+        const grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 6);
+        grd.addColorStop(0, `hsla(${e.hue}, 100%, 68%, ${a})`);
+        grd.addColorStop(1, `hsla(${e.hue}, 100%, 50%, 0)`);
+        ctx.fillStyle = grd;
+
+        ctx.beginPath();
+        ctx.arc(e.x, e.y, e.r * 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        e.x += e.vx;
+        e.y += e.vy;
+
+        if (e.y < -20 || e.x < -30 || e.x > W + 30) {
+          Object.assign(e, spawnEmber(true));
         }
+      }
 
-        // Параллакс эффект для фона от движения мыши
-        document.addEventListener('mousemove', (e) => {
-            const bg = document.getElementById('bgImage');
-            const x = (e.clientX / window.innerWidth - 0.5) * 20;
-            const y = (e.clientY / window.innerHeight - 0.5) * 20;
-            bg.style.transform = `scale(1.08) translate(${x}px, ${y}px)`;
-        });
-
-        // Анимация магических частиц на Canvas
-        const canvas = document.getElementById('particleCanvas');
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-
-        const particles = [];
-        for(let i = 0; i < 40; i++) {
-            particles.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                size: Math.random() * 2 + 0.5,
-                speedY: Math.random() * 0.5 + 0.2,
-                opacity: Math.random() * 0.5 + 0.2
-            });
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(0, 245, 212, 0.6)';
-            
-            particles.forEach(p => {
-                ctx.globalAlpha = p.opacity;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
-                
-                p.y -= p.speedY;
-                if(p.y < 0) {
-                    p.y = canvas.height;
-                    p.x = Math.random() * canvas.width;
-                }
-            });
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
-    </script>
+      requestAnimationFrame(draw);
+    }
+    draw();
+  </script>
 </body>
 </html>
