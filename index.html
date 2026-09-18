@@ -244,6 +244,8 @@ body {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   flex-wrap: wrap;
+  position: relative;
+  z-index: 200;
 }
 .crumb {
   font-size: .78rem;
@@ -348,7 +350,6 @@ body {
 }
 .music-btn svg { width: 16px; height: 16px; }
 
-/* Плавающий тумблер громкости */
 .volume-popup {
   position: absolute;
   top: calc(100% + 12px);
@@ -371,10 +372,9 @@ body {
   transform: translateY(-8px) scale(.96);
   transform-origin: top right;
   transition: opacity .25s ease, transform .25s cubic-bezier(.2,.9,.3,1.15), visibility 0s linear .25s;
-  z-index: 120;
+  z-index: 9999;
   pointer-events: none;
 }
-/* мостик, чтобы мышь не теряла hover при переходе */
 .volume-popup::before {
   content: '';
   position: absolute;
@@ -841,7 +841,6 @@ body {
   box-shadow: 0 0 0 3px rgba(255,46,99,.14);
 }
 
-/* Звёзды */
 .star-picker {
   display: flex;
   gap: 6px;
@@ -909,7 +908,6 @@ body {
   color: #ffb0c7;
 }
 
-/* Список отзывов */
 .reviews-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1092,7 +1090,6 @@ body {
   .video-frame { padding: 8px; border-radius: 18px; }
   .video-embed { border-radius: 12px; }
   .reviews-list { grid-template-columns: 1fr; }
-  /* На мобилке ползунок тоже показываем при фокусе/нажатии */
   .volume-popup { right: -4px; }
   .volume-slider { width: 90px; }
 }
@@ -1242,7 +1239,6 @@ body {
               </svg>
             </button>
 
-            <!-- Плавающий тумблер громкости -->
             <div class="volume-popup" id="volumePopup">
               <span class="volume-icon" id="volumeIcon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1373,7 +1369,6 @@ body {
           </div>
         </div>
 
-        <!-- ОТЗЫВЫ -->
         <div class="panel" id="panel-reviews">
           <div class="panel-head">
             <h2>Отзывы игроков</h2>
@@ -1382,14 +1377,13 @@ body {
 
           <div class="reviews-layout">
 
-            <!-- Форма -->
             <form class="review-form-card" id="reviewForm" novalidate>
               <div class="review-form-title">Оставить отзыв</div>
               <div class="review-form-hint">Все поля со звёздочкой обязательны для заполнения.</div>
 
               <div class="form-field">
                 <label for="reviewName">Имя <span class="req">*</span></label>
-                <input type="text" id="reviewName" name="name" placeholder="Как тебя зовут?" maxlength="40" autocomplete="off">
+                <input type="text" id="reviewName" name="name" placeholder="Твой ник" maxlength="40" autocomplete="off">
               </div>
 
               <div class="form-field">
@@ -1414,7 +1408,6 @@ body {
               <div class="form-message" id="formMsg"></div>
             </form>
 
-            <!-- Список отзывов -->
             <div class="reviews-list" id="reviewsList">
               <div class="reviews-empty">
                 <b>Пока отзывов нет</b>
@@ -1534,8 +1527,6 @@ body {
       }
     }
 
-    /* ---- Обработка тумблера громкости ---- */
-    // Восстановление сохранённой громкости
     const savedVol = parseInt(localStorage.getItem('vf_music_volume') || '50', 10);
     const initVol = isNaN(savedVol) ? 50 : Math.max(0, Math.min(100, savedVol));
     volumeSlider.value = initVol;
@@ -1549,7 +1540,6 @@ body {
       localStorage.setItem('vf_music_volume', String(v));
       updateWaveIcon(v);
     });
-    // Запрещаем клику по слайдеру улетать в музыку-кнопку
     volumeSlider.addEventListener('click', (e) => e.stopPropagation());
     volumeSlider.addEventListener('pointerdown', (e) => e.stopPropagation());
 
@@ -1567,7 +1557,6 @@ body {
     }
     updateWaveIcon(initVol);
 
-    /* ---- Разблокировка / автоплей ---- */
     let audioCtx = null;
     try {
       const AC = window.AudioContext || window.webkitAudioContext;
@@ -1706,7 +1695,7 @@ body {
     }
 
     /* ============================================================
-       ОТЗЫВЫ — форма, звёзды, localStorage
+       ОТЗЫВЫ
        ============================================================ */
     const REVIEWS_KEY = 'vf_reviews_v1';
 
@@ -1719,7 +1708,6 @@ body {
     const reviewsList = document.getElementById('reviewsList');
     const formMsg = document.getElementById('formMsg');
 
-    // --- Логика звёзд ---
     let currentRating = 0;
 
     function paintStars(value, cls) {
@@ -1732,7 +1720,6 @@ body {
     starBtns.forEach(btn => {
       btn.addEventListener('mouseenter', () => {
         const v = parseInt(btn.dataset.v, 10);
-        // Прелоад-подсветка
         starBtns.forEach(b => {
           const bv = parseInt(b.dataset.v, 10);
           b.classList.toggle('preview', bv <= v);
@@ -1752,7 +1739,6 @@ body {
       starBtns.forEach(b => b.classList.remove('preview'));
     });
 
-    // --- Работа с хранилищем ---
     function loadReviews() {
       try {
         const raw = localStorage.getItem(REVIEWS_KEY);
@@ -1810,7 +1796,6 @@ body {
           </article>`;
       }).join('');
 
-      // Удаление
       reviewsList.querySelectorAll('.review-delete').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.dataset.del;
@@ -1833,7 +1818,6 @@ body {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      // Очищаем ошибки
       nameInput.classList.remove('error');
       textInput.classList.remove('error');
 
@@ -1871,7 +1855,6 @@ body {
       saveReviews(list);
       renderReviews();
 
-      // Сброс формы
       form.reset();
       currentRating = 0;
       ratingInput.value = 0;
@@ -1881,7 +1864,6 @@ body {
       console.log('[Reviews] Добавлен отзыв:', review);
     });
 
-    // Изначальный рендер
     renderReviews();
   </script>
 </body>
