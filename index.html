@@ -3,25 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VipFirestorm — Командный центр</title>
+<title>VipFirestorm — Уникальный аддон для сервера Firestorm</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Unbounded:wght@500;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #08050e;
-  --text: #f4ecff;
-  --text-dim: #a396b8;
-  --text-mute: #6d6280;
-  --line: rgba(255,255,255,0.07);
-  --surface: rgba(255,255,255,0.03);
-  --surface-hi: rgba(255,255,255,0.06);
-  --coral: #ff5c2b;
-  --amber: #ffb347;
-  --rose: #ff2e63;
-  --violet: #a259ff;
+  --bg: #08080d;
+  --bg-2: #0c0b12;
+
+  --gold: #d4af37;
+  --gold-hi: #f4dd8a;
+  --gold-lo: #8a6d1c;
+  --gold-deep: #5c4712;
+  --gold-glow: rgba(212,175,55,.35);
+  --gold-soft: rgba(212,175,55,.12);
+
+  --arcane: #6db8ff;
+  --arcane-dk: #2c5fa8;
+  --ember: #ff8c42;
+  --rose: #c44569;
+
+  --text: #ebe0c4;
+  --text-dim: #a89a77;
+  --text-mute: #6a6048;
+
+  --line: rgba(212,175,55,0.14);
+  --line-hi: rgba(212,175,55,0.32);
 }
 
 html { scroll-behavior: smooth; }
@@ -37,17 +47,17 @@ body {
   overflow-x: hidden;
 }
 
-::selection { background: rgba(255,92,43,.35); color: #fff; }
+::selection { background: rgba(212,175,55,.35); color: #fff; }
 
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255,140,90,.18);
+  background: rgba(212,175,55,.2);
   border-radius: 20px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,140,90,.4); background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(212,175,55,.45); background-clip: content-box; }
 
 /* ============== ФОН ============== */
 .ambient {
@@ -59,22 +69,22 @@ body {
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(140px);
-  opacity: .45;
+  filter: blur(150px);
+  opacity: .42;
   will-change: transform;
 }
-.b1 { width: 640px; height: 640px; background: #ff4d1e; top: -240px; left: -180px; animation: drift1 26s ease-in-out infinite; }
-.b2 { width: 540px; height: 540px; background: #7b2cff; bottom: -200px; right: -140px; animation: drift2 30s ease-in-out infinite; }
-.b3 { width: 480px; height: 480px; background: #ff2e63; top: 42%; left: 40%; opacity: .2; animation: drift3 34s ease-in-out infinite; }
+.b1 { width: 660px; height: 660px; background: #b8860b; top: -240px; left: -180px; animation: drift1 28s ease-in-out infinite; }
+.b2 { width: 560px; height: 560px; background: #2c5fa8; bottom: -220px; right: -160px; opacity: .38; animation: drift2 32s ease-in-out infinite; }
+.b3 { width: 480px; height: 480px; background: #8a2a3a; top: 45%; left: 42%; opacity: .22; animation: drift3 36s ease-in-out infinite; }
 
-@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(140px,90px) scale(1.15)} }
-@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-110px,-80px) scale(1.1)} }
-@keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-90px,110px) scale(.9)} }
+@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(150px,90px) scale(1.15)} }
+@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-120px,-90px) scale(1.1)} }
+@keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-90px,120px) scale(.9)} }
 
 .grain {
   position: absolute; inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: .05;
+  opacity: .06;
   mix-blend-mode: overlay;
 }
 
@@ -101,21 +111,33 @@ body {
   top: 24px; left: 24px; bottom: 24px;
   width: 76px;
   z-index: 50;
-  border-radius: 24px;
-  background: linear-gradient(180deg, rgba(30,18,45,.72), rgba(12,6,22,.78));
-  border: 1px solid var(--line);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(28,22,10,.82), rgba(10,8,4,.9));
+  border: 1px solid var(--line-hi);
   backdrop-filter: blur(24px) saturate(1.4);
   -webkit-backdrop-filter: blur(24px) saturate(1.4);
   display: flex;
   flex-direction: column;
   padding: 16px 12px;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
+  box-shadow:
+    0 24px 60px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(212,175,55,.18),
+    inset 0 0 60px rgba(212,175,55,.04);
   transition: width .45s cubic-bezier(.5,0,.15,1);
+}
+.rail::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 16px;
+  border: 1px solid rgba(212,175,55,.08);
+  pointer-events: none;
 }
 
 @media (hover: hover) {
-  .rail:hover { width: 250px; }
+  .rail:hover { width: 254px; }
   .rail:hover .nav-lbl,
   .rail:hover .brand-txt,
   .rail:hover .rail-foot-txt { opacity: 1; }
@@ -131,27 +153,36 @@ body {
   white-space: nowrap;
 }
 .brand-mark {
-  width: 40px; height: 40px;
+  width: 42px; height: 42px;
   flex-shrink: 0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #ff5c2b, #ffb347);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 30% 25%, #f4dd8a, #d4af37 45%, #8a6d1c 100%);
   display: grid; place-items: center;
-  box-shadow: 0 8px 24px rgba(255,92,43,.4), inset 0 1px 0 rgba(255,255,255,.35);
-  color: #1a0a05;
+  box-shadow:
+    0 8px 24px rgba(212,175,55,.4),
+    inset 0 1px 0 rgba(255,255,255,.5),
+    inset 0 -2px 6px rgba(0,0,0,.3);
+  color: #2a1e07;
+  border: 1px solid #f4dd8a;
 }
-.brand-mark svg { width: 20px; height: 20px; }
+.brand-mark svg { width: 22px; height: 22px; }
 .brand-txt { opacity: 0; transition: opacity .3s .05s; }
 .brand-txt strong {
   display: block;
-  font-family: 'Unbounded', sans-serif;
-  font-size: .92rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: -.02em;
+  letter-spacing: .02em;
+  background: linear-gradient(180deg, #f4dd8a, #d4af37 60%, #8a6d1c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .brand-txt span {
-  font-size: .68rem;
+  font-size: .66rem;
   color: var(--text-mute);
-  letter-spacing: .12em;
+  letter-spacing: .15em;
   text-transform: uppercase;
 }
 
@@ -168,7 +199,7 @@ body {
   align-items: center;
   gap: 14px;
   padding: 12px;
-  border-radius: 14px;
+  border-radius: 12px;
   background: transparent;
   border: 1px solid transparent;
   color: var(--text-dim);
@@ -181,13 +212,15 @@ body {
   transition: all .25s;
 }
 .nav-item:hover {
-  background: var(--surface-hi);
+  background: rgba(212,175,55,.06);
   color: var(--text);
+  border-color: rgba(212,175,55,.12);
 }
 .nav-item.active {
-  background: linear-gradient(135deg, rgba(255,92,43,.18), rgba(255,46,99,.06));
-  border-color: rgba(255,140,90,.22);
-  color: #ffc7a3;
+  background: linear-gradient(135deg, rgba(212,175,55,.16), rgba(184,134,11,.06));
+  border-color: rgba(212,175,55,.28);
+  color: var(--gold-hi);
+  box-shadow: inset 0 0 20px rgba(212,175,55,.06);
 }
 .nav-item.active::before {
   content: '';
@@ -195,8 +228,8 @@ body {
   left: 0; top: 22%; bottom: 22%;
   width: 3px;
   border-radius: 0 3px 3px 0;
-  background: linear-gradient(180deg, #ff5c2b, #ffb347);
-  box-shadow: 0 0 12px #ff5c2b;
+  background: linear-gradient(180deg, #f4dd8a, #d4af37);
+  box-shadow: 0 0 12px var(--gold);
 }
 .nav-ico {
   width: 28px; height: 28px;
@@ -218,18 +251,22 @@ body {
   width: 10px; height: 10px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: var(--amber);
+  background: var(--gold);
   animation: pulse 2s infinite;
 }
-.rail-foot-txt { opacity: 0; transition: opacity .3s .05s; font-size: .75rem; line-height: 1.3; }
-.rail-foot-txt b { display: block; color: var(--text); font-size: .8rem; font-weight: 600; }
-.rail-foot-txt b [data-count] { color: #ffb37a; }
+.rail-foot-txt { opacity: 0; transition: opacity .3s .05s; font-size: .72rem; line-height: 1.3; }
+.rail-foot-txt b { display: block; color: var(--text); font-size: .78rem; font-weight: 600; }
+.rail-foot-txt b [data-count] {
+  color: var(--gold-hi);
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+}
 .rail-foot-txt span { color: var(--text-mute); }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(255,179,71,.55); }
-  70% { box-shadow: 0 0 0 12px rgba(255,179,71,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,179,71,0); }
+  0% { box-shadow: 0 0 0 0 rgba(212,175,55,.55); }
+  70% { box-shadow: 0 0 0 12px rgba(212,175,55,0); }
+  100% { box-shadow: 0 0 0 0 rgba(212,175,55,0); }
 }
 
 /* ============== ОСНОВНАЯ ОБЛАСТЬ ============== */
@@ -247,19 +284,43 @@ body {
   justify-content: space-between;
   gap: 20px;
   padding: 14px 22px;
-  border-radius: 20px;
-  background: rgba(255,255,255,.025);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(28,22,10,.5), rgba(12,10,6,.4));
   border: 1px solid var(--line);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  position: relative;
+}
+.topbar::before,
+.topbar::after {
+  content: '';
+  position: absolute;
+  width: 14px; height: 14px;
+  border: 1px solid var(--gold);
+  opacity: .55;
+}
+.topbar::before {
+  top: -1px; left: -1px;
+  border-right: none; border-bottom: none;
+  border-top-left-radius: 8px;
+}
+.topbar::after {
+  bottom: -1px; right: -1px;
+  border-left: none; border-top: none;
+  border-bottom-right-radius: 8px;
 }
 .crumb {
-  font-size: .78rem;
+  font-size: .76rem;
   color: var(--text-mute);
   letter-spacing: .12em;
   text-transform: uppercase;
+  font-family: 'Cinzel', serif;
 }
-.crumb b { color: var(--text); font-weight: 600; }
+.crumb b {
+  color: var(--gold-hi);
+  font-weight: 600;
+  letter-spacing: .08em;
+}
 
 .chips { display: flex; gap: 8px; flex-wrap: wrap; }
 .chip {
@@ -268,44 +329,65 @@ body {
   gap: 8px;
   padding: 7px 14px;
   border-radius: 100px;
-  background: rgba(255,255,255,.04);
+  background: rgba(212,175,55,.05);
   border: 1px solid var(--line);
-  font-size: .76rem;
+  font-size: .74rem;
   color: var(--text-dim);
   font-weight: 500;
-  letter-spacing: .02em;
+  letter-spacing: .03em;
 }
 .chip b {
-  color: #ffb37a;
-  font-weight: 600;
+  color: var(--gold-hi);
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
+  font-family: 'Cinzel', serif;
+  letter-spacing: .02em;
 }
-.chip svg { color: #ffb37a; flex-shrink: 0; }
+.chip svg { color: var(--gold); flex-shrink: 0; }
 
 /* HERO */
 .hero {
   position: relative;
-  padding: 52px 48px 40px;
-  border-radius: 30px;
+  padding: 56px 52px 44px;
+  border-radius: 28px;
   background:
-    radial-gradient(ellipse 720px 420px at 12% -10%, rgba(255,92,43,.22), transparent 65%),
-    radial-gradient(ellipse 620px 420px at 88% 110%, rgba(162,89,255,.18), transparent 65%),
-    rgba(255,255,255,.02);
-  border: 1px solid var(--line);
+    radial-gradient(ellipse 720px 420px at 12% -10%, rgba(212,175,55,.18), transparent 65%),
+    radial-gradient(ellipse 620px 420px at 88% 110%, rgba(44,95,168,.18), transparent 65%),
+    linear-gradient(180deg, rgba(28,22,10,.5), rgba(8,8,13,.4));
+  border: 1px solid var(--line-hi);
   overflow: hidden;
+  box-shadow:
+    inset 0 1px 0 rgba(212,175,55,.16),
+    inset 0 0 80px rgba(212,175,55,.04),
+    0 20px 60px rgba(0,0,0,.4);
 }
 .hero::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 75%);
+    linear-gradient(rgba(212,175,55,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212,175,55,.035) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 78%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 78%);
   pointer-events: none;
 }
+
+/* Орнаментальные уголки */
+.corner {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border: 2px solid var(--gold);
+  opacity: .5;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(212,175,55,.4));
+}
+.corner.tl { top: 14px; left: 14px; border-right: none; border-bottom: none; border-top-left-radius: 8px; }
+.corner.tr { top: 14px; right: 14px; border-left: none; border-bottom: none; border-top-right-radius: 8px; }
+.corner.bl { bottom: 14px; left: 14px; border-right: none; border-top: none; border-bottom-left-radius: 8px; }
+.corner.br { bottom: 14px; right: 14px; border-left: none; border-top: none; border-bottom-right-radius: 8px; }
 
 .hero-eyebrow {
   display: inline-flex;
@@ -313,89 +395,108 @@ body {
   gap: 10px;
   padding: 8px 16px;
   border-radius: 100px;
-  background: rgba(255,140,90,.08);
-  border: 1px solid rgba(255,140,90,.22);
-  font-size: .76rem;
-  color: #ffb37a;
+  background: rgba(212,175,55,.08);
+  border: 1px solid rgba(212,175,55,.28);
+  font-size: .72rem;
+  color: var(--gold-hi);
   font-weight: 500;
-  letter-spacing: .08em;
+  letter-spacing: .14em;
   text-transform: uppercase;
-  margin-bottom: 26px;
+  margin-bottom: 28px;
+  font-family: 'Cinzel', serif;
 }
 .hero-eyebrow::before {
   content: '';
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: #ff5c2b;
-  box-shadow: 0 0 10px #ff5c2b;
+  background: var(--gold);
+  box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold);
   animation: pulse 2s infinite;
 }
 
 .hero-title {
-  font-family: 'Unbounded', sans-serif;
-  font-size: clamp(2rem, 5.2vw, 3.6rem);
-  font-weight: 800;
-  letter-spacing: -.035em;
-  line-height: 1.03;
-  margin-bottom: 22px;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.9rem, 4.8vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.08;
+  margin-bottom: 24px;
+  text-shadow: 0 2px 20px rgba(0,0,0,.5);
 }
 .hero-title .grad {
-  background: linear-gradient(110deg, #ff5c2b 0%, #ffb347 45%, #ff2e63 100%);
+  background: linear-gradient(110deg, #f4dd8a 0%, #d4af37 40%, #b8860b 75%, #f4dd8a 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   color: transparent;
+  animation: shine 6s linear infinite;
+}
+@keyframes shine {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 .hero-lead {
   font-size: 1rem;
   color: var(--text-dim);
-  max-width: 620px;
+  max-width: 640px;
   line-height: 1.7;
-  margin-bottom: 34px;
+  margin-bottom: 36px;
 }
 
 .hero-actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 42px;
+  margin-bottom: 44px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 14px 24px;
-  border-radius: 14px;
+  padding: 14px 26px;
+  border-radius: 12px;
   font: inherit;
   font-weight: 600;
-  font-size: .9rem;
+  font-size: .88rem;
   text-decoration: none;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all .25s cubic-bezier(.5,0,.2,1);
   white-space: nowrap;
-  letter-spacing: .01em;
+  letter-spacing: .02em;
+  font-family: 'Cinzel', serif;
+  position: relative;
 }
 .btn-primary {
-  background: linear-gradient(135deg, #ff5c2b, #ff9500);
-  color: #1a0a05;
-  box-shadow: 0 10px 32px rgba(255,92,43,.38), inset 0 1px 0 rgba(255,255,255,.45);
+  background: linear-gradient(180deg, #f4dd8a 0%, #d4af37 45%, #8a6d1c 100%);
+  color: #2a1e07;
+  border-color: #f4dd8a;
+  box-shadow:
+    0 10px 32px rgba(212,175,55,.4),
+    inset 0 1px 0 rgba(255,255,255,.6),
+    inset 0 -2px 8px rgba(92,71,18,.4);
+  text-shadow: 0 1px 0 rgba(255,255,255,.3);
 }
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 44px rgba(255,92,43,.55), inset 0 1px 0 rgba(255,255,255,.55);
+  box-shadow:
+    0 18px 44px rgba(212,175,55,.55),
+    inset 0 1px 0 rgba(255,255,255,.7),
+    inset 0 -2px 8px rgba(92,71,18,.4);
 }
 .btn-ghost {
-  background: rgba(255,255,255,.04);
-  border-color: var(--line);
-  color: var(--text);
+  background: rgba(212,175,55,.06);
+  border-color: rgba(212,175,55,.28);
+  color: var(--gold-hi);
 }
 .btn-ghost:hover {
-  background: rgba(255,255,255,.08);
-  border-color: rgba(255,180,140,.3);
+  background: rgba(212,175,55,.12);
+  border-color: rgba(212,175,55,.5);
   transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(0,0,0,.4), 0 0 24px rgba(212,175,55,.15);
 }
 .btn svg { flex-shrink: 0; }
 
@@ -409,11 +510,11 @@ body {
 .hs { min-width: 110px; }
 .hs b {
   display: block;
-  font-family: 'Unbounded', sans-serif;
-  font-size: 1.4rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  letter-spacing: -.02em;
-  background: linear-gradient(135deg, #fff, #ffb37a);
+  letter-spacing: .01em;
+  background: linear-gradient(180deg, #f4dd8a, #d4af37 70%, #8a6d1c);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -421,10 +522,11 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .hs span {
-  font-size: .7rem;
+  font-size: .68rem;
   color: var(--text-mute);
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   text-transform: uppercase;
+  font-family: 'Cinzel', serif;
 }
 
 /* ПАНЕЛИ */
@@ -440,11 +542,12 @@ body {
 
 .panel-head { margin-bottom: 26px; }
 .panel-head h2 {
-  font-family: 'Unbounded', sans-serif;
-  font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
   font-weight: 700;
-  letter-spacing: -.025em;
+  letter-spacing: .01em;
   margin-bottom: 10px;
+  color: var(--gold-hi);
 }
 .panel-head p {
   color: var(--text-dim);
@@ -461,48 +564,66 @@ body {
 
 .card {
   position: relative;
-  padding: 26px;
-  border-radius: 22px;
-  background: linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.012));
+  padding: 28px 26px 26px;
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at top, rgba(212,175,55,.06), transparent 60%),
+    linear-gradient(180deg, rgba(28,22,10,.55), rgba(12,10,6,.5));
   border: 1px solid var(--line);
   overflow: hidden;
   transition: all .35s cubic-bezier(.5,0,.2,1);
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(212,175,55,.06);
+  border-radius: 12px;
+  pointer-events: none;
+  transition: border-color .35s;
 }
 .card::after {
   content: '';
   position: absolute;
   top: -60%; right: -30%;
-  width: 220px; height: 220px;
-  background: radial-gradient(circle, rgba(255,92,43,.32), transparent 60%);
+  width: 240px; height: 240px;
+  background: radial-gradient(circle, rgba(212,175,55,.28), transparent 60%);
   opacity: 0;
   transition: opacity .4s;
   pointer-events: none;
 }
 .card:hover {
-  border-color: rgba(255,150,100,.28);
-  background: linear-gradient(160deg, rgba(255,140,90,.08), rgba(255,255,255,.02));
+  border-color: rgba(212,175,55,.4);
+  background:
+    radial-gradient(ellipse at top, rgba(212,175,55,.1), transparent 60%),
+    linear-gradient(180deg, rgba(40,32,14,.6), rgba(16,13,8,.55));
   transform: translateY(-4px);
-  box-shadow: 0 24px 48px rgba(0,0,0,.45), 0 0 0 1px rgba(255,150,100,.12);
+  box-shadow:
+    0 24px 48px rgba(0,0,0,.5),
+    0 0 0 1px rgba(212,175,55,.12),
+    0 0 40px rgba(212,175,55,.08);
 }
 .card:hover::after { opacity: 1; }
+.card:hover::before { border-color: rgba(212,175,55,.18); }
 
 .card-ico {
-  width: 46px; height: 46px;
-  border-radius: 13px;
+  width: 48px; height: 48px;
+  border-radius: 10px;
   display: grid; place-items: center;
-  background: rgba(255,140,90,.1);
-  border: 1px solid rgba(255,140,90,.2);
-  color: #ffb37a;
-  font-size: 1.15rem;
+  background: linear-gradient(180deg, rgba(212,175,55,.16), rgba(212,175,55,.05));
+  border: 1px solid rgba(212,175,55,.32);
+  color: var(--gold-hi);
+  font-size: 1.1rem;
   margin-bottom: 18px;
   position: relative;
   z-index: 1;
+  box-shadow: inset 0 1px 0 rgba(212,175,55,.25), 0 4px 14px rgba(0,0,0,.3);
 }
 .card h3 {
-  font-family: 'Unbounded', sans-serif;
+  font-family: 'Cinzel', serif;
   font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: -.015em;
+  font-weight: 700;
+  letter-spacing: .02em;
   margin-bottom: 10px;
   color: var(--text);
   position: relative;
@@ -517,12 +638,13 @@ body {
 }
 .card code {
   font-family: 'Sora', monospace;
-  background: rgba(255,140,90,.12);
-  border: 1px solid rgba(255,140,90,.2);
-  color: #ffb37a;
+  background: rgba(212,175,55,.14);
+  border: 1px solid rgba(212,175,55,.28);
+  color: var(--gold-hi);
   padding: 2px 8px;
   border-radius: 6px;
-  font-size: .82rem;
+  font-size: .8rem;
+  font-weight: 600;
 }
 
 /* ФУТЕР */
@@ -532,21 +654,24 @@ body {
   justify-content: space-between;
   gap: 16px;
   padding: 18px 24px;
-  border-radius: 20px;
-  background: rgba(255,255,255,.02);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(28,22,10,.4), rgba(12,10,6,.35));
   border: 1px solid var(--line);
-  font-size: .76rem;
+  font-size: .72rem;
   color: var(--text-mute);
-  letter-spacing: .05em;
+  letter-spacing: .1em;
   flex-wrap: wrap;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
 }
 .footer-status { display: inline-flex; align-items: center; gap: 10px; }
 .footer-status::before {
   content: '';
   width: 6px; height: 6px;
   border-radius: 50%;
-  background: #4ade80;
-  box-shadow: 0 0 8px #4ade80;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: pulse 2.5s infinite;
 }
 
 /* ============== МОБИЛЬНАЯ ВЕРСИЯ ============== */
@@ -561,11 +686,12 @@ body {
     flex-direction: row;
     align-items: center;
     padding: 10px 12px;
-    border-radius: 22px;
+    border-radius: 20px;
   }
   @media (hover: hover) {
     .rail:hover { width: auto; }
   }
+  .rail::before { display: none; }
   .brand { padding: 0 12px 0 0; border-bottom: none; border-right: 1px solid var(--line); margin: 0 8px 0 0; }
   .brand-txt { display: none; }
   .nav { flex-direction: row; flex: 1; justify-content: space-around; gap: 4px; overflow: visible; }
@@ -575,12 +701,14 @@ body {
   .rail-foot { display: none; }
 
   .topbar { padding: 12px 16px; }
-  .crumb { font-size: .7rem; }
+  .topbar::before, .topbar::after { display: none; }
+  .crumb { font-size: .68rem; }
   .chips { gap: 6px; }
-  .chip { padding: 6px 10px; font-size: .7rem; }
+  .chip { padding: 6px 10px; font-size: .68rem; }
   .chip:nth-child(3) { display: none; }
 
-  .hero { padding: 34px 26px 28px; border-radius: 24px; }
+  .hero { padding: 36px 26px 30px; border-radius: 22px; }
+  .corner { width: 22px; height: 22px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn { justify-content: center; }
   .hero-stats { gap: 18px 32px; }
@@ -606,13 +734,13 @@ body {
       <div class="brand">
         <div class="brand-mark">
           <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L22 12L12 22L2 12L12 2Z" opacity=".28"/>
+            <path d="M12 2L22 12L12 22L2 12L12 2Z" opacity=".35"/>
             <path d="M12 7L17 12L12 17L7 12L12 7Z"/>
           </svg>
         </div>
         <div class="brand-txt">
-          <strong>Firestorm</strong>
-          <span>VIP Core v3.4</span>
+          <strong>VipFirestorm</strong>
+          <span>Core v3.4</span>
         </div>
       </div>
 
@@ -660,11 +788,11 @@ body {
         </button>
       </nav>
 
-      <!-- Счётчик загрузок аддона -->
+      <!-- Счётчик загрузок -->
       <div class="rail-foot">
         <div class="pulse-dot"></div>
         <div class="rail-foot-txt">
-          <b>Скачали: <span data-count>0</span></b>
+          <b>Скачали: <span data-count>6</span></b>
           <span>уникальных IP</span>
         </div>
       </div>
@@ -674,7 +802,7 @@ body {
     <main class="main">
 
       <header class="topbar">
-        <div class="crumb">Firestorm · <b>Командный центр</b></div>
+        <div class="crumb">VipFirestorm · <b>Уникальный аддон для сервера Firestorm</b></div>
         <div class="chips">
           <div class="chip">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -682,29 +810,34 @@ body {
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
-            Скачали: <b data-count>0</b>
+            Скачали: <b data-count>6</b>
           </div>
-          <div class="chip">Ping 14ms</div>
-          <div class="chip">Core Stable</div>
+          <div class="chip">Core v3.4</div>
+          <div class="chip">World of Warcraft</div>
         </div>
       </header>
 
       <!-- HERO -->
       <section class="hero">
-        <span class="hero-eyebrow">Эксклюзивный аддон · Firestorm</span>
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+
+        <span class="hero-eyebrow">Эксклюзивный аддон · World of Warcraft</span>
         <h1 class="hero-title">
-          Командный центр<br>
-          <span class="grad">VIP Firestorm</span>
+          Уникальный аддон<br>
+          <span class="grad">для сервера Firestorm</span>
         </h1>
         <p class="hero-lead">
-          Комплексный интерфейс для мгновенной телепортации, автоматизации рейдов и умного управления группами. Построен для максимальной скорости и стабильности — без просадок FPS и лишних кликов.
+          Комплексный интерфейс для мгновенной телепортации, автоматизации рейдов и умного управления группами. Создан для максимальной скорости и стабильности — без просадок FPS и лишних кликов.
         </p>
 
         <div class="hero-actions">
           <a class="btn btn-primary js-download"
              href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing"
              target="_blank" rel="noopener">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
               <polyline points="7 10 12 15 17 10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
@@ -713,17 +846,17 @@ body {
           </a>
           <button class="btn btn-ghost" onclick="switchTab('commands', document.querySelectorAll('.nav-item')[3])">
             Список команд
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"/>
             </svg>
           </button>
         </div>
 
         <div class="hero-stats">
-          <div class="hs"><b data-count>0</b><span>Скачали аддон</span></div>
-          <div class="hs"><b>99.8%</b><span>Аптайм ядра</span></div>
-          <div class="hs"><b>14ms</b><span>Пинг до сервера</span></div>
+          <div class="hs"><b data-count>6</b><span>Скачали аддон</span></div>
           <div class="hs"><b>v3.4</b><span>Версия ядра</span></div>
+          <div class="hs"><b>12</b><span>Модулей</span></div>
+          <div class="hs"><b>2026</b><span>Обновлено</span></div>
         </div>
       </section>
 
@@ -838,7 +971,7 @@ body {
       </section>
 
       <footer class="footer">
-        <span>EXPILLEAR SYSTEMS © 2026</span>
+        <span>VipFirestorm Systems © 2026</span>
         <span class="footer-status">Все системы работают штатно</span>
       </footer>
 
@@ -859,38 +992,38 @@ body {
     }
 
     /* ============================================================
-       СЧЁТЧИК ЗАГРУЗОК АДДОНА (1 устройство = 1 раз)
-       Эмуляция "1 IP = 1 раз" через localStorage.
-       В реальном проекте цифра берётся с сервера.
+       СЧЁТЧИК ЗАГРУЗОК АДДОНА
+       Старт с 6. Каждый уникальный IP (устройство) добавляет +1
+       только при первом нажатии на кнопку "Скачать аддон".
+       Здесь эмулируется через localStorage — для реального IP-учёта
+       нужно использовать бэкенд.
        ============================================================ */
-    const BASE_DOWNLOADS = 1284;                    // стартовое значение
-    const KEY_COUNT = 'vf_downloads_total';         // текущий счётчик
-    const KEY_DONE  = 'vf_downloaded_flag';         // флаг: уже качал с этого устройства
+    const BASE_DOWNLOADS = 6;                       // стартовое значение
+    const KEY_COUNT = 'vf_downloads_incr';          // локальные инкременты
+    const KEY_DONE  = 'vf_downloaded_flag';         // флаг "уже качал с этого устройства"
 
     function getDownloadCount() {
-      const stored = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
-      return BASE_DOWNLOADS + (isNaN(stored) ? 0 : stored);
+      const incr = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
+      return BASE_DOWNLOADS + (isNaN(incr) ? 0 : incr);
     }
 
     function renderCounters() {
-      const n = getDownloadCount();
-      const pretty = n.toLocaleString('ru-RU');
+      const pretty = getDownloadCount().toLocaleString('ru-RU');
       document.querySelectorAll('[data-count]').forEach(el => {
         el.textContent = pretty;
       });
     }
 
     function registerDownload() {
-      // Если с этого устройства ещё не качали — фиксируем один раз.
+      // Уникальность: инкремент только если с этого устройства ещё не качали
       if (!localStorage.getItem(KEY_DONE)) {
-        const stored = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
-        localStorage.setItem(KEY_COUNT, (isNaN(stored) ? 0 : stored) + 1);
+        const incr = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
+        localStorage.setItem(KEY_COUNT, (isNaN(incr) ? 0 : incr) + 1);
         localStorage.setItem(KEY_DONE, '1');
         renderCounters();
       }
     }
 
-    // Навешиваем обработчик на кнопку "Скачать аддон"
     document.querySelectorAll('.js-download').forEach(btn => {
       btn.addEventListener('click', registerDownload);
     });
@@ -898,7 +1031,7 @@ body {
     renderCounters();
 
     /* ============================================================
-       УГОЛЬКИ
+       ЗОЛОТЫЕ ИСКРЫ (Magic particles)
        ============================================================ */
     const canvas = document.getElementById('embers');
     const ctx = canvas.getContext('2d');
@@ -912,14 +1045,16 @@ body {
     window.addEventListener('resize', resize);
 
     function spawnEmber(fromBottom) {
+      const isArcane = Math.random() < 0.22;
       return {
         x: Math.random() * W,
         y: fromBottom ? H + Math.random() * 120 : Math.random() * H,
-        r: Math.random() * 2 + 0.6,
-        vy: -(0.2 + Math.random() * 0.7),
+        r: Math.random() * 1.9 + 0.5,
+        vy: -(0.15 + Math.random() * 0.65),
         vx: (Math.random() - 0.5) * 0.35,
-        hue: 15 + Math.random() * 30,
-        alpha: 0.25 + Math.random() * 0.5,
+        hue: isArcane ? 205 + Math.random() * 20 : 38 + Math.random() * 18,
+        sat: isArcane ? 85 : 95,
+        alpha: 0.22 + Math.random() * 0.5,
         flick: Math.random() * Math.PI * 2
       };
     }
@@ -937,8 +1072,8 @@ body {
         const a = e.alpha * (0.65 + 0.35 * Math.sin(e.flick));
 
         const grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 6);
-        grd.addColorStop(0, `hsla(${e.hue}, 100%, 68%, ${a})`);
-        grd.addColorStop(1, `hsla(${e.hue}, 100%, 50%, 0)`);
+        grd.addColorStop(0, `hsla(${e.hue}, ${e.sat}%, 68%, ${a})`);
+        grd.addColorStop(1, `hsla(${e.hue}, ${e.sat}%, 50%, 0)`);
         ctx.fillStyle = grd;
 
         ctx.beginPath();
