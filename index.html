@@ -391,7 +391,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .modal-form.active { display: block; animation: fadeUp .35s; }
 .modal-submit { width: 100%; margin-top: 8px; padding: 14px 22px; border-radius: 12px; font: inherit; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .88rem; cursor: pointer; border: 1px solid #ffb37a; background: linear-gradient(135deg, #ff5c2b, #ff9500); color: #1a0a05; transition: all .25s; }
 .modal-submit:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(255,92,43,.6); }
-.modal-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
 .modal-note { margin-top: 16px; padding: 10px 14px; border-radius: 10px; background: rgba(255,140,90,.06); font-size: .76rem; color: var(--text-mute); text-align: center; }
 .modal-msg { margin-top: 12px; padding: 10px 14px; border-radius: 10px; font-size: .82rem; display: none; text-align: center; }
 .modal-msg.show { display: block; }
@@ -514,24 +513,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 
 .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(24px); padding: 12px 24px; border-radius: 14px; background: linear-gradient(135deg, #ffb347, #ff9500); color: #1a0a05; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .82rem; box-shadow: 0 16px 44px rgba(255,179,71,.55); opacity: 0; pointer-events: none; transition: all .35s cubic-bezier(.2,.8,.3,1); z-index: 99999; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-.sub-modal { max-width: 500px; }
-.sub-status { padding: 14px 16px; margin-bottom: 18px; border-radius: 14px; font-size: .84rem; line-height: 1.6; }
-.sub-status.ok { background: linear-gradient(135deg, rgba(74,222,128,.14), rgba(34,197,94,.05)); border: 1px solid rgba(74,222,128,.4); color: #a5f3c0; }
-.sub-status.info { background: linear-gradient(135deg, rgba(99,179,255,.1), rgba(99,179,255,.03)); border: 1px solid rgba(99,179,255,.3); color: #8bc4ff; }
-.sub-status.err { background: rgba(255,46,99,.1); border: 1px solid rgba(255,46,99,.35); color: #ffb0c7; }
-.sub-code-input {
-  width: 100%; padding: 16px;
-  background: rgba(8,4,16,.7);
-  border: 2px solid rgba(255,179,71,.45);
-  border-radius: 12px; color: #ffb347;
-  font: inherit; font-family: 'Unbounded', sans-serif;
-  font-size: 1.8rem; font-weight: 800;
-  letter-spacing: .5em; text-align: center;
-  outline: none; transition: all .22s;
-}
-.sub-code-input:focus { border-color: #ffb347; box-shadow: 0 0 0 4px rgba(255,179,71,.15), 0 0 24px rgba(255,179,71,.35); }
-.sub-hint { font-size: .74rem; color: var(--text-mute); text-align: center; margin-top: 12px; line-height: 1.5; }
 
 @media (max-width: 1180px) { .hero-inner { gap: 36px; } .reviews-layout { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); } }
 @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } .reviews-layout { grid-template-columns: 1fr; } .review-form-card { position: static; } }
@@ -790,12 +771,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     <button type="button" class="modal-submit" onclick="saveProfile()">Сохранить</button>
     <div class="modal-msg" id="profileMsg"></div>
 
-    <div class="profile-section" id="subscriptionSection">
-      <div class="profile-section-title">📧 Уведомления</div>
-      <button type="button" class="admin-btn" id="subscribeBtn" onclick="openSubscription()" style="border-color: rgba(99,179,255,.4); background: rgba(99,179,255,.12); color: #8bc4ff;">📧 Рассылка обновлений</button>
-      <div id="subscriptionStatusText" style="font-size: .7rem; color: var(--text-mute); margin-top: 6px; text-align: center; line-height: 1.5;"></div>
-    </div>
-
     <div class="profile-section" id="adminTools" style="display:none">
       <div class="profile-section-title">👑 Инструменты Администратора</div>
       <button type="button" class="admin-btn" onclick="openAdminPanel()">⚙️ Управление пользователями</button>
@@ -930,47 +905,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
   </div>
 </div>
 
-<div class="modal-overlay" id="subscriptionModal">
-  <div class="modal sub-modal" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeSubscription()">×</button>
-    <div class="modal-title">📧 Рассылка обновлений</div>
-    <div class="modal-sub">Подпишитесь, чтобы получать уведомления о новых правках</div>
-
-    <div id="subStatus" class="sub-status" style="display:none"></div>
-
-    <div id="subStepEmail">
-      <div class="form-field">
-        <label for="subEmailInput">Электронная почта <span class="req">*</span></label>
-        <input type="text" id="subEmailInput" placeholder="your@email.com" maxlength="120" autocomplete="email">
-      </div>
-      <button type="button" class="modal-submit" id="subSendBtn" onclick="sendVerificationCode()">📨 Отправить код</button>
-      <div class="sub-hint">На вашу почту придёт письмо с 6-значным кодом подтверждения</div>
-    </div>
-
-    <div id="subStepCode" style="display:none">
-      <div class="form-field">
-        <label style="text-align:center; display:block;">Введите код из письма</label>
-        <input type="text" id="subCodeInput" class="sub-code-input" maxlength="6" inputmode="numeric" placeholder="······" autocomplete="one-time-code">
-      </div>
-      <button type="button" class="modal-submit" id="subVerifyBtn" onclick="verifyCode()">✅ Подтвердить</button>
-      <div class="sub-hint">
-        Письмо отправлено на <b id="subEmailShow" style="color:#ffb37a">—</b><br>
-        <a onclick="backToSubEmail()" style="color:#8bc4ff; cursor:pointer; text-decoration:underline;">Изменить адрес</a>
-        &nbsp;·&nbsp;
-        <a onclick="sendVerificationCode()" style="color:#ffb37a; cursor:pointer; text-decoration:underline;">Отправить повторно</a>
-      </div>
-    </div>
-
-    <div id="subStepDone" style="display:none">
-      <button type="button" class="modal-submit" style="background: linear-gradient(135deg, #4ade80, #22c55e); border-color: #a5f3c0; color: #052e16; cursor:default;" disabled>✓ Подписка активна</button>
-      <div class="sub-hint" style="margin-top:16px;">
-        Уведомления будут приходить на <b id="subEmailDone" style="color:#ffb37a">—</b>
-      </div>
-      <button type="button" class="modal-submit" style="background: rgba(255,46,99,.1); color: #ffb0c7; border-color: rgba(255,46,99,.4); margin-top:12px;" onclick="unsubscribe()">🚫 Отписаться</button>
-    </div>
-  </div>
-</div>
-
 <div class="modal-overlay" id="chatModal">
   <div class="modal xwide" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeChatModal()">×</button>
@@ -987,23 +921,11 @@ body.modal-open, body.ban-locked { overflow: hidden; }
   </div>
 </div>
 
-<script src="https://smtpjs.com/v3/smtp.js"></script>
 <script>
 /* ============================================================
    FIREBASE
    ============================================================ */
 const FB_URL = 'https://vipfirestorm-ee1f6-default-rtdb.firebaseio.com';
-
-/* ============================================================
-   SMTP (mail.ru) — рассылка
-   ============================================================ */
-const SMTP_CONFIG = {
-  host: 'smtp.mail.ru',
-  username: 'thranduil1991@mail.ru',
-  password: '9a00zVCiWKYvzgrIE3aQ',
-  fromName: 'VipFirestorm'
-};
-const CODE_TTL_MS = 10 * 60 * 1000;
 
 window.addEventListener('error', e => console.error('[VF Error]', e.message));
 window.addEventListener('unhandledrejection', e => console.error('[VF Promise]', e.reason));
@@ -1170,7 +1092,6 @@ function renderAllFromSSE() {
   renderUpdates();
   checkSiteDisabled();
   updateSiteToggleButton();
-  updateSubscriptionUI();
   if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
   if (bansModal.classList.contains('open')) renderBansModal();
 }
@@ -1357,7 +1278,6 @@ const banModal = document.getElementById('banModal');
 const bansModal = document.getElementById('bansModal');
 const chatModal = document.getElementById('chatModal');
 const updateEditorModal = document.getElementById('updateEditorModal');
-const subscriptionModal = document.getElementById('subscriptionModal');
 
 function openAuth(tab) { authModal.classList.add('open'); document.body.classList.add('modal-open'); switchAuthTab(tab === 'register' ? 'register' : 'login'); }
 function closeAuth() { authModal.classList.remove('open'); document.body.classList.remove('modal-open'); document.getElementById('loginMsg').classList.remove('show'); document.getElementById('regMsg').classList.remove('show'); }
@@ -1384,7 +1304,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   setSession(user.id);
   msg.textContent = 'Добро пожаловать, ' + user.nickname + '!';
   msg.className = 'modal-msg show ok';
-  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); updateSubscriptionUI();
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton();
   setTimeout(() => closeAuth(), 700);
   document.getElementById('loginForm').reset();
 });
@@ -1408,7 +1328,7 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
   saveUser(user); setSession(user.id);
   msg.textContent = isCreator ? '👑 Добро пожаловать, Создатель!' : 'Аккаунт создан!';
   msg.className = 'modal-msg show ok';
-  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); updateSubscriptionUI();
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton();
   setTimeout(() => closeAuth(), 900);
   document.getElementById('registerForm').reset();
 });
@@ -1422,7 +1342,6 @@ function openProfile() {
   document.getElementById('adminTools').style.display = u.isAdmin ? '' : 'none';
   document.getElementById('creatorTools').style.display = u.isCreator ? '' : 'none';
   updateSiteToggleButton();
-  updateSubscriptionUI();
   profileModal.classList.add('open');
   document.body.classList.add('modal-open');
 }
@@ -1648,7 +1567,6 @@ document.addEventListener('keydown', e => {
     if (bansModal.classList.contains('open')) closeBansModal();
     if (chatModal.classList.contains('open')) closeChatModal();
     if (updateEditorModal.classList.contains('open')) closeUpdateEditor();
-    if (subscriptionModal.classList.contains('open')) closeSubscription();
   }
 });
 
@@ -1762,7 +1680,6 @@ async function saveUpdate() {
   const now = Date.now();
   const id = editingUpdateId || ('upd_' + now + '_' + Math.random().toString(36).slice(2, 6));
   const existing = FB_DATA.updates[id] || {};
-  const isNew = !editingUpdateId;
   const data = {
     id,
     title: title || 'Без заголовка',
@@ -1781,9 +1698,6 @@ async function saveUpdate() {
     msg.className = 'modal-msg show ok';
     renderUpdates();
     setTimeout(() => { closeUpdateEditor(); showToast('💾 Обновление сохранено'); }, 500);
-    if (isNew) {
-      notifyAllSubscribers(data).catch(e => console.warn('[Notify]', e));
-    }
   } else {
     msg.textContent = '⚠️ Ошибка сохранения';
     msg.className = 'modal-msg show err';
@@ -1869,285 +1783,6 @@ if (updateEditorBody) {
   updateEditorBody.addEventListener('mouseup', updateToolbarState);
   updateEditorBody.addEventListener('focus', updateToolbarState);
   updateEditorBody.addEventListener('input', updateToolbarState);
-}
-
-/* ============================================================
-   РАССЫЛКА
-   ============================================================ */
-let pendingEmail = null;
-
-function openSubscription() {
-  const me = getCurrentUser();
-  if (!me) { openAuth(); return; }
-  document.getElementById('subStatus').style.display = 'none';
-  const email = me.email || '';
-  const verified = !!me.emailVerified;
-
-  if (verified) {
-    document.getElementById('subStepEmail').style.display = 'none';
-    document.getElementById('subStepCode').style.display = 'none';
-    document.getElementById('subStepDone').style.display = '';
-    document.getElementById('subEmailDone').textContent = email;
-  } else {
-    document.getElementById('subStepEmail').style.display = '';
-    document.getElementById('subStepCode').style.display = 'none';
-    document.getElementById('subStepDone').style.display = 'none';
-    document.getElementById('subEmailInput').value = email;
-  }
-  subscriptionModal.classList.add('open');
-  document.body.classList.add('modal-open');
-}
-
-function closeSubscription() {
-  subscriptionModal.classList.remove('open');
-  document.body.classList.remove('modal-open');
-  pendingEmail = null;
-}
-
-subscriptionModal.addEventListener('click', e => {
-  if (e.target === subscriptionModal) closeSubscription();
-});
-
-function setSubStatus(text, type) {
-  const el = document.getElementById('subStatus');
-  el.textContent = text;
-  el.className = 'sub-status ' + (type || 'info');
-  el.style.display = '';
-}
-
-function isValidEmail(email) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email || '').trim());
-}
-
-function generateCode() {
-  return String(Math.floor(100000 + Math.random() * 900000));
-}
-
-function backToSubEmail() {
-  document.getElementById('subStepEmail').style.display = '';
-  document.getElementById('subStepCode').style.display = 'none';
-  document.getElementById('subStatus').style.display = 'none';
-}
-
-async function sendVerificationCode() {
-  const me = getCurrentUser();
-  if (!me) { openAuth(); return; }
-  const input = document.getElementById('subEmailInput');
-  const email = input.value.trim().toLowerCase();
-  if (!isValidEmail(email)) {
-    setSubStatus('⚠️ Укажите корректный email', 'err');
-    return;
-  }
-
-  const btn = document.getElementById('subSendBtn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Отправка...';
-  setSubStatus('📨 Отправляем код на ' + email + '...', 'info');
-
-  const users = loadUsers();
-  const taken = users.some(u => u.id !== me.id && u.email === email && u.emailVerified);
-  if (taken) {
-    setSubStatus('⚠️ Этот email уже привязан к другому аккаунту', 'err');
-    btn.disabled = false;
-    btn.textContent = '📨 Отправить код';
-    return;
-  }
-
-  const code = generateCode();
-  const expiresAt = Date.now() + CODE_TTL_MS;
-
-  me.email = email;
-  me.emailCode = code;
-  me.emailCodeExpires = expiresAt;
-  me.emailVerified = false;
-  saveUser(me);
-
-  let sent = false;
-  try {
-    if (typeof Email === 'undefined') throw new Error('SMTP.js SDK не загружен');
-    const bgUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'background.jpg';
-    const html = `
-      <div style="margin:0;padding:0;background:#08050e;background-image:url('${bgUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;">
-        <div style="max-width:600px;margin:0 auto;padding:40px 24px;background:rgba(8,5,14,.78);">
-          <div style="background:linear-gradient(160deg,rgba(30,18,45,.94),rgba(12,8,22,.96));border:1px solid rgba(255,140,90,.35);border-radius:24px;padding:40px 32px;color:#f4ecff;font-family:Arial,sans-serif;text-align:center;">
-            <div style="font-size:44px;margin-bottom:12px;">🔥</div>
-            <h1 style="font-family:Arial,sans-serif;font-size:24px;margin:0 0 12px;color:#ffb347;letter-spacing:.04em;">VipFirestorm</h1>
-            <p style="font-size:15px;color:#a396b8;margin:0 0 26px;">Привет, ${escapeHtml(me.nickname)}!<br>Ваш код подтверждения почты:</p>
-            <div style="display:inline-block;padding:20px 36px;background:linear-gradient(135deg,rgba(255,92,43,.18),rgba(255,179,71,.08));border:2px solid #ffb347;border-radius:16px;font-size:38px;font-weight:800;color:#ffb347;letter-spacing:12px;font-family:Courier,monospace;">${code}</div>
-            <p style="font-size:13px;color:#6d6280;margin:26px 0 0;">Код действителен 10 минут.<br>Если вы не запрашивали код — просто игнорируйте письмо.</p>
-            <div style="margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#6d6280;">© VipFirestorm</div>
-          </div>
-        </div>
-      </div>`;
-    const result = await Email.send({
-      Host: SMTP_CONFIG.host,
-      Username: SMTP_CONFIG.username,
-      Password: SMTP_CONFIG.password,
-      To: email,
-      From: SMTP_CONFIG.fromName + ' <' + SMTP_CONFIG.username + '>',
-      Subject: '🔐 Код подтверждения VipFirestorm',
-      Body: html
-    });
-    if (result && String(result).toLowerCase() !== 'ok') throw new Error(String(result));
-    sent = true;
-  } catch (e) {
-    console.warn('[SMTP] Не удалось отправить:', e.message);
-  }
-
-  btn.disabled = false;
-  btn.textContent = '📨 Отправить код';
-
-  if (sent) {
-    pendingEmail = email;
-    document.getElementById('subStepEmail').style.display = 'none';
-    document.getElementById('subStepCode').style.display = '';
-    document.getElementById('subEmailShow').textContent = email;
-    document.getElementById('subCodeInput').value = '';
-    setSubStatus('✅ Код отправлен! Проверьте почту (в т.ч. папку «Спам»)', 'ok');
-    setTimeout(() => { try { document.getElementById('subCodeInput').focus(); } catch(e){} }, 200);
-  } else {
-    setSubStatus('⚠️ Не удалось отправить письмо. Проверьте интернет или обратитесь к Создателю.', 'err');
-  }
-}
-
-async function verifyCode() {
-  const me = getCurrentUser();
-  if (!me) return;
-  const entered = document.getElementById('subCodeInput').value.trim();
-  if (!/^\d{6}$/.test(entered)) {
-    setSubStatus('⚠️ Введите 6-значный код', 'err');
-    return;
-  }
-  await fbLoadAll(true);
-  const fresh = loadUsers().find(u => u.id === me.id);
-  if (!fresh) return;
-  if (!fresh.emailCode || !fresh.emailCodeExpires) {
-    setSubStatus('⚠️ Код не найден. Запросите новый.', 'err');
-    return;
-  }
-  if (Date.now() > fresh.emailCodeExpires) {
-    setSubStatus('⌛ Код истёк. Отправьте новый.', 'err');
-    return;
-  }
-  if (fresh.emailCode !== entered) {
-    setSubStatus('❌ Неверный код. Попробуйте ещё раз.', 'err');
-    return;
-  }
-  fresh.emailVerified = true;
-  delete fresh.emailCode;
-  delete fresh.emailCodeExpires;
-  saveUser(fresh);
-  updateSubscriptionUI();
-  showToast('✅ Почта подтверждена!');
-  document.getElementById('subStepCode').style.display = 'none';
-  document.getElementById('subStepDone').style.display = '';
-  document.getElementById('subEmailDone').textContent = fresh.email;
-  setSubStatus('✅ Подписка активирована!', 'ok');
-}
-
-async function unsubscribe() {
-  const me = getCurrentUser();
-  if (!me) return;
-  if (!confirm('Отписаться от рассылки обновлений?')) return;
-  await fbLoadAll(true);
-  const fresh = loadUsers().find(u => u.id === me.id);
-  if (!fresh) return;
-  fresh.emailVerified = false;
-  fresh.email = null;
-  delete fresh.emailCode;
-  delete fresh.emailCodeExpires;
-  saveUser(fresh);
-  updateSubscriptionUI();
-  showToast('🚫 Вы отписаны от рассылки');
-  closeSubscription();
-}
-
-function updateSubscriptionUI() {
-  const me = getCurrentUser();
-  const btn = document.getElementById('subscribeBtn');
-  const txt = document.getElementById('subscriptionStatusText');
-  if (!btn || !txt) return;
-  if (!me) return;
-  if (me.emailVerified && me.email) {
-    btn.textContent = '✓ Вы подписаны';
-    btn.style.background = 'linear-gradient(135deg, rgba(74,222,128,.2), rgba(34,197,94,.1))';
-    btn.style.color = '#a5f3c0';
-    btn.style.borderColor = 'rgba(74,222,128,.5)';
-    txt.textContent = 'Уведомления на: ' + me.email;
-  } else {
-    btn.textContent = '📧 Рассылка обновлений';
-    btn.style.background = 'rgba(99,179,255,.12)';
-    btn.style.color = '#8bc4ff';
-    btn.style.borderColor = 'rgba(99,179,255,.4)';
-    txt.textContent = me.email ? 'Подтвердите: ' + me.email : 'Подпишитесь на новости о правках';
-  }
-}
-
-async function notifyAllSubscribers(updateData) {
-  if (typeof Email === 'undefined') { console.warn('[Notify] SMTP.js не загружен'); return; }
-  const users = loadUsers();
-  const subscribers = users.filter(u => u.emailVerified && u.email && u.email !== '');
-  console.log('[Notify] Подписчиков:', subscribers.length);
-  if (!subscribers.length) return;
-
-  const bodyText = String(updateData.body || '')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<\/p>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
-    .slice(0, 2000);
-
-  const bgUrl = location.origin + location.pathname.replace(/[^/]*$/, '') + 'background.jpg';
-  const title = escapeHtml(updateData.title || 'Без заголовка');
-  const author = escapeHtml(updateData.author || 'Создатель');
-  const dateStr = formatDateTime(updateData.createdAt || Date.now());
-
-  let success = 0, fail = 0;
-  for (const sub of subscribers) {
-    const html = `
-      <div style="margin:0;padding:0;background:#08050e;background-image:url('${bgUrl}');background-size:cover;background-position:center;background-repeat:no-repeat;">
-        <div style="max-width:640px;margin:0 auto;padding:40px 24px;background:rgba(8,5,14,.78);">
-          <div style="background:linear-gradient(160deg,rgba(30,18,45,.94),rgba(12,8,22,.96));border:1px solid rgba(255,140,90,.35);border-radius:24px;padding:36px 32px;color:#f4ecff;font-family:Arial,sans-serif;">
-            <div style="text-align:center;margin-bottom:20px;">
-              <div style="font-size:36px;">📢</div>
-              <h1 style="font-family:Arial,sans-serif;font-size:22px;margin:8px 0 0;color:#ffb347;letter-spacing:.04em;">VipFirestorm</h1>
-            </div>
-            <p style="font-size:14px;color:#a396b8;margin:0 0 18px;">Привет, ${escapeHtml(sub.nickname)}!</p>
-            <div style="padding:14px 18px;background:rgba(255,179,71,.1);border:1px solid rgba(255,179,71,.35);border-radius:14px;margin-bottom:20px;">
-              <div style="font-size:13px;color:#a396b8;margin-bottom:6px;">Новое обновление</div>
-              <div style="font-size:19px;font-weight:700;color:#ffb347;">${title}</div>
-              <div style="font-size:12px;color:#6d6280;margin-top:6px;">${dateStr} · ${author}</div>
-            </div>
-            <div style="font-size:15px;color:#d7c9e8;line-height:1.7;white-space:pre-wrap;word-break:break-word;">${bodyText}</div>
-            <div style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#6d6280;text-align:center;">© VipFirestorm · Вы получили это письмо, т.к. подписаны на обновления</div>
-          </div>
-        </div>
-      </div>`;
-    try {
-      const result = await Email.send({
-        Host: SMTP_CONFIG.host,
-        Username: SMTP_CONFIG.username,
-        Password: SMTP_CONFIG.password,
-        To: sub.email,
-        From: SMTP_CONFIG.fromName + ' <' + SMTP_CONFIG.username + '>',
-        Subject: '📢 Новое обновление: ' + title,
-        Body: html
-      });
-      if (result && String(result).toLowerCase() !== 'ok') throw new Error(String(result));
-      success++;
-      await new Promise(r => setTimeout(r, 400));
-    } catch (e) {
-      console.warn('[Notify] Ошибка для', sub.email, e.message);
-      fail++;
-    }
-  }
-  console.log('[Notify] Отправлено:', success, '| Ошибок:', fail);
-  if (success > 0) showToast(`📨 Уведомлено подписчиков: ${success}`);
 }
 
 /* ============================================================
@@ -2521,10 +2156,10 @@ if (!matchMedia('(hover: none)').matches) {
   setCloudStatus('offline', 'Подключение...');
   const ok = await fbLoadAll(true);
   if (ok) {
-    updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); updateSubscriptionUI();
+    updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
     checkBan(); checkSiteDisabled(); updateSiteToggleButton();
   } else {
-    updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); updateSubscriptionUI();
+    updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
   }
 
   startSSE();
@@ -2534,7 +2169,7 @@ if (!matchMedia('(hover: none)').matches) {
     if (FB_BUSY > 0 || FB_SAVING > 0) return;
     const ok2 = await fbLoadAll();
     if (ok2) {
-      updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); updateSubscriptionUI();
+      updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
       checkSiteDisabled(); updateSiteToggleButton();
       if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
     }
