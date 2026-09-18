@@ -575,6 +575,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       <div class="profile-section-title">👑 Инструменты Администратора</div>
       <button type="button" class="admin-btn" onclick="openAdminPanel()">⚙️ Управление пользователями</button>
       <button type="button" class="admin-btn" onclick="openBansModal()" style="margin-top: 8px;">🚫 Забаненные</button>
+      <button type="button" class="admin-btn" onclick="debugFirebase()" style="margin-top: 8px;">🔍 Проверить Firebase</button>
     </div>
 
     <div class="profile-section" id="creatorTools" style="display:none">
@@ -674,16 +675,11 @@ function setCloudStatus(state, text) {
   if (txt) txt.textContent = text || (state === 'online' ? 'Облако' : state === 'error' ? 'Ошибка' : 'Локально');
 }
 
-async function fbFetch(path, opts) {
-  const url = `${FB_URL}/${path}.json`;
-  const r = await fetch(url, opts || { cache: 'no-store' });
-  if (!r.ok) throw new Error('HTTP ' + r.status);
-  return r.json();
-}
-
 async function fbLoadAll() {
   try {
-    const d = await fbFetch('') || {};
+    const r = await fetch(FB_URL + '/.json?t=' + Date.now(), { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json() || {};
     FB_DATA = {
       users: d.users && typeof d.users === 'object' ? d.users : {},
       reviews: d.reviews && typeof d.reviews === 'object' ? d.reviews : {},
@@ -703,8 +699,7 @@ async function fbLoadAll() {
 
 async function fbSave(path, data) {
   try {
-    FB_SAVING++;
-    FB_BUSY++;
+    FB_SAVING++; FB_BUSY++;
     const r = await fetch(`${FB_URL}/${path}.json`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -716,16 +711,25 @@ async function fbSave(path, data) {
     console.warn('[FB] Ошибка записи', path, e.message);
     return false;
   } finally {
-    FB_SAVING--;
-    FB_BUSY--;
+    FB_SAVING--; FB_BUSY--;
   }
 }
 
+// Удаление через PUT null (Firebase-совместимый способ, тот же метод, что и save)
 async function fbDelete(path) {
   try {
     FB_BUSY++;
-    const r = await fetch(`${FB_URL}/${path}.json`, { method: 'DELETE' });
-    if (!r.ok) { console.error('[FB] DELETE failed:', path, r.status); return false; }
+    const r = await fetch(`${FB_URL}/${path}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: 'null'
+    });
+    if (!r.ok) {
+      console.error('[FB] DELETE (PUT null) failed:', path, r.status);
+      // Fallback на DELETE метод
+      const r2 = await fetch(`${FB_URL}/${path}.json`, { method: 'DELETE' });
+      if (!r2.ok) { console.error('[FB] DELETE (method) failed:', path, r2.status); return false; }
+    }
     console.log('[FB] Удалено:', path);
     return true;
   } catch (e) {
@@ -734,6 +738,21 @@ async function fbDelete(path) {
   } finally {
     FB_BUSY--;
   }
+}
+
+async function debugFirebase() {
+  try {
+    const r = await fetch(FB_URL + '/.json?t=' + Date.now(), { cache: 'no-store' });
+    const d = await r.json() || {};
+    const info = '📊 Состояние Firebase:\n\n' +
+      '👥 Users: ' + Object.keys(d.users || {}).length + '\n' +
+      '⭐ Reviews: ' + Object.keys(d.reviews || {}).length + '\n' +
+      '💬 Chat: ' + Object.keys(d.chat || {}).length + '\n' +
+      '🚫 Bans: ' + Object.keys(d.bans || {}).length + '\n\n' +
+      '👤 Пользователи:\n' + Object.values(d.users || {}).map(u => '  • ' + u.nickname + (u.isAdmin ? ' [ADMIN]' : '') + (u.isCreator ? ' [CREATOR]' : '')).join('\n');
+    console.log('[Firebase dump]', d);
+    alert(info);
+  } catch (e) { alert('Ошибка: ' + e.message); }
 }
 
 /* ============================================================
@@ -754,10 +773,7 @@ function safeSet(k, v) { try { localStorage.setItem(k, v); return true; } catch 
 function safeRemove(k) { try { localStorage.removeItem(k); } catch (e) {} }
 function loadJSON(k, fb) { const r = safeGet(k); if (!r) return fb; try { return JSON.parse(r) || fb; } catch (e) { return fb; } }
 
-function loadUsers() {
-  if (FB_READY) return Object.values(FB_DATA.users || {}).filter(Boolean);
-  return loadJSON(K_LOCAL_USERS, []);
-}
+function loadUsers() { if (FB_READY) return Object.values(FB_DATA.users || {}).filter(Boolean); return loadJSON(K_LOCAL_USERS, []); }
 function saveUser(user) {
   if (!user || !user.id) return;
   if (FB_READY) { FB_DATA.users[user.id] = user; fbSave('users/' + user.id, user); }
@@ -766,19 +782,18 @@ function saveUser(user) {
   if (idx >= 0) arr[idx] = user; else arr.push(user);
   safeSet(K_LOCAL_USERS, JSON.stringify(arr));
 }
-function saveUsers(arr) { if (Array.isArray(arr)) arr.forEach(u => saveUser(u)); }
 
 async function deleteUserFromDb(id) {
   delete FB_DATA.users[id];
   const arr = loadJSON(K_LOCAL_USERS, []).filter(u => u.id !== id);
   safeSet(K_LOCAL_USERS, JSON.stringify(arr));
-  if (FB_READY) await fbDelete('users/' + id);
+  if (FB_READY) {
+    const ok = await fbDelete('users/' + id);
+    if (!ok) console.error('[Admin] Не удалось удалить из Firebase:', id);
+  }
 }
 
-function loadReviews() {
-  if (FB_READY) return Object.values(FB_DATA.reviews || {}).filter(Boolean);
-  return loadJSON(K_LOCAL_REVIEWS, []);
-}
+function loadReviews() { if (FB_READY) return Object.values(FB_DATA.reviews || {}).filter(Boolean); return loadJSON(K_LOCAL_REVIEWS, []); }
 function saveReview(review) {
   if (!review || !review.id) return;
   if (FB_READY) { FB_DATA.reviews[review.id] = review; fbSave('reviews/' + review.id, review); }
@@ -787,19 +802,18 @@ function saveReview(review) {
   if (idx >= 0) arr[idx] = review; else arr.unshift(review);
   safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
 }
-function saveReviews(arr) { if (Array.isArray(arr)) arr.forEach(r => saveReview(r)); }
 
 async function deleteReviewFromDb(id) {
   delete FB_DATA.reviews[id];
   const arr = loadJSON(K_LOCAL_REVIEWS, []).filter(r => r.id !== id);
   safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
-  if (FB_READY) await fbDelete('reviews/' + id);
+  if (FB_READY) {
+    const ok = await fbDelete('reviews/' + id);
+    if (!ok) console.error('[Review] Не удалось удалить из Firebase:', id);
+  }
 }
 
-function loadChat() {
-  if (FB_READY) return Object.values(FB_DATA.chat || {}).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
-  return loadJSON(K_LOCAL_CHAT, []);
-}
+function loadChat() { if (FB_READY) return Object.values(FB_DATA.chat || {}).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1); return loadJSON(K_LOCAL_CHAT, []); }
 function saveMessage(msg) {
   if (!msg || !msg.id) return;
   if (FB_READY) { FB_DATA.chat[msg.id] = msg; fbSave('chat/' + msg.id, msg); }
@@ -813,13 +827,13 @@ async function deleteMessageFromDb(id) {
   delete FB_DATA.chat[id];
   const arr = loadJSON(K_LOCAL_CHAT, []).filter(m => m.id !== id);
   safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
-  if (FB_READY) await fbDelete('chat/' + id);
+  if (FB_READY) {
+    const ok = await fbDelete('chat/' + id);
+    if (!ok) console.error('[Chat] Не удалось удалить из Firebase:', id);
+  }
 }
 
-function loadBans() {
-  if (FB_READY) return JSON.parse(JSON.stringify(FB_DATA.bans || {}));
-  return loadJSON(K_LOCAL_BANS, {});
-}
+function loadBans() { if (FB_READY) return JSON.parse(JSON.stringify(FB_DATA.bans || {})); return loadJSON(K_LOCAL_BANS, {}); }
 function saveBan(userId, ban) {
   if (FB_READY) { FB_DATA.bans[userId] = ban; fbSave('bans/' + userId, ban); }
   const obj = loadJSON(K_LOCAL_BANS, {});
@@ -842,18 +856,9 @@ function saveLayoutStore(o) { safeSet(K_LAYOUT, JSON.stringify(o)); }
 async function mergeLocalIntoCloud() {
   if (!FB_READY) return;
   let changed = 0;
-  try {
-    const localUsers = loadJSON(K_LOCAL_USERS, []);
-    for (const u of localUsers) { if (u && u.id && !FB_DATA.users[u.id]) { FB_DATA.users[u.id] = u; await fbSave('users/' + u.id, u); changed++; } }
-  } catch (e) {}
-  try {
-    const localReviews = loadJSON(K_LOCAL_REVIEWS, []);
-    for (const r of localReviews) { if (r && r.id && !FB_DATA.reviews[r.id]) { FB_DATA.reviews[r.id] = r; await fbSave('reviews/' + r.id, r); changed++; } }
-  } catch (e) {}
-  try {
-    const localChat = loadJSON(K_LOCAL_CHAT, []);
-    for (const m of localChat) { if (m && m.id && !FB_DATA.chat[m.id]) { FB_DATA.chat[m.id] = m; await fbSave('chat/' + m.id, m); changed++; } }
-  } catch (e) {}
+  try { const lu = loadJSON(K_LOCAL_USERS, []); for (const u of lu) { if (u && u.id && !FB_DATA.users[u.id]) { FB_DATA.users[u.id] = u; await fbSave('users/' + u.id, u); changed++; } } } catch (e) {}
+  try { const lr = loadJSON(K_LOCAL_REVIEWS, []); for (const r of lr) { if (r && r.id && !FB_DATA.reviews[r.id]) { FB_DATA.reviews[r.id] = r; await fbSave('reviews/' + r.id, r); changed++; } } } catch (e) {}
+  try { const lc = loadJSON(K_LOCAL_CHAT, []); for (const m of lc) { if (m && m.id && !FB_DATA.chat[m.id]) { FB_DATA.chat[m.id] = m; await fbSave('chat/' + m.id, m); changed++; } } } catch (e) {}
   if (changed) console.log('[FB] Перенесено локальных записей:', changed);
 }
 
@@ -872,12 +877,8 @@ function escapeHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;'
 function renderNameWithBadges(u, cls) {
   if (!u) return '';
   const baseCls = cls || 'rn-text';
-  if (u.isCreator) {
-    return `<span class="creator-tag">Создатель</span> <span class="${baseCls}" style="color:#ffb347">${escapeHtml(u.nickname)}</span>`;
-  }
-  if (u.isAdmin) {
-    return `<span class="admin-prefix">Администратор</span> <span class="${baseCls} admin-nick">${escapeHtml(u.nickname)}</span>`;
-  }
+  if (u.isCreator) return `<span class="creator-tag">Создатель</span> <span class="${baseCls}" style="color:#ffb347">${escapeHtml(u.nickname)}</span>`;
+  if (u.isAdmin) return `<span class="admin-prefix">Администратор</span> <span class="${baseCls} admin-nick">${escapeHtml(u.nickname)}</span>`;
   return `<span class="${baseCls}">${escapeHtml(u.nickname)}</span>`;
 }
 function renderAvatar(el, u) {
@@ -886,9 +887,6 @@ function renderAvatar(el, u) {
   else el.textContent = initialsOf(u ? u.nickname : '?');
 }
 
-/* ============================================================
-   ПАНЕЛИ
-   ============================================================ */
 function switchTab(id, el) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   const t = document.getElementById('panel-' + id);
@@ -898,9 +896,6 @@ function switchTab(id, el) {
   if (id === 'reviews') syncReviewsForm();
 }
 
-/* ============================================================
-   БАНЫ
-   ============================================================ */
 function isUserBanned(userId) {
   const bans = loadBans();
   const b = bans[userId];
@@ -943,9 +938,6 @@ function checkBan() {
   return false;
 }
 
-/* ============================================================
-   АВТОРИЗАЦИЯ
-   ============================================================ */
 function migrate() {
   const users = loadUsers();
   users.forEach(u => {
@@ -1132,9 +1124,6 @@ function logout() {
   if (interfaceManageActive) disableInterfaceManage();
 }
 
-/* ============================================================
-   ADMIN PANEL
-   ============================================================ */
 async function openAdminPanel() {
   const me = getCurrentUser();
   if (!me || !me.isAdmin) return;
@@ -1294,12 +1283,16 @@ async function deleteUser(userId) {
   if (user.isCreator) { alert('Нельзя удалить Создателя'); return; }
   if (!me.isCreator && user.isAdmin) { alert('Только Создатель может удалять администраторов'); return; }
   if (!confirm(`Удалить аккаунт "${user.nickname}"?`)) return;
-  await deleteUserFromDb(userId);
+
+  // Удаляем всё связанное с пользователем
   const hisReviews = loadReviews().filter(r => r.userId === userId);
   for (const r of hisReviews) await deleteReviewFromDb(r.id);
   const hisChat = loadChat().filter(m => m.userId === userId);
   for (const m of hisChat) await deleteMessageFromDb(m.id);
   await deleteBan(userId);
+  await deleteUserFromDb(userId);
+
+  // Обновляем UI
   renderAdminUsers();
   renderReviews();
   renderChat();
@@ -1362,9 +1355,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* ============================================================
-   ЭКСПОРТ / ИМПОРТ
-   ============================================================ */
 function exportData() {
   const me = getCurrentUser();
   if (!me || !me.isCreator) return;
@@ -1461,6 +1451,7 @@ function renderReviews() {
   if (amIAdmin) {
     reviewsList.querySelectorAll('.review-delete').forEach(btn => {
       btn.addEventListener('click', async () => {
+        btn.disabled = true;
         await deleteReviewFromDb(btn.dataset.del);
         renderReviews();
       });
@@ -1576,6 +1567,7 @@ function renderChatInto(containerEl) {
       btn.addEventListener('click', async ev => {
         ev.stopPropagation();
         if (!confirm('Удалить сообщение?')) return;
+        btn.disabled = true;
         await deleteMessageFromDb(btn.dataset.delId);
         renderChat();
       });
@@ -1933,19 +1925,40 @@ bgMusic.addEventListener('play', () => setPlayingIcon(true));
 bgMusic.addEventListener('pause', () => setPlayingIcon(false));
 
 /* ============================================================
-   YOUTUBE
+   YOUTUBE — с fallback на прямой iframe
    ============================================================ */
-let ytPlayer = null, musicWasPlayingBeforeVideo = false;
-const tag = document.createElement('script');
-tag.src = 'https://www.youtube.com/iframe_api';
-document.head.appendChild(tag);
+let ytPlayer = null, musicWasPlayingBeforeVideo = false, ytInited = false;
+
+function ytFallbackToIframe() {
+  if (ytInited) return;
+  const el = document.getElementById('ytPlayer');
+  if (!el || el.tagName === 'IFRAME') return;
+  el.outerHTML = '<iframe id="ytPlayer" src="https://www.youtube.com/embed/-NZJbbG1BLY?rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+  console.log('[YT] Использован fallback-iframe');
+}
+
+const ytScript = document.createElement('script');
+ytScript.src = 'https://www.youtube.com/iframe_api';
+ytScript.onerror = () => { console.warn('[YT] API не загрузился'); ytFallbackToIframe(); };
+document.head.appendChild(ytScript);
+
 window.onYouTubeIframeAPIReady = function () {
-  ytPlayer = new YT.Player('ytPlayer', {
-    videoId: '-NZJbbG1BLY',
-    playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
-    events: { onStateChange: onPlayerStateChange }
-  });
+  try {
+    ytPlayer = new YT.Player('ytPlayer', {
+      videoId: '-NZJbbG1BLY',
+      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
+      events: { onStateChange: onPlayerStateChange }
+    });
+    ytInited = true;
+  } catch (e) {
+    console.warn('[YT] Ошибка:', e);
+    ytFallbackToIframe();
+  }
 };
+
+// Если через 3.5 сек API не загрузился — рендерим прямой iframe
+setTimeout(ytFallbackToIframe, 3500);
+
 function onPlayerStateChange(event) {
   const state = event.data;
   if (state === 1 || state === 3) { if (!bgMusic.paused) { musicWasPlayingBeforeVideo = true; bgMusic.pause(); } return; }
