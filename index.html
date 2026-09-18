@@ -327,6 +327,71 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .ban-duration:hover { background: rgba(255,140,90,.08); color: var(--text); }
 .ban-duration.active { background: linear-gradient(135deg, rgba(255,46,99,.22), rgba(255,92,43,.12)); border-color: rgba(255,46,99,.6); color: #ffb0c7; }
 
+/* ===== Кнопка «Сохранить» в топбаре (режим редактирования) ===== */
+.edit-save-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 16px; border-radius: 100px;
+  background: linear-gradient(135deg, #ffb347, #ff9500);
+  color: #1a0a05; font: inherit; font-family: 'Unbounded', sans-serif;
+  font-weight: 700; font-size: .68rem; letter-spacing: .06em;
+  text-transform: uppercase; white-space: nowrap;
+  border: 1px solid #ffb37a; cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255,179,71,.45);
+  transition: all .22s; animation: saveBtnIn .35s ease;
+}
+.edit-save-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,179,71,.65); }
+.edit-save-btn:disabled { opacity: .6; cursor: default; transform: none; }
+@keyframes saveBtnIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== Кнопка закрепления отзыва (только Создатель) ===== */
+.review-pin {
+  position: absolute; top: 12px; right: 44px;
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid rgba(255,179,71,.4);
+  background: rgba(255,179,71,.12); color: #ffb347;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; line-height: 1; padding: 0;
+  transition: all .2s; z-index: 3;
+}
+.review-pin:hover { background: rgba(255,179,71,.3); transform: scale(1.12); }
+.review-pin.active {
+  background: linear-gradient(135deg, #ffb347, #ff8c00);
+  color: #1a0a05; border-color: #ffb37a;
+  box-shadow: 0 0 14px rgba(255,179,71,.6);
+}
+
+/* ===== Закреплённый отзыв ===== */
+.review-item.pinned {
+  border-color: rgba(255,179,71,.5);
+  background: linear-gradient(160deg, rgba(42,26,10,.78), rgba(20,12,8,.7));
+  box-shadow: 0 12px 32px rgba(255,179,71,.15);
+}
+.review-item.pinned::before {
+  content: '📌 Закреплено';
+  position: absolute; top: -10px; left: 14px;
+  padding: 3px 10px; border-radius: 100px;
+  background: linear-gradient(135deg, #ffb347, #ff8c00);
+  color: #1a0a05; font-family: 'Unbounded', sans-serif;
+  font-size: .56rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(255,179,71,.55);
+}
+
+/* ===== Toast-уведомление ===== */
+.toast {
+  position: fixed; bottom: 32px; left: 50%;
+  transform: translateX(-50%) translateY(24px);
+  padding: 12px 24px; border-radius: 14px;
+  background: linear-gradient(135deg, #ffb347, #ff9500);
+  color: #1a0a05; font-family: 'Unbounded', sans-serif;
+  font-weight: 700; font-size: .82rem;
+  box-shadow: 0 16px 44px rgba(255,179,71,.55);
+  opacity: 0; pointer-events: none;
+  transition: all .35s cubic-bezier(.2,.8,.3,1);
+  z-index: 99999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 @media (max-width: 1180px) { .hero-inner { gap: 36px; } .reviews-layout { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); } }
 @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } .reviews-layout { grid-template-columns: 1fr; } .review-form-card { position: static; } }
 @media (max-width: 860px) {
@@ -378,6 +443,8 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 <canvas id="embers"></canvas>
 <audio id="bgMusic" src="VipFirestorm Menu.mp3" loop preload="auto" playsinline></audio>
 
+<div class="toast" id="toast"></div>
+
 <aside class="chat-bar" id="chatBar">
   <div class="chat-mini">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -419,7 +486,10 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 
   <main class="main">
     <header class="topbar">
-      <div class="crumb">VipFirestorm · <b>Уникальный аддон для сервера Firestorm</b></div>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; min-width:0;">
+        <div class="crumb">VipFirestorm · <b>Уникальный аддон для сервера Firestorm</b></div>
+        <button class="edit-save-btn" id="editSaveBtn" style="display:none" onclick="saveEditsFromTopbar()">💾 Сохранить</button>
+      </div>
       <div class="chips">
         <div class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачали: <b data-count>6</b></div>
         <a class="chip chip-youtube" href="https://www.youtube.com/@Expilliar" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span>YouTube — <b>Expilliar</b></span></a>
@@ -1300,11 +1370,28 @@ starPicker.addEventListener('mouseleave', () => starBtns.forEach(b => b.classLis
 
 function formatDate(iso) { try { const d = new Date(iso); return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear(); } catch (e) { return ''; } }
 
+async function togglePinReview(reviewId) {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  const r = FB_DATA.reviews[reviewId];
+  if (!r) return;
+  r.pinned = !r.pinned;
+  if (r.pinned) r.pinnedAt = Date.now();
+  else delete r.pinnedAt;
+  saveReview(r);
+  showToast(r.pinned ? '📌 Отзыв закреплён' : 'Отзыв откреплён');
+}
+
 function renderReviews() {
   if (!reviewsList) return;
-  const list = loadReviews().slice().sort((a, b) => (a.date || '') < (b.date || '') ? 1 : -1);
+  const list = loadReviews().slice().sort((a, b) => {
+    const pa = a.pinned ? 1 : 0, pb = b.pinned ? 1 : 0;
+    if (pa !== pb) return pb - pa;
+    return (a.date || '') < (b.date || '') ? 1 : -1;
+  });
   const me = getCurrentUser();
   const amIAdmin = me && me.isAdmin;
+  const amICreator = me && me.isCreator;
   if (!list.length) { reviewsList.innerHTML = `<div class="reviews-empty"><b>Пока отзывов нет</b>Стань первым.</div>`; return; }
   const users = loadUsers();
   reviewsList.innerHTML = list.map(r => {
@@ -1318,12 +1405,22 @@ function renderReviews() {
       avatarHtml = initialsOf(r.name);
       nameHtml = `<span class="rn-text">${escapeHtml(r.name)}</span>`;
     }
+    const pinBtn = amICreator ? `<button type="button" class="review-pin ${r.pinned ? 'active' : ''}" data-pin="${escapeHtml(r.id)}" title="${r.pinned ? 'Открепить' : 'Закрепить'}">📌</button>` : '';
     const delBtn = amIAdmin ? `<button type="button" class="review-delete" data-del="${escapeHtml(r.id)}">×</button>` : '';
-    return `<article class="review-item" data-id="${escapeHtml(r.id)}">${delBtn}<div class="review-author"><div class="review-avatar">${avatarHtml}</div><div class="review-head"><div class="review-name">${nameHtml}</div><div class="review-date">${formatDate(r.date)}</div></div></div><div class="review-stars">${stars}</div>${r.text ? `<div class="review-text">${escapeHtml(r.text)}</div>` : ''}</article>`;
+    return `<article class="review-item ${r.pinned ? 'pinned' : ''}" data-id="${escapeHtml(r.id)}">${pinBtn}${delBtn}<div class="review-author"><div class="review-avatar">${avatarHtml}</div><div class="review-head"><div class="review-name">${nameHtml}</div><div class="review-date">${formatDate(r.date)}</div></div></div><div class="review-stars">${stars}</div>${r.text ? `<div class="review-text">${escapeHtml(r.text)}</div>` : ''}</article>`;
   }).join('');
   if (amIAdmin) {
     reviewsList.querySelectorAll('.review-delete').forEach(btn => {
       btn.addEventListener('click', async () => { btn.disabled = true; await deleteReviewFromDb(btn.dataset.del); renderReviews(); });
+    });
+  }
+  if (amICreator) {
+    reviewsList.querySelectorAll('.review-pin').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        await togglePinReview(btn.dataset.pin);
+        renderReviews();
+      });
     });
   }
 }
@@ -1476,6 +1573,7 @@ let editTargets = [];
 
 function isEditableEl(el) {
   if (!el || el.nodeType !== 1) return false;
+  if (el.id === 'editSaveBtn' || el.classList.contains('edit-save-btn')) return false;
   const tag = el.tagName;
   if (!['H1','H2','H3','H4','H5','H6','P','SPAN','A','BUTTON','LABEL','LI','STRONG','EM','B','CODE'].includes(tag)) return false;
   if (el.closest('#reviewForm, #chatBar, .modal, .rail, .topbar .music-wrap, .ban-overlay, #banOverlay, .chat-bar')) return false;
@@ -1524,6 +1622,21 @@ function handleEditBlur(e) {
   console.log('[Edit] Сохранено:', key, '=', current.slice(0, 40));
 }
 
+function showToast(text) {
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+function saveEditsFromTopbar() {
+  if (!editModeActive) return;
+  disableEditMode();
+  showToast('💾 Правки сохранены');
+}
+
 function enableEditMode() {
   const me = getCurrentUser();
   if (!me || !me.isCreator) return;
@@ -1544,6 +1657,8 @@ function enableEditMode() {
   });
   const btn = document.getElementById('editModeBtn');
   if (btn) { btn.classList.add('active'); btn.textContent = '✏️ Режим редактирования ВКЛ'; }
+  const saveBtn = document.getElementById('editSaveBtn');
+  if (saveBtn) saveBtn.style.display = '';
   window.addEventListener('beforeunload', editBeforeUnload);
   console.log('[Edit] Включён, элементов:', editTargets.length);
 }
@@ -1570,6 +1685,8 @@ function disableEditMode() {
   editModeActive = false;
   const btn = document.getElementById('editModeBtn');
   if (btn) { btn.classList.remove('active'); btn.textContent = '✏️ Режим редактирования'; }
+  const saveBtn = document.getElementById('editSaveBtn');
+  if (saveBtn) saveBtn.style.display = 'none';
   window.removeEventListener('beforeunload', editBeforeUnload);
   console.log('[Edit] Выключен, сохранено:', Object.keys(edits).length);
 }
