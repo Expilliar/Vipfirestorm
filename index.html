@@ -586,7 +586,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       <button type="button" class="edit-mode-btn" id="interfaceManageBtn" onclick="toggleInterfaceManage()">🎨 Управление Интерфейсом</button>
       <button type="button" class="admin-btn" onclick="exportData()">💾 Экспорт базы</button>
       <button type="button" class="admin-btn" onclick="document.getElementById('importInput').click()">📥 Импорт базы</button>
-      <button type="button" class="admin-btn" onclick="forceResyncToFirebase()">🔄 Перезаписать Firebase</button>
       <button type="button" class="admin-btn" onclick="clearLocalCache()">🧹 Очистить локальный кэш</button>
       <input type="file" id="importInput" accept=".json,application/json" style="display:none" onchange="importData(this)">
     </div>
@@ -680,9 +679,7 @@ function setCloudStatus(state, text) {
 }
 
 async function fbLoadAll(force) {
-  // НЕ перезагружаем во время записи/удаления (кроме принудительных вызовов)
   if (!force && (FB_BUSY > 0 || FB_SAVING > 0)) {
-    console.log('[FB] Загрузка пропущена — идёт запись');
     return false;
   }
   try {
@@ -732,8 +729,8 @@ async function fbDelete(path) {
       headers: { 'Content-Type': 'application/json' },
       body: 'null'
     });
-    if (!r.ok) { console.error('[FB] DELETE (PUT null) failed:', path, r.status); return false; }
-    console.log('[FB] Удалено (PUT null):', path);
+    if (!r.ok) { console.error('[FB] DELETE failed:', path, r.status); return false; }
+    console.log('[FB] Удалено:', path);
     return true;
   } catch (e) {
     console.error('[FB] DELETE error:', path, e.message);
@@ -777,49 +774,25 @@ async function debugFirebase() {
   } catch (e) { alert('Ошибка: ' + e.message); }
 }
 
-async function forceResyncToFirebase() {
-  const me = getCurrentUser();
-  if (!me || !me.isCreator) { alert('Только Создатель'); return; }
-  if (!confirm('Это перезапишет всю базу Firebase данными из памяти браузера. Продолжить?')) return;
-  try {
-    FB_BUSY++;
-    const r = await fetch(FB_URL + '/.json', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(FB_DATA)
-    });
-    FB_BUSY--;
-    if (!r.ok) { alert('Ошибка: ' + r.status); return; }
-    alert('✓ Вся база перезаписана в Firebase');
-    console.log('[FB] Force resync OK');
-  } catch (e) { FB_BUSY--; alert('Ошибка: ' + e.message); }
-}
-
 function clearLocalCache() {
   const me = getCurrentUser();
   if (!me || !me.isCreator) return;
-  if (!confirm('Очистить локальный кэш браузера?\n\nПосле этого страница перезагрузится и подтянет чистые данные только с сервера. Миграция старых данных не запустится.')) return;
-  safeRemove(K_LOCAL_USERS);
-  safeRemove(K_LOCAL_REVIEWS);
-  safeRemove(K_LOCAL_CHAT);
-  safeRemove(K_LOCAL_BANS);
-  safeRemove(K_MIGRATED);
-  safeSet(K_MIGRATED, '1'); // ставим флаг, чтобы миграция не запустилась
+  if (!confirm('Очистить локальный кэш браузера?')) return;
+  safeRemove('vf_users_v1');
+  safeRemove('vf_reviews_v1');
+  safeRemove('vf_chat_v1');
+  safeRemove('vf_bans_v1');
+  safeRemove('vf_migrated_v1');
   alert('Кэш очищен. Страница перезагрузится.');
   location.reload();
 }
 
 /* ============================================================
-   КОНСТАНТЫ
+   КОНСТАНТЫ + ХЕЛПЕРЫ
    ============================================================ */
 const K_SESSION = 'vf_session_v1';
 const K_EDITS = 'vf_edits_v1';
 const K_LAYOUT = 'vf_layout_v1';
-const K_LOCAL_USERS = 'vf_users_v1';
-const K_LOCAL_REVIEWS = 'vf_reviews_v1';
-const K_LOCAL_CHAT = 'vf_chat_v1';
-const K_LOCAL_BANS = 'vf_bans_v1';
-const K_MIGRATED = 'vf_migrated_v1';
 const CHAT_MAX = 500;
 const CREATOR_NICKNAME = 'ищусебя';
 
@@ -828,89 +801,60 @@ function safeSet(k, v) { try { localStorage.setItem(k, v); return true; } catch 
 function safeRemove(k) { try { localStorage.removeItem(k); } catch (e) {} }
 function loadJSON(k, fb) { const r = safeGet(k); if (!r) return fb; try { return JSON.parse(r) || fb; } catch (e) { return fb; } }
 
-function loadUsers() { if (FB_READY) return Object.values(FB_DATA.users || {}).filter(Boolean); return loadJSON(K_LOCAL_USERS, []); }
+// ВАЖНО: все данные читаем ТОЛЬКО из Firebase. localStorage больше не используется для контента.
+function loadUsers() { return Object.values(FB_DATA.users || {}).filter(Boolean); }
+function loadReviews() { return Object.values(FB_DATA.reviews || {}).filter(Boolean); }
+function loadChat() { return Object.values(FB_DATA.chat || {}).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1); }
+function loadBans() { return JSON.parse(JSON.stringify(FB_DATA.bans || {})); }
+
 function saveUser(user) {
   if (!user || !user.id) return;
-  if (FB_READY) { FB_DATA.users[user.id] = user; fbSave('users/' + user.id, user); }
-  const arr = loadJSON(K_LOCAL_USERS, []);
-  const idx = arr.findIndex(u => u.id === user.id);
-  if (idx >= 0) arr[idx] = user; else arr.push(user);
-  safeSet(K_LOCAL_USERS, JSON.stringify(arr));
+  FB_DATA.users[user.id] = user;
+  fbSave('users/' + user.id, user);
 }
-
 async function deleteUserFromDb(id) {
   FB_BUSY++;
   delete FB_DATA.users[id];
-  const arr = loadJSON(K_LOCAL_USERS, []).filter(u => u.id !== id);
-  safeSet(K_LOCAL_USERS, JSON.stringify(arr));
-  if (FB_READY) {
-    await fbDelete('users/' + id);
-    await fbPutBranch('users');
-  }
+  await fbDelete('users/' + id);
+  await fbPutBranch('users');
   FB_BUSY--;
 }
 
-function loadReviews() { if (FB_READY) return Object.values(FB_DATA.reviews || {}).filter(Boolean); return loadJSON(K_LOCAL_REVIEWS, []); }
 function saveReview(review) {
   if (!review || !review.id) return;
-  if (FB_READY) { FB_DATA.reviews[review.id] = review; fbSave('reviews/' + review.id, review); }
-  const arr = loadJSON(K_LOCAL_REVIEWS, []);
-  const idx = arr.findIndex(r => r.id === review.id);
-  if (idx >= 0) arr[idx] = review; else arr.unshift(review);
-  safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
+  FB_DATA.reviews[review.id] = review;
+  fbSave('reviews/' + review.id, review);
 }
-
 async function deleteReviewFromDb(id) {
   FB_BUSY++;
   delete FB_DATA.reviews[id];
-  const arr = loadJSON(K_LOCAL_REVIEWS, []).filter(r => r.id !== id);
-  safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
-  if (FB_READY) {
-    await fbDelete('reviews/' + id);
-    await fbPutBranch('reviews');
-  }
+  await fbDelete('reviews/' + id);
+  await fbPutBranch('reviews');
   FB_BUSY--;
 }
 
-function loadChat() { if (FB_READY) return Object.values(FB_DATA.chat || {}).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1); return loadJSON(K_LOCAL_CHAT, []); }
 function saveMessage(msg) {
   if (!msg || !msg.id) return;
-  if (FB_READY) { FB_DATA.chat[msg.id] = msg; fbSave('chat/' + msg.id, msg); }
-  let arr = loadJSON(K_LOCAL_CHAT, []);
-  arr.push(msg);
-  if (arr.length > CHAT_MAX) arr = arr.slice(-CHAT_MAX);
-  safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
+  FB_DATA.chat[msg.id] = msg;
+  fbSave('chat/' + msg.id, msg);
 }
-
 async function deleteMessageFromDb(id) {
   FB_BUSY++;
   delete FB_DATA.chat[id];
-  const arr = loadJSON(K_LOCAL_CHAT, []).filter(m => m.id !== id);
-  safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
-  if (FB_READY) {
-    await fbDelete('chat/' + id);
-    await fbPutBranch('chat');
-  }
+  await fbDelete('chat/' + id);
+  await fbPutBranch('chat');
   FB_BUSY--;
 }
 
-function loadBans() { if (FB_READY) return JSON.parse(JSON.stringify(FB_DATA.bans || {})); return loadJSON(K_LOCAL_BANS, {}); }
 function saveBan(userId, ban) {
-  if (FB_READY) { FB_DATA.bans[userId] = ban; fbSave('bans/' + userId, ban); }
-  const obj = loadJSON(K_LOCAL_BANS, {});
-  obj[userId] = ban;
-  safeSet(K_LOCAL_BANS, JSON.stringify(obj));
+  FB_DATA.bans[userId] = ban;
+  fbSave('bans/' + userId, ban);
 }
 async function deleteBan(userId) {
   FB_BUSY++;
   delete FB_DATA.bans[userId];
-  const obj = loadJSON(K_LOCAL_BANS, {});
-  delete obj[userId];
-  safeSet(K_LOCAL_BANS, JSON.stringify(obj));
-  if (FB_READY) {
-    await fbDelete('bans/' + userId);
-    await fbPutBranch('bans');
-  }
+  await fbDelete('bans/' + userId);
+  await fbPutBranch('bans');
   FB_BUSY--;
 }
 
@@ -918,21 +862,6 @@ function loadEdits() { return loadJSON(K_EDITS, {}); }
 function saveEdits(o) { safeSet(K_EDITS, JSON.stringify(o)); }
 function loadLayout() { return loadJSON(K_LAYOUT, {}); }
 function saveLayoutStore(o) { safeSet(K_LAYOUT, JSON.stringify(o)); }
-
-async function mergeLocalIntoCloud() {
-  if (!FB_READY) return;
-  // Запускается РОВНО ОДИН РАЗ за всё время
-  if (safeGet(K_MIGRATED)) {
-    console.log('[FB] Миграция уже была выполнена ранее — пропуск');
-    return;
-  }
-  let changed = 0;
-  try { const lu = loadJSON(K_LOCAL_USERS, []); for (const u of lu) { if (u && u.id && !FB_DATA.users[u.id]) { FB_DATA.users[u.id] = u; await fbSave('users/' + u.id, u); changed++; } } } catch (e) {}
-  try { const lr = loadJSON(K_LOCAL_REVIEWS, []); for (const r of lr) { if (r && r.id && !FB_DATA.reviews[r.id]) { FB_DATA.reviews[r.id] = r; await fbSave('reviews/' + r.id, r); changed++; } } } catch (e) {}
-  try { const lc = loadJSON(K_LOCAL_CHAT, []); for (const m of lc) { if (m && m.id && !FB_DATA.chat[m.id]) { FB_DATA.chat[m.id] = m; await fbSave('chat/' + m.id, m); changed++; } } } catch (e) {}
-  safeSet(K_MIGRATED, '1');
-  console.log('[FB] Миграция завершена. Перенесено:', changed, '— флаг поставлен, больше не повторится');
-}
 
 function hashPassword(pwd) {
   let h = 5381; const s = 'vf::' + pwd + '::salt';
@@ -1356,46 +1285,37 @@ async function deleteUser(userId) {
   if (!me.isCreator && user.isAdmin) { alert('Только Создатель может удалять администраторов'); return; }
   if (!confirm(`Удалить аккаунт "${user.nickname}"?`)) return;
 
-  console.log('[Admin] Начинаю удаление:', user.nickname, user.id);
+  console.log('[Admin] Удаляю:', user.nickname, user.id);
 
+  // Удаляем его отзывы
   const hisReviews = loadReviews().filter(r => r.userId === userId);
-  for (const r of hisReviews) {
-    delete FB_DATA.reviews[r.id];
-    const arr = loadJSON(K_LOCAL_REVIEWS, []).filter(x => x.id !== r.id);
-    safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
-  }
-  if (FB_READY && hisReviews.length) await fbPutBranch('reviews');
+  for (const r of hisReviews) { delete FB_DATA.reviews[r.id]; await fbDelete('reviews/' + r.id); }
+  if (hisReviews.length) await fbPutBranch('reviews');
 
+  // Удаляем его сообщения
   const hisChat = loadChat().filter(m => m.userId === userId);
-  for (const m of hisChat) {
-    delete FB_DATA.chat[m.id];
-    const arr = loadJSON(K_LOCAL_CHAT, []).filter(x => x.id !== m.id);
-    safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
-  }
-  if (FB_READY && hisChat.length) await fbPutBranch('chat');
+  for (const m of hisChat) { delete FB_DATA.chat[m.id]; await fbDelete('chat/' + m.id); }
+  if (hisChat.length) await fbPutBranch('chat');
 
+  // Удаляем бан
   await deleteBan(userId);
 
+  // Удаляем самого юзера
   delete FB_DATA.users[userId];
-  const arr = loadJSON(K_LOCAL_USERS, []).filter(u => u.id !== userId);
-  safeSet(K_LOCAL_USERS, JSON.stringify(arr));
-  if (FB_READY) {
-    await fbDelete('users/' + userId);
-    await fbPutBranch('users');
-  }
+  await fbDelete('users/' + userId);
+  await fbPutBranch('users');
 
+  // Проверяем
   await fbLoadAll(true);
   const check = loadUsers().find(u => u.id === userId);
   if (check) {
-    alert('⚠️ Ошибка: пользователь всё ещё в Firebase. Проверь правила базы.\n\nОткрой F12 → Console для деталей.');
-    console.error('[Admin] НЕ УДАЛОСЬ удалить юзера из Firebase:', userId, check);
+    alert('⚠️ Не удалось удалить из Firebase. Проверь правила базы.');
+    console.error('[Admin] Юзер всё ещё в Firebase:', userId);
   } else {
-    console.log('[Admin] ✓ Удалён окончательно:', user.nickname);
+    console.log('[Admin] ✓ Удалён:', user.nickname);
   }
 
-  renderAdminUsers();
-  renderReviews();
-  renderChat();
+  renderAdminUsers(); renderReviews(); renderChat();
 }
 
 let banTarget = { userId: null, nick: null, minutes: 0 };
@@ -2105,6 +2025,15 @@ if (!isTouch) {
    ИНИЦИАЛИЗАЦИЯ
    ============================================================ */
 (async function init() {
+  // Принудительно очищаем старые локальные данные, чтобы они НИКОГДА не вернулись
+  try {
+    localStorage.removeItem('vf_users_v1');
+    localStorage.removeItem('vf_reviews_v1');
+    localStorage.removeItem('vf_chat_v1');
+    localStorage.removeItem('vf_bans_v1');
+    localStorage.removeItem('vf_migrated_v1');
+  } catch (e) {}
+
   updateAuthUI(); renderReviews(); renderChat();
   migrate();
   initDragKeys(); applyLayout(); applyEdits();
@@ -2112,7 +2041,7 @@ if (!isTouch) {
   setCloudStatus('offline', 'Подключение...');
   const ok = await fbLoadAll(true);
   if (ok) {
-    await mergeLocalIntoCloud();
+    // Миграция ОТКЛЮЧЕНА — данных в localStorage больше нет, мигрировать нечего
     migrate();
     updateAuthUI(); renderReviews(); renderChat();
     checkBan();
@@ -2132,7 +2061,7 @@ if (!isTouch) {
 
   setInterval(() => { checkBan(); }, 60000);
   console.log('[VF] Готово. Облако:', FB_READY ? 'ONLINE' : 'OFFLINE');
-  console.log('[VF] Build v7.0 — Миграция отключена навсегда (флаг vf_migrated_v1)');
+  console.log('[VF] Build v8.0 — Миграция удалена полностью, localStorage очищен');
 })();
 </script>
 </body>
