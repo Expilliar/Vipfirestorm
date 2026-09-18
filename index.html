@@ -181,7 +181,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .review-name { display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; font-family: 'Unbounded', sans-serif; font-size: .92rem; font-weight: 700; }
 .review-name .rn-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .review-date { font-size: .68rem; color: var(--text-mute); letter-spacing: .06em; text-transform: uppercase; }
-.review-stars { display: flex; gap: 2px; margin-bottom: 10px; font-size: 1rem; color: #ffb347; }
+.review-stars { display: flex; gap: 2px; margin-bottom: 10px; font-size: 1rem; color: #ffb347; align-items: center; }
 .review-stars .empty { color: rgba(255,255,255,.14); }
 .review-text { color: var(--text-dim); font-size: .9rem; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
 .reviews-empty { grid-column: 1 / -1; padding: 56px 24px; text-align: center; border-radius: 20px; border: 1px dashed rgba(255,255,255,.12); color: var(--text-mute); }
@@ -327,7 +327,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .ban-duration:hover { background: rgba(255,140,90,.08); color: var(--text); }
 .ban-duration.active { background: linear-gradient(135deg, rgba(255,46,99,.22), rgba(255,92,43,.12)); border-color: rgba(255,46,99,.6); color: #ffb0c7; }
 
-/* ===== Кнопка «Сохранить» в топбаре (режим редактирования) ===== */
+/* ===== Кнопки в топбаре (режим редактирования) ===== */
 .edit-save-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 6px 16px; border-radius: 100px;
@@ -342,6 +342,22 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .edit-save-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,179,71,.65); }
 .edit-save-btn:disabled { opacity: .6; cursor: default; transform: none; }
 @keyframes saveBtnIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+.edit-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 10px;
+  background: rgba(255,179,71,.12); color: #ffb347;
+  border: 1px solid rgba(255,179,71,.45);
+  font: inherit; font-size: 1.05rem; font-weight: 700; line-height: 1;
+  cursor: pointer; transition: all .2s; padding: 0;
+  animation: saveBtnIn .35s ease;
+}
+.edit-icon-btn:hover:not(:disabled) {
+  background: rgba(255,179,71,.26);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255,179,71,.35);
+}
+.edit-icon-btn:disabled { opacity: .32; cursor: not-allowed; }
 
 /* ===== Кнопка закрепления отзыва (только Создатель) ===== */
 .review-pin {
@@ -488,6 +504,8 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     <header class="topbar">
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; min-width:0;">
         <div class="crumb">VipFirestorm · <b>Уникальный аддон для сервера Firestorm</b></div>
+        <button class="edit-icon-btn" id="editUndoBtn" style="display:none" onclick="undoEdit()" title="Отменить (Ctrl+Z)">↶</button>
+        <button class="edit-icon-btn" id="editRedoBtn" style="display:none" onclick="redoEdit()" title="Повторить (Ctrl+Y)">↷</button>
         <button class="edit-save-btn" id="editSaveBtn" style="display:none" onclick="saveEditsFromTopbar()">💾 Сохранить</button>
       </div>
       <div class="chips">
@@ -579,7 +597,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
             </div>
             <div class="form-field" id="nameField"><label for="reviewName">Имя <span class="req">*</span></label><input type="text" id="reviewName" placeholder="Твой ник" maxlength="40"></div>
             <div class="form-field">
-              <label>Оценка <span class="req">*</span></label>
+              <label>Оценка <span class="req" id="ratingReq">*</span></label>
               <div class="star-picker" id="starPicker">
                 <button type="button" class="star-pick" data-v="1">★</button><button type="button" class="star-pick" data-v="2">★</button><button type="button" class="star-pick" data-v="3">★</button><button type="button" class="star-pick" data-v="4">★</button><button type="button" class="star-pick" data-v="5">★</button>
               </div>
@@ -1395,7 +1413,10 @@ function renderReviews() {
   if (!list.length) { reviewsList.innerHTML = `<div class="reviews-empty"><b>Пока отзывов нет</b>Стань первым.</div>`; return; }
   const users = loadUsers();
   reviewsList.innerHTML = list.map(r => {
-    const stars = Array.from({length: 5}, (_, i) => `<span class="${i < r.rating ? '' : 'empty'}">★</span>`).join('');
+    const hasRating = typeof r.rating === 'number' && r.rating >= 1;
+    const stars = hasRating
+      ? Array.from({length: 5}, (_, i) => `<span class="${i < r.rating ? '' : 'empty'}">★</span>`).join('')
+      : `<span style="font-family:'Unbounded',sans-serif;font-size:.6rem;color:var(--text-mute);letter-spacing:.1em;text-transform:uppercase;">Без оценки</span>`;
     let avatarHtml, nameHtml;
     const linked = r.userId ? users.find(u => u.id === r.userId) : null;
     if (linked) {
@@ -1430,7 +1451,10 @@ function syncReviewsForm() {
   const note = document.getElementById('loggedNote');
   const noteAv = document.getElementById('loggedAvatarMini');
   const noteName = document.getElementById('loggedNameMini');
+  const ratingReq = document.getElementById('ratingReq');
   if (!note) return;
+  const isPriv = !!(u && (u.isAdmin || u.isCreator));
+  if (ratingReq) ratingReq.style.display = isPriv ? 'none' : '';
   if (u) {
     nameField.style.display = 'none'; nameInput.value = u.nickname;
     note.style.display = ''; noteName.innerHTML = renderNameWithBadges(u, ''); renderAvatar(noteAv, u);
@@ -1452,10 +1476,15 @@ form.addEventListener('submit', async e => {
   const name = u ? u.nickname : nameInput.value.trim();
   const text = textInput.value.trim();
   const rating = parseInt(ratingInput.value, 10) || 0;
+  const isPrivileged = !!(u && (u.isAdmin || u.isCreator));
   let ok = true;
   if (!name) { nameInput.classList.add('error'); ok = false; }
-  if (rating < 1 || rating > 5) { starPicker.style.filter = 'drop-shadow(0 0 10px rgba(255,46,99,.6))'; setTimeout(() => starPicker.style.filter = '', 900); ok = false; }
-  if (!ok) { showMsg('Заполни обязательные поля.', 'err'); return; }
+  if (!isPrivileged && (rating < 1 || rating > 5)) {
+    starPicker.style.filter = 'drop-shadow(0 0 10px rgba(255,46,99,.6))';
+    setTimeout(() => starPicker.style.filter = '', 900);
+    ok = false;
+  }
+  if (!ok) { showMsg(isPrivileged ? 'Заполни обязательные поля.' : 'Поставь оценку и заполни обязательные поля.', 'err'); return; }
   const review = { id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8), name, text, rating, date: new Date().toISOString(), userId: u ? u.id : null };
   saveReview(review); renderReviews();
   form.reset(); currentRating = 0; ratingInput.value = 0;
@@ -1570,10 +1599,14 @@ chatInput.addEventListener('blur', () => { setTimeout(() => { if (!chatBar.match
    ============================================================ */
 let editModeActive = false;
 let editTargets = [];
+let editHistory = [];
+let editHistoryIndex = -1;
+let editSaveLock = 0;  // timestamp until which SSE-applied edits are ignored
 
 function isEditableEl(el) {
   if (!el || el.nodeType !== 1) return false;
-  if (el.id === 'editSaveBtn' || el.classList.contains('edit-save-btn')) return false;
+  if (['editSaveBtn','editUndoBtn','editRedoBtn'].includes(el.id)) return false;
+  if (el.classList.contains('edit-save-btn') || el.classList.contains('edit-icon-btn')) return false;
   const tag = el.tagName;
   if (!['H1','H2','H3','H4','H5','H6','P','SPAN','A','BUTTON','LABEL','LI','STRONG','EM','B','CODE'].includes(tag)) return false;
   if (el.closest('#reviewForm, #chatBar, .modal, .rail, .topbar .music-wrap, .ban-overlay, #banOverlay, .chat-bar')) return false;
@@ -1606,20 +1639,65 @@ function computeEditKey(el) {
   return parts.join('>');
 }
 
-function handleEditKeydown(e) { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.target.blur(); } }
+function handleEditKeydown(e) {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); e.target.blur(); return; }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z' && !e.shiftKey) {
+    e.preventDefault(); undoEdit(); return;
+  }
+  if ((e.ctrlKey || e.metaKey) && (e.key.toLowerCase() === 'y' || (e.shiftKey && e.key.toLowerCase() === 'z'))) {
+    e.preventDefault(); redoEdit(); return;
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+    e.preventDefault(); saveEditsFromTopbar(); return;
+  }
+}
+
 function handleEditBlur(e) {
   if (!editModeActive) return;
   const el = e.target;
   if (!el || el.nodeType !== 1) return;
   const key = el.dataset.vfEditKey;
   if (!key) return;
-  const current = el.innerHTML.trim();
-  const original = (el.dataset.vfOriginal || '').trim();
-  const edits = FB_DATA.edits || (FB_DATA.edits = {});
-  if (current && current !== original) edits[key] = current;
-  else delete edits[key];
-  fbSave('edits', edits);
-  console.log('[Edit] Сохранено:', key, '=', current.slice(0, 40));
+  const before = el.dataset.vfLastValue || '';
+  const after = el.innerHTML;
+  if (before === after) return;
+  editHistory = editHistory.slice(0, editHistoryIndex + 1);
+  editHistory.push({ el, before, after });
+  editHistoryIndex = editHistory.length - 1;
+  el.dataset.vfLastValue = after;
+  updateUndoRedoButtons();
+  console.log('[Edit] Изменено:', key);
+}
+
+function updateUndoRedoButtons() {
+  const u = document.getElementById('editUndoBtn');
+  const r = document.getElementById('editRedoBtn');
+  if (u) u.disabled = editHistoryIndex < 0;
+  if (r) r.disabled = editHistoryIndex >= editHistory.length - 1;
+}
+
+function undoEdit() {
+  if (!editModeActive) return;
+  if (editHistoryIndex < 0) return;
+  const h = editHistory[editHistoryIndex];
+  if (h.el && h.el.isConnected) {
+    h.el.innerHTML = h.before;
+    h.el.dataset.vfLastValue = h.before;
+  }
+  editHistoryIndex--;
+  updateUndoRedoButtons();
+}
+
+function redoEdit() {
+  if (!editModeActive) return;
+  if (editHistoryIndex >= editHistory.length - 1) return;
+  editHistoryIndex++;
+  const h = editHistory[editHistoryIndex];
+  if (h.el && h.el.isConnected) {
+    h.el.innerHTML = h.after;
+    h.el.dataset.vfLastValue = h.after;
+  }
+  updateUndoRedoButtons();
 }
 
 function showToast(text) {
@@ -1628,12 +1706,12 @@ function showToast(text) {
   t.textContent = text;
   t.classList.add('show');
   clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => t.classList.remove('show'), 2000);
+  showToast._t = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-function saveEditsFromTopbar() {
+async function saveEditsFromTopbar() {
   if (!editModeActive) return;
-  disableEditMode();
+  await disableEditMode();
   showToast('💾 Правки сохранены');
 }
 
@@ -1642,6 +1720,8 @@ function enableEditMode() {
   if (!me || !me.isCreator) return;
   if (editModeActive) return;
   editModeActive = true;
+  editHistory = [];
+  editHistoryIndex = -1;
   const all = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, a, button, label, li, strong, em, b, code'));
   const candidates = all.filter(el => isEditableEl(el));
   const deepest = candidates.filter(el => !candidates.some(c => c !== el && el.contains(c)));
@@ -1650,6 +1730,7 @@ function enableEditMode() {
     el.dataset.vfEditKey = computeEditKey(el);
     el.dataset.vfEditable = '1';
     el.dataset.vfOriginal = el.innerHTML;
+    el.dataset.vfLastValue = el.innerHTML;
     el.setAttribute('contenteditable', 'true');
     el.setAttribute('spellcheck', 'false');
     el.addEventListener('keydown', handleEditKeydown);
@@ -1659,36 +1740,60 @@ function enableEditMode() {
   if (btn) { btn.classList.add('active'); btn.textContent = '✏️ Режим редактирования ВКЛ'; }
   const saveBtn = document.getElementById('editSaveBtn');
   if (saveBtn) saveBtn.style.display = '';
+  const undoBtn = document.getElementById('editUndoBtn');
+  if (undoBtn) undoBtn.style.display = '';
+  const redoBtn = document.getElementById('editRedoBtn');
+  if (redoBtn) redoBtn.style.display = '';
+  updateUndoRedoButtons();
   window.addEventListener('beforeunload', editBeforeUnload);
   console.log('[Edit] Включён, элементов:', editTargets.length);
 }
 
-function disableEditMode() {
+async function disableEditMode() {
   if (!editModeActive) return;
+  editModeActive = false;
+  editSaveLock = Date.now() + 2500;  // блокируем применение SSE на 2.5 сек
+
   const edits = FB_DATA.edits || (FB_DATA.edits = {});
+  let changed = 0;
   editTargets.forEach(el => {
     const key = el.dataset.vfEditKey;
     if (!key) return;
     const current = el.innerHTML.trim();
     const original = (el.dataset.vfOriginal || '').trim();
-    if (current && current !== original) edits[key] = current;
+    if (current && current !== original) { edits[key] = current; changed++; }
     else delete edits[key];
   });
-  fbSave('edits', edits);
+
+  // Очистка DOM
   editTargets.forEach(el => {
     el.removeAttribute('contenteditable');
+    el.removeAttribute('spellcheck');
     delete el.dataset.vfEditable;
+    delete el.dataset.vfEditKey;
+    delete el.dataset.vfOriginal;
+    delete el.dataset.vfLastValue;
     el.removeEventListener('keydown', handleEditKeydown);
     el.removeEventListener('blur', handleEditBlur);
   });
   editTargets = [];
-  editModeActive = false;
+
+  // UI
   const btn = document.getElementById('editModeBtn');
   if (btn) { btn.classList.remove('active'); btn.textContent = '✏️ Режим редактирования'; }
-  const saveBtn = document.getElementById('editSaveBtn');
-  if (saveBtn) saveBtn.style.display = 'none';
+  ['editSaveBtn','editUndoBtn','editRedoBtn'].forEach(id => {
+    const b = document.getElementById(id);
+    if (b) b.style.display = 'none';
+  });
+  editHistory = [];
+  editHistoryIndex = -1;
   window.removeEventListener('beforeunload', editBeforeUnload);
-  console.log('[Edit] Выключен, сохранено:', Object.keys(edits).length);
+
+  // === СОХРАНЕНИЕ В FIREBASE ===
+  console.log('[Edit] Сохраняю правок:', Object.keys(edits).length, 'изменённых:', changed);
+  const ok = await fbSave('edits', edits);
+  console.log('[Edit] Запись в Firebase:', ok ? 'OK' : 'FAIL');
+  showToast(ok ? `💾 Сохранено (${Object.keys(edits).length})` : '⚠️ Ошибка сохранения');
 }
 
 function toggleEditMode() {
@@ -1701,6 +1806,9 @@ function toggleEditMode() {
 function editBeforeUnload(e) { if (editModeActive) { e.preventDefault(); e.returnValue = ''; return ''; } }
 
 function applyEditsFromCloud() {
+  // Пропускаем, если активен режим редактирования или недавно сохраняли — иначе SSE откатит правки
+  if (editModeActive) return;
+  if (Date.now() < editSaveLock) return;
   const edits = FB_DATA.edits || {};
   const keys = Object.keys(edits);
   if (!keys.length) return;
@@ -1709,6 +1817,8 @@ function applyEditsFromCloud() {
   all.forEach(el => {
     if (el.closest('#reviewForm, #chatBar, .modal, .rail, .topbar .music-wrap, .chat-bar')) return;
     if (el.closest('input, textarea, select, script, style, svg, canvas, video, iframe')) return;
+    if (['editSaveBtn','editUndoBtn','editRedoBtn'].includes(el.id)) return;
+    if (el.classList.contains('edit-save-btn') || el.classList.contains('edit-icon-btn')) return;
     const key = computeEditKey(el);
     if (edits[key] !== undefined && edits[key] && el.innerHTML !== edits[key]) {
       el.innerHTML = edits[key];
