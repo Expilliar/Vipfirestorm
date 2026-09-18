@@ -8,447 +8,1302 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Unbounded:wght@500;700;800;900&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --bg: #08050e; --text: #f4ecff; --text-dim: #a396b8; --text-mute: #6d6280;
-  --line: rgba(255,255,255,0.07); --line-hi: rgba(255,255,255,0.16);
-  --surface: rgba(255,255,255,0.03); --surface-hi: rgba(255,255,255,0.06);
-  --coral: #ff5c2b; --amber: #ffb347; --rose: #ff2e63; --violet: #a259ff;
-}
-html { scroll-behavior: smooth; }
-body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'Sora', system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-::selection { background: rgba(255,92,43,.35); color: #fff; }
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,140,90,.18); border-radius: 20px; border: 2px solid transparent; background-clip: content-box; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,140,90,.45); background-clip: content-box; }
-
-.bg-image { position: fixed; top: -20px; left: -20px; width: calc(100vw + 40px); height: calc(100vh + 40px); z-index: -2; overflow: hidden; pointer-events: none; will-change: transform; transition: transform .25s ease-out; }
-.bg-image img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.42) contrast(1.15) saturate(1.1); }
-.bg-overlay { position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(ellipse 900px 600px at 50% 0%, rgba(255,92,43,.12), transparent 70%), radial-gradient(ellipse 800px 600px at 80% 100%, rgba(162,89,255,.14), transparent 70%), linear-gradient(180deg, rgba(8,5,14,.55) 0%, rgba(8,5,14,.35) 45%, rgba(8,5,14,.8) 100%); }
-.ambient { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
-.blob { position: absolute; border-radius: 50%; filter: blur(150px); opacity: .32; will-change: transform; mix-blend-mode: screen; }
-.b1 { width: 640px; height: 640px; background: #ff4d1e; top: -240px; left: -180px; animation: drift1 26s ease-in-out infinite; }
-.b2 { width: 540px; height: 540px; background: #7b2cff; bottom: -200px; right: -140px; animation: drift2 30s ease-in-out infinite; }
-.b3 { width: 480px; height: 480px; background: #ff2e63; top: 42%; left: 40%; opacity: .15; animation: drift3 34s ease-in-out infinite; }
-@keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(140px,90px) scale(1.15)} }
-@keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-110px,-80px) scale(1.1)} }
-@keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-90px,110px) scale(.9)} }
-.grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: .05; mix-blend-mode: overlay; }
-#embers { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-
-.app { position: relative; z-index: 2; min-height: 100vh; padding: 24px 24px 24px 124px; display: flex; flex-direction: column; gap: 20px; }
-
-.rail { position: fixed; top: 24px; left: 24px; bottom: 24px; width: 76px; z-index: 50; border-radius: 24px; background: linear-gradient(180deg, rgba(30,18,45,.72), rgba(12,6,22,.78)); border: 1px solid var(--line); backdrop-filter: blur(24px) saturate(1.4); -webkit-backdrop-filter: blur(24px) saturate(1.4); display: flex; flex-direction: column; padding: 16px 12px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05); transition: width .45s cubic-bezier(.5,0,.15,1); }
-@media (hover: hover) { .rail:hover { width: 250px; } .rail:hover .nav-lbl, .rail:hover .brand-txt, .rail:hover .rail-foot-txt { opacity: 1; } }
-.brand { display: flex; align-items: center; gap: 12px; padding: 8px 8px 20px; border-bottom: 1px solid var(--line); margin-bottom: 16px; white-space: nowrap; }
-.brand-mark { width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; box-shadow: 0 8px 24px rgba(255,92,43,.4), inset 0 1px 0 rgba(255,255,255,.35); color: #1a0a05; }
-.brand-mark svg { width: 20px; height: 20px; }
-.brand-txt { opacity: 0; transition: opacity .3s .05s; }
-.brand-txt strong { display: block; font-family: 'Unbounded', sans-serif; font-size: .92rem; font-weight: 700; letter-spacing: -.02em; }
-.nav { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow: hidden; }
-.nav-item { position: relative; display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; background: transparent; border: 1px solid transparent; color: var(--text-dim); font: inherit; font-size: .88rem; font-weight: 500; text-align: left; white-space: nowrap; cursor: pointer; transition: all .25s; }
-.nav-item:hover { background: var(--surface-hi); color: var(--text); }
-.nav-item.active { background: linear-gradient(135deg, rgba(255,92,43,.18), rgba(255,46,99,.06)); border-color: rgba(255,140,90,.22); color: #ffc7a3; }
-.nav-item.active::before { content: ''; position: absolute; left: 0; top: 22%; bottom: 22%; width: 3px; border-radius: 0 3px 3px 0; background: linear-gradient(180deg, #ff5c2b, #ffb347); box-shadow: 0 0 12px #ff5c2b; }
-.nav-ico { width: 28px; height: 28px; flex-shrink: 0; display: grid; place-items: center; }
-.nav-ico svg { width: 19px; height: 19px; }
-.nav-lbl { opacity: 0; transition: opacity .3s .05s; }
-.rail-foot { display: flex; align-items: center; gap: 12px; padding: 16px 8px 4px; border-top: 1px solid var(--line); white-space: nowrap; }
-.pulse-dot { width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; background: var(--amber); animation: pulse 2s infinite; }
-.rail-foot-txt { opacity: 0; transition: opacity .3s .05s; font-size: .75rem; line-height: 1.3; }
-.rail-foot-txt b { display: block; color: var(--text); font-size: .8rem; font-weight: 600; }
-.rail-foot-txt b [data-count] { color: #ffb37a; }
-.rail-foot-txt span { color: var(--text-mute); }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,179,71,.55); } 70% { box-shadow: 0 0 0 12px rgba(255,179,71,0); } 100% { box-shadow: 0 0 0 0 rgba(255,179,71,0); } }
-
-.main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 14px 22px; border-radius: 20px; background: rgba(12,8,22,.55); border: 1px solid var(--line); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); flex-wrap: wrap; position: relative; z-index: 200; }
-.crumb { font-size: .78rem; color: var(--text-mute); letter-spacing: .12em; text-transform: uppercase; }
-.crumb b { color: var(--text); font-weight: 600; }
-.chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.chip { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 100px; background: rgba(255,255,255,.04); border: 1px solid var(--line); font-size: .76rem; color: var(--text-dim); font-weight: 500; letter-spacing: .02em; }
-.chip b { color: #ffb37a; font-weight: 600; font-variant-numeric: tabular-nums; }
-.chip svg { color: #ffb37a; flex-shrink: 0; }
-.chip-discord { text-decoration: none; background: linear-gradient(135deg, rgba(88,101,242,.12), rgba(255,92,43,.08)); border-color: rgba(88,101,242,.32); color: #c9d1ff; cursor: pointer; transition: all .25s; }
-.chip-discord:hover { background: linear-gradient(135deg, rgba(88,101,242,.25), rgba(255,92,43,.16)); border-color: rgba(88,101,242,.6); color: #fff; box-shadow: 0 0 20px rgba(88,101,242,.4); transform: translateY(-1px); }
-.chip-discord svg { color: #7c8eff !important; } .chip-discord b { color: #fff !important; font-weight: 700; }
-.chip-youtube { text-decoration: none; background: linear-gradient(135deg, rgba(255,0,0,.14), rgba(255,92,43,.06)); border-color: rgba(255,0,0,.35); color: #ffc9c9; cursor: pointer; transition: all .25s; }
-.chip-youtube:hover { background: linear-gradient(135deg, rgba(255,0,0,.26), rgba(255,92,43,.14)); border-color: rgba(255,0,0,.65); color: #fff; box-shadow: 0 0 20px rgba(255,0,0,.4); transform: translateY(-1px); }
-.chip-youtube svg { color: #ff2e2e !important; } .chip-youtube b { color: #fff !important; font-weight: 700; }
-
-.music-wrap { position: relative; display: inline-flex; }
-.music-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.05); border: 1px solid var(--line); color: var(--text-dim); cursor: pointer; transition: all .25s; flex-shrink: 0; position: relative; }
-.music-btn:hover { background: rgba(255,140,90,.12); border-color: rgba(255,140,90,.35); color: #ffb37a; }
-.music-btn.playing { color: #ffb37a; border-color: rgba(255,140,90,.4); background: rgba(255,140,90,.1); }
-.music-btn.playing::after { content: ''; position: absolute; inset: -3px; border-radius: 50%; border: 1px solid rgba(255,140,90,.5); animation: ringPulse 1.8s ease-out infinite; }
-@keyframes ringPulse { 0% { opacity: .8; transform: scale(1); } 100% { opacity: 0; transform: scale(1.35); } }
-.music-btn svg { width: 16px; height: 16px; }
-.volume-popup { position: absolute; top: calc(100% + 12px); right: -8px; padding: 12px 14px; background: linear-gradient(160deg, rgba(30,18,45,.96), rgba(14,8,22,.96)); border: 1px solid rgba(255,140,90,.32); border-radius: 14px; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 20px 40px rgba(0,0,0,.6), 0 0 30px rgba(255,92,43,.12); display: flex; align-items: center; gap: 10px; opacity: 0; visibility: hidden; transform: translateY(-8px) scale(.96); transform-origin: top right; transition: opacity .25s ease, transform .25s cubic-bezier(.2,.9,.3,1.15), visibility 0s linear .25s; z-index: 9999; pointer-events: none; }
-.volume-popup::before { content: ''; position: absolute; top: -12px; left: 0; right: 0; height: 12px; }
-.music-wrap:hover .volume-popup, .music-wrap:focus-within .volume-popup { opacity: 1; visibility: visible; transform: translateY(0) scale(1); transition: opacity .25s ease, transform .25s cubic-bezier(.2,.9,.3,1.15), visibility 0s; pointer-events: auto; }
-.volume-icon { width: 18px; height: 18px; color: #ffb37a; flex-shrink: 0; display: grid; place-items: center; }
-.volume-icon svg { width: 16px; height: 16px; display: block; }
-.volume-slider { -webkit-appearance: none; appearance: none; width: 110px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.12); outline: none; cursor: pointer; flex-shrink: 0; }
-.volume-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); cursor: pointer; box-shadow: 0 0 10px rgba(255,92,43,.7), 0 0 0 2px rgba(20,10,30,.9), inset 0 1px 0 rgba(255,255,255,.5); }
-.volume-slider::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); cursor: pointer; border: 2px solid rgba(20,10,30,.9); }
-.vol-val { font-size: .72rem; color: #ffb37a; font-variant-numeric: tabular-nums; font-weight: 600; min-width: 32px; text-align: right; }
-
-.hero { position: relative; padding: 52px 48px 40px; border-radius: 30px; background: radial-gradient(ellipse 720px 420px at 12% -10%, rgba(255,92,43,.22), transparent 65%), radial-gradient(ellipse 620px 420px at 88% 110%, rgba(162,89,255,.18), transparent 65%), rgba(12,8,22,.5); border: 1px solid var(--line); overflow: hidden; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-.hero::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.028) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.028) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 20%, transparent 75%); pointer-events: none; }
-.hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: center; }
-.hero-left { min-width: 0; }
-.hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 100px; background: rgba(255,140,90,.08); border: 1px solid rgba(255,140,90,.22); font-size: .76rem; color: #ffb37a; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 26px; }
-.hero-eyebrow::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #ff5c2b; box-shadow: 0 0 10px #ff5c2b; animation: pulse 2s infinite; }
-.hero-title { font-family: 'Unbounded', sans-serif; font-size: clamp(1.9rem, 4vw, 3rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.05; margin-bottom: 22px; }
-.hero-title .grad { background: linear-gradient(110deg, #ff5c2b 0%, #ffb347 45%, #ff2e63 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
-.hero-lead { font-size: .98rem; color: var(--text-dim); max-width: 540px; line-height: 1.7; margin-bottom: 32px; }
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 40px; }
-.btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 14px; font: inherit; font-weight: 600; font-size: .9rem; text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: all .25s cubic-bezier(.5,0,.2,1); white-space: nowrap; letter-spacing: .01em; }
-.btn-primary { background: linear-gradient(135deg, #ff5c2b, #ff9500); color: #1a0a05; box-shadow: 0 10px 32px rgba(255,92,43,.38), inset 0 1px 0 rgba(255,255,255,.45); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 18px 44px rgba(255,92,43,.55), inset 0 1px 0 rgba(255,255,255,.55); }
-.btn-ghost { background: rgba(255,255,255,.04); border-color: var(--line); color: var(--text); }
-.btn-ghost:hover { background: rgba(255,255,255,.08); border-color: rgba(255,180,140,.3); transform: translateY(-2px); }
-.btn svg { flex-shrink: 0; }
-.hero-stats { display: flex; flex-wrap: wrap; gap: 20px 56px; padding-top: 30px; border-top: 1px solid var(--line); }
-.hs { min-width: 110px; }
-.hs b { display: block; font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: -.02em; background: linear-gradient(135deg, #fff, #ffb37a); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
-.hs span { font-size: .7rem; color: var(--text-mute); letter-spacing: .12em; text-transform: uppercase; }
-.hero-right { min-width: 0; }
-.video-label { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 100px; background: rgba(255,140,90,.08); border: 1px solid rgba(255,140,90,.25); font-size: .74rem; color: #ffb37a; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 18px; font-family: 'Unbounded', sans-serif; }
-.video-label::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); box-shadow: 0 0 10px #ff5c2b; animation: pulse 2s infinite; }
-.video-frame { position: relative; border-radius: 22px; padding: 10px; background: linear-gradient(160deg, rgba(255,140,90,.14), rgba(162,89,255,.1)); border: 1px solid rgba(255,140,90,.24); box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 60px rgba(255,92,43,.12); transition: all .35s cubic-bezier(.5,0,.2,1); }
-.video-frame:hover { border-color: rgba(255,140,90,.4); box-shadow: 0 34px 70px rgba(0,0,0,.6), 0 0 80px rgba(255,92,43,.22); transform: translateY(-2px); }
-.video-frame::after { content: ''; position: absolute; top: -50%; right: -30%; width: 260px; height: 260px; background: radial-gradient(circle, rgba(255,92,43,.32), transparent 65%); opacity: .5; pointer-events: none; z-index: 2; border-radius: 50%; }
-.video-embed { position: relative; aspect-ratio: 16 / 9; width: 100%; border-radius: 14px; overflow: hidden; background: #000; z-index: 1; }
-.video-embed #ytPlayer, .video-embed iframe { position: absolute; inset: 0; width: 100% !important; height: 100% !important; border: 0; display: block; }
-
-.panels { display: flex; flex-direction: column; gap: 20px; }
-.panel { display: none; }
-.panel.active { display: block; animation: fadeUp .55s cubic-bezier(.2,.9,.3,1); }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-.panel-head { margin-bottom: 26px; }
-.panel-head h2 { font-family: 'Unbounded', sans-serif; font-size: clamp(1.4rem, 2.4vw, 1.75rem); font-weight: 700; letter-spacing: -.025em; margin-bottom: 10px; }
-.panel-head p { color: var(--text-dim); max-width: 680px; line-height: 1.65; font-size: .95rem; }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-.card { position: relative; padding: 26px; border-radius: 22px; background: linear-gradient(160deg, rgba(20,12,32,.72), rgba(12,8,22,.66)); border: 1px solid var(--line); overflow: hidden; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: all .35s cubic-bezier(.5,0,.2,1); }
-.card::after { content: ''; position: absolute; top: -60%; right: -30%; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,92,43,.32), transparent 60%); opacity: 0; transition: opacity .4s; pointer-events: none; }
-.card:hover { border-color: rgba(255,150,100,.28); background: linear-gradient(160deg, rgba(30,16,42,.78), rgba(16,10,26,.7)); transform: translateY(-4px); box-shadow: 0 24px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(255,150,100,.14); }
-.card:hover::after { opacity: 1; }
-.card-ico { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; background: rgba(255,140,90,.1); border: 1px solid rgba(255,140,90,.2); color: #ffb37a; font-size: 1.15rem; margin-bottom: 18px; position: relative; z-index: 1; }
-.card h3 { font-family: 'Unbounded', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: -.015em; margin-bottom: 10px; color: var(--text); position: relative; z-index: 1; }
-.card p { color: var(--text-dim); font-size: .88rem; line-height: 1.65; position: relative; z-index: 1; }
-.card code { font-family: 'Sora', monospace; background: rgba(255,140,90,.12); border: 1px solid rgba(255,140,90,.2); color: #ffb37a; padding: 2px 8px; border-radius: 6px; font-size: .82rem; }
-
-.footer { display: flex; align-items: center; justify-content: center; gap: 16px; padding: 18px 24px; border-radius: 20px; background: rgba(12,8,22,.55); border: 1px solid var(--line); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font-size: .78rem; color: var(--text-dim); letter-spacing: .06em; flex-wrap: wrap; text-align: center; font-weight: 500; }
-
-@media (max-width: 1180px) { .hero-inner { gap: 36px; } .hero-title { font-size: clamp(1.8rem, 3.6vw, 2.6rem); } }
-@media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } .hero-right { max-width: 640px; } }
-@media (max-width: 860px) {
-  .app { padding: 16px 16px 110px; }
-  .rail { top: auto; left: 16px; right: 16px; bottom: 16px; width: auto; height: 72px; flex-direction: row; align-items: center; padding: 10px 12px; border-radius: 22px; }
-  @media (hover: hover) { .rail:hover { width: auto; } }
-  .brand { padding: 0 12px 0 0; border-bottom: none; border-right: 1px solid var(--line); margin: 0 8px 0 0; }
-  .brand-txt { display: none; }
-  .nav { flex-direction: row; flex: 1; justify-content: space-around; gap: 4px; overflow: visible; }
-  .nav-item { padding: 10px; }
-  .nav-item.active::before { display: none; }
-  .nav-lbl { display: none; }
-  .rail-foot { display: none; }
-  .topbar { padding: 12px 16px; gap: 10px; }
-  .crumb { font-size: .68rem; }
-  .chips { gap: 6px; }
-  .chip { padding: 6px 10px; font-size: .7rem; }
-  .chip-discord span, .chip-youtube span { display: none; }
-  .hero { padding: 30px 22px 26px; border-radius: 24px; }
-  .hero-actions { flex-direction: column; align-items: stretch; }
-  .btn { justify-content: center; }
-  .hero-stats { gap: 18px 32px; }
-  .cards { grid-template-columns: 1fr; }
-  .bg-image { transition: none; }
-  .video-frame { padding: 8px; border-radius: 18px; }
-  .video-embed { border-radius: 12px; }
-  .volume-popup { right: -4px; }
-  .volume-slider { width: 90px; }
-}
+/* ... (весь CSS из файла 2 — вставить без изменений) ... */
 </style>
 </head>
 <body>
+<!-- ... (весь HTML из файла 2 — без изменений) ... -->
 
-  <div class="bg-image" id="bgImage"><img src="background.jpg" alt=""></div>
-  <div class="bg-overlay"></div>
-  <div class="ambient"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
-  <div class="grain"></div>
-  <canvas id="embers"></canvas>
-  <audio id="bgMusic" src="VipFirestorm Menu.mp3" loop preload="auto" playsinline></audio>
+<script>
+/* ============================================================
+   FIREBASE RTDB REST
+   ============================================================ */
+const FB_URL = 'https://vipfirestorm-ee1f6-default-rtdb.firebaseio.com';
+const POLL_MS = 7000;
 
-  <div class="app">
-    <aside class="rail">
-      <div class="brand">
-        <div class="brand-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L22 12L12 22L2 12L12 2Z" opacity=".28"/><path d="M12 7L17 12L12 17L7 12L12 7Z"/></svg></div>
-        <div class="brand-txt"><strong>VipFirestorm</strong></div>
-      </div>
-      <nav class="nav">
-        <button class="nav-item active" onclick="switchTab('features', this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="nav-lbl">Модули системы</span></button>
-        <button class="nav-item" onclick="switchTab('teleport', this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></span><span class="nav-lbl">Телепортация</span></button>
-        <button class="nav-item" onclick="switchTab('automation', this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></span><span class="nav-lbl">Автоматизация</span></button>
-        <button class="nav-item" onclick="switchTab('commands', this)"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2.5"/><path d="M7 9l3 3-3 3M13 15h4"/></svg></span><span class="nav-lbl">Команды</span></button>
-      </nav>
-      <div class="rail-foot">
-        <div class="pulse-dot"></div>
-        <div class="rail-foot-txt"><b>Скачали: <span data-count>6</span></b><span>уникальных IP</span></div>
-      </div>
-    </aside>
+let FB_DATA = { users: {}, reviews: {}, chat: {}, bans: {} };
+let FB_READY = false;
+let POLL_TIMER = null;
 
-    <main class="main">
-      <header class="topbar">
-        <div class="crumb">VipFirestorm · <b>Уникальный аддон для сервера Firestorm</b></div>
-        <div class="chips">
-          <div class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачали: <b data-count>6</b></div>
-          <a class="chip chip-discord" href="https://discordapp.com/users/565988667118714883" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg><span>Discord — <b>Expilliar</b></span></a>
-          <a class="chip chip-youtube" href="https://www.youtube.com/@Expilliar" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span>YouTube — <b>Expilliar</b></span></a>
-          <div class="music-wrap">
-            <button class="music-btn" id="musicBtn" title="Музыка"><svg id="musicIconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><line x1="3" y1="3" x2="21" y2="21"/></svg><svg id="musicIconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></button>
-            <div class="volume-popup">
-              <span class="volume-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path id="wave1" d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path id="wave2" d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg></span>
-              <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" step="1" value="50">
-              <span class="vol-val" id="volVal">50%</span>
-            </div>
-          </div>
-        </div>
-      </header>
+function setCloudStatus(state, text) {
+  const chip = document.getElementById('cloudChip');
+  const txt = document.getElementById('cloudChipText');
+  if (!chip) return;
+  chip.classList.remove('online', 'offline', 'error');
+  chip.classList.add(state === 'online' ? 'online' : state === 'error' ? 'error' : 'offline');
+  if (txt) txt.textContent = text || (state === 'online' ? 'Облако' : state === 'error' ? 'Ошибка' : 'Локально');
+}
 
-      <section class="hero">
-        <div class="hero-inner">
-          <div class="hero-left">
-            <span class="hero-eyebrow">Эксклюзивный аддон · Firestorm</span>
-            <h1 class="hero-title">Уникальный аддон<br><span class="grad">для сервера Firestorm</span></h1>
-            <p class="hero-lead">Комплексный интерфейс для мгновенной телепортации, автоматизации рейдов и умного управления группами. Создан для максимальной скорости и стабильности — без просадок FPS и лишних кликов.</p>
-            <div class="hero-actions">
-              <a class="btn btn-primary js-download" href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать аддон</a>
-              <button class="btn btn-ghost" onclick="switchTab('commands', document.querySelectorAll('.nav-item')[3])">Список команд<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-              <a class="btn btn-primary" href="https://firestorm-servers.com/ru/teasing" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Начать играть</a>
-            </div>
-            <div class="hero-stats">
-              <div class="hs"><b data-count>6</b><span>Скачали аддон</span></div>
-              <div class="hs"><b>v3.4</b><span>Версия Аддона</span></div>
-              <div class="hs"><b>17.09.2026</b><span>Последнее обновление</span></div>
-            </div>
-          </div>
-          <div class="hero-right">
-            <div class="video-label">Визуальная информация об Аддоне</div>
-            <div class="video-frame"><div class="video-embed"><div id="ytPlayer"></div></div></div>
-          </div>
-        </div>
-      </section>
+async function fbFetch(path, opts) {
+  const r = await fetch(`${FB_URL}/${path}.json`, opts || { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+async function fbPut(path, data) {
+  return fbFetch(path, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+}
+async function fbDelete(path) {
+  try {
+    const r = await fetch(`${FB_URL}/${path}.json`, { method: 'DELETE' });
+    return r.ok;
+  } catch (e) { return false; }
+}
 
-      <section class="panels">
-        <div class="panel active" id="panel-features">
-          <div class="panel-head"><h2>Модули системы</h2><p>Передовой аддон для максимального комфорта в World of Warcraft Firestorm. Полный контроль над игровыми механиками — от телепортации до лот-контроля.</p></div>
-          <div class="cards">
-            <article class="card"><div class="card-ico">◈</div><h3>Классовый телепорт</h3><p>Интерфейс мгновенного доступа ко всем ключевым точкам мира под специализацию вашего персонажа.</p></article>
-            <article class="card"><div class="card-ico">✉</div><h3>Авто-приём ПМ</h3><p>Интеллектуальная система приёма в группу по ключевым словам в личных сообщениях с фильтрацией спама.</p></article>
-            <article class="card"><div class="card-ico">⟳</div><h3>FastReparty</h3><p>Мгновенный перезапуск рейдовых групп одной кнопкой с полным сохранением состава.</p></article>
-            <article class="card"><div class="card-ico">⛁</div><h3>Лот-контроль</h3><p>Автоматическая очистка почты, сбор золота и быстрый менеджмент сумок в один клик.</p></article>
-          </div>
-        </div>
-        <div class="panel" id="panel-teleport">
-          <div class="panel-head"><h2>Система телепортации</h2><p>Быстрый переход между локациями дополнений. Забудьте про долгое ожидание и поиск порталов в столицах.</p></div>
-          <div class="cards">
-            <article class="card"><div class="card-ico">⬢</div><h3>Штормград / Огриммар</h3><p>Моментальный прыжок к основным вендорам, аукционам и банковским слотам вашей фракции.</p></article>
-            <article class="card"><div class="card-ico">✦</div><h3>Актуальные зоны</h3><p>Прямой доступ к локациям текущего контента Firestorm без промежуточных точек.</p></article>
-            <article class="card"><div class="card-ico">◉</div><h3>Рейдовые порталы</h3><p>Быстрое перемещение ко входам рейдов и подземелий актуального сезона.</p></article>
-          </div>
-        </div>
-        <div class="panel" id="panel-automation">
-          <div class="panel-head"><h2>Модули автоматизации</h2><p>Скрипты, ускоряющие рутинные действия в рейдах и подземельях. Настройте один раз — работает каждый день.</p></div>
-          <div class="cards">
-            <article class="card"><div class="card-ico">⚡</div><h3>Авто-приглашение</h3><p>Активация по фразам <code>+</code> <code>inv</code> <code>инв</code> с настраиваемым списком ключевых слов.</p></article>
-            <article class="card"><div class="card-ico">⟳</div><h3>Умный ресет</h3><p>Мгновенный сброс подземелий в пати-моде с автоматическим подтверждением.</p></article>
-            <article class="card"><div class="card-ico">⌘</div><h3>Менеджер группы</h3><p>Автоматическое назначение ролей, исключение неактивных игроков и приглашение замен.</p></article>
-          </div>
-        </div>
-        <div class="panel" id="panel-commands">
-          <div class="panel-head"><h2>Интерфейсные команды</h2><p>Список консольных команд для управления аддоном прямо из чата игры. Все команды работают без открытия меню.</p></div>
-          <div class="cards">
-            <article class="card"><div class="card-ico">⌘</div><h3>/vf или /vipf</h3><p>Открытие главного графического меню телепортации.</p></article>
-            <article class="card"><div class="card-ico">⟳</div><h3>/freparty</h3><p>Мгновенное пересоздание рейдовой группы с сохранением состава.</p></article>
-            <article class="card"><div class="card-ico">⚡</div><h3>/vfa</h3><p>Открытие панели автоматизации и фильтров авто-приглашения.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <footer class="footer"><span>VipFirestorm Addons by Expilliar © 2026</span></footer>
-    </main>
-  </div>
-
-  <script>
-    /* ============================================================
-       ПЕРЕКЛЮЧЕНИЕ ПАНЕЛЕЙ
-       ============================================================ */
-    function switchTab(id, el) {
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-      const target = document.getElementById('panel-' + id);
-      if (target) target.classList.add('active');
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      if (el && el.classList) el.classList.add('active');
-    }
-
-    /* ============================================================
-       СЧЁТЧИК ЗАГРУЗОК
-       ============================================================ */
-    const BASE_OFFSET = 6;
-    const API_NS = 'vipfirestorm-expilliar';
-    const API_KEY = 'addon-downloads-v1';
-    const API_URL = `https://abacus.jasoncameron.dev`;
-    const KEY_DONE = 'vf_downloaded_flag_v2';
-
-    async function fetchServerCount() {
-      try {
-        const r = await fetch(`${API_URL}/get/${API_NS}/${API_KEY}`, { cache: 'no-store' });
-        if (r.ok) { const d = await r.json(); return typeof d.value === 'number' ? d.value : 0; }
-      } catch (e) {}
-      return null;
-    }
-    async function hitServerCount() {
-      try {
-        const r = await fetch(`${API_URL}/hit/${API_NS}/${API_KEY}`, { cache: 'no-store' });
-        if (r.ok) { const d = await r.json(); return typeof d.value === 'number' ? d.value : null; }
-      } catch (e) {}
-      return null;
-    }
-    function renderCount(v) {
-      if (v === null || typeof v !== 'number') return;
-      const pretty = (v + BASE_OFFSET).toLocaleString('ru-RU');
-      document.querySelectorAll('[data-count]').forEach(el => { el.textContent = pretty; });
-    }
-    async function initCounter() { const v = await fetchServerCount(); renderCount(v === null ? 0 : v); }
-    async function registerDownload() {
-      if (localStorage.getItem(KEY_DONE)) return;
-      localStorage.setItem(KEY_DONE, '1');
-      const newV = await hitServerCount();
-      if (newV !== null) renderCount(newV);
-    }
-    document.querySelectorAll('.js-download').forEach(btn => btn.addEventListener('click', registerDownload));
-    initCounter();
-    setInterval(initCounter, 30000);
-
-    /* ============================================================
-       МУЗЫКА
-       ============================================================ */
-    const bgMusic = document.getElementById('bgMusic');
-    const musicBtn = document.getElementById('musicBtn');
-    const iconOn = document.getElementById('musicIconOn');
-    const iconOff = document.getElementById('musicIconOff');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const volVal = document.getElementById('volVal');
-    const wave1 = document.getElementById('wave1');
-    const wave2 = document.getElementById('wave2');
-    bgMusic.volume = 0.5;
-    function setPlayingIcon(p) { if (p) { musicBtn.classList.add('playing'); iconOn.style.display = ''; iconOff.style.display = 'none'; } else { musicBtn.classList.remove('playing'); iconOn.style.display = 'none'; iconOff.style.display = ''; } }
-    const savedVol = parseInt(localStorage.getItem('vf_music_volume') || '50', 10);
-    const initVol = isNaN(savedVol) ? 50 : Math.max(0, Math.min(100, savedVol));
-    volumeSlider.value = initVol; bgMusic.volume = initVol / 100; volVal.textContent = initVol + '%';
-    volumeSlider.addEventListener('input', () => { const v = parseInt(volumeSlider.value, 10); bgMusic.volume = v / 100; volVal.textContent = v + '%'; localStorage.setItem('vf_music_volume', String(v)); updateWaveIcon(v); });
-    volumeSlider.addEventListener('click', e => e.stopPropagation());
-    volumeSlider.addEventListener('pointerdown', e => e.stopPropagation());
-    function updateWaveIcon(v) { if (v === 0) { wave1.style.display = 'none'; wave2.style.display = 'none'; } else if (v < 50) { wave1.style.display = ''; wave2.style.display = 'none'; } else { wave1.style.display = ''; wave2.style.display = ''; } }
-    updateWaveIcon(initVol);
-    let audioCtx = null;
-    try { const AC = window.AudioContext || window.webkitAudioContext; if (AC) audioCtx = new AC(); } catch (e) {}
-    let soundUnlocked = false, musicManuallyPaused = false;
-    function unlockAudio() {
-      if (soundUnlocked) return; soundUnlocked = true;
-      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
-      bgMusic.muted = false;
-      if (bgMusic.paused) bgMusic.play().then(() => setPlayingIcon(true)).catch(() => {});
-      else { const p = bgMusic.play(); if (p && p.catch) p.catch(() => {}); setPlayingIcon(true); }
-      GESTURE_EVENTS.forEach(evt => { document.removeEventListener(evt, unlockAudio, true); window.removeEventListener(evt, unlockAudio, true); });
-    }
-    const GESTURE_EVENTS = ['pointerdown', 'mousedown', 'click', 'keydown', 'touchstart', 'touchend', 'scroll', 'wheel'];
-    GESTURE_EVENTS.forEach(evt => { document.addEventListener(evt, unlockAudio, { capture: true, passive: true }); window.addEventListener(evt, unlockAudio, { capture: true, passive: true }); });
-    bgMusic.muted = false;
-    const initialPlay = bgMusic.play();
-    if (initialPlay && typeof initialPlay.then === 'function') {
-      initialPlay.then(() => { setPlayingIcon(true); soundUnlocked = true; if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {}); })
-        .catch(() => { bgMusic.muted = true; bgMusic.play().then(() => setPlayingIcon(true)).catch(() => setPlayingIcon(false)); });
-    }
-    musicBtn.addEventListener('click', e => {
-      e.stopPropagation();
-      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
-      if (bgMusic.muted && !bgMusic.paused) { bgMusic.muted = false; soundUnlocked = true; const p = bgMusic.play(); if (p && p.catch) p.catch(() => {}); setPlayingIcon(true); musicManuallyPaused = false; return; }
-      if (bgMusic.paused) { bgMusic.muted = false; soundUnlocked = true; bgMusic.play().then(() => setPlayingIcon(true)).catch(() => {}); musicManuallyPaused = false; return; }
-      bgMusic.pause(); setPlayingIcon(false); musicManuallyPaused = true;
-    });
-    bgMusic.addEventListener('play', () => setPlayingIcon(true));
-    bgMusic.addEventListener('pause', () => setPlayingIcon(false));
-
-    /* ============================================================
-       YOUTUBE
-       ============================================================ */
-    let ytPlayer = null, musicWasPlayingBeforeVideo = false;
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(tag);
-    window.onYouTubeIframeAPIReady = function () {
-      ytPlayer = new YT.Player('ytPlayer', {
-        videoId: '-NZJbbG1BLY',
-        playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
-        events: { onStateChange: onPlayerStateChange }
-      });
+async function fbLoadAll() {
+  try {
+    const d = await fbFetch('') || {};
+    FB_DATA = {
+      users:   d.users   && typeof d.users   === 'object' ? d.users   : {},
+      reviews: d.reviews && typeof d.reviews === 'object' ? d.reviews : {},
+      chat:    d.chat    && typeof d.chat    === 'object' ? d.chat    : {},
+      bans:    d.bans    && typeof d.bans    === 'object' ? d.bans    : {}
     };
-    function onPlayerStateChange(event) {
-      const state = event.data;
-      if (state === 1 || state === 3) { if (!bgMusic.paused) { musicWasPlayingBeforeVideo = true; bgMusic.pause(); } return; }
-      if (state === 2 || state === 0) { if (musicWasPlayingBeforeVideo && !musicManuallyPaused) { bgMusic.muted = false; bgMusic.play().then(() => setPlayingIcon(true)).catch(() => {}); musicWasPlayingBeforeVideo = false; } }
-    }
+    FB_READY = true;
+    setCloudStatus('online');
+    return true;
+  } catch (e) {
+    console.warn('[FB] load error:', e.message);
+    FB_READY = false;
+    setCloudStatus('error', 'Ошибка');
+    return false;
+  }
+}
 
-    /* ============================================================
-       ИСКРЫ + ПАРАЛЛАКС
-       ============================================================ */
-    const canvas = document.getElementById('embers');
-    const ctx = canvas.getContext('2d');
-    let W = 0, H = 0;
-    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    resize(); window.addEventListener('resize', resize);
-    function spawnEmber(fromBottom) {
-      return {
-        x: Math.random() * W, y: fromBottom ? H + Math.random() * 120 : Math.random() * H,
-        r: Math.random() * 2 + 0.6, vy: -(0.2 + Math.random() * 0.7), vx: (Math.random() - 0.5) * 0.35,
-        hue: 15 + Math.random() * 30, alpha: 0.25 + Math.random() * 0.5, flick: Math.random() * Math.PI * 2
-      };
+/* ============================================================
+   LOCAL STORAGE keys
+   ============================================================ */
+const K_SESSION      = 'vf_session_v1';
+const K_EDITS        = 'vf_edits_v1';
+const K_LAYOUT       = 'vf_layout_v1';
+const K_LOCAL_USERS  = 'vf_users_v1';
+const K_LOCAL_REVIEWS= 'vf_reviews_v1';
+const K_LOCAL_CHAT   = 'vf_chat_v1';
+const K_LOCAL_BANS   = 'vf_bans_v1';
+const CHAT_MAX       = 500;
+const CREATOR_NICKNAME = 'ищусебя';
+
+function safeGet(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }
+function safeSet(k,v){ try { localStorage.setItem(k,v); return true; } catch(e){ return false; } }
+function safeRemove(k){ try { localStorage.removeItem(k); } catch(e){} }
+function loadJSON(k, fb){ const r = safeGet(k); if(!r) return fb; try { return JSON.parse(r) || fb; } catch(e){ return fb; } }
+
+/* ============================================================
+   STORAGE — users
+   ============================================================ */
+function loadUsers() {
+  if (FB_READY) return Object.values(FB_DATA.users || {}).filter(Boolean);
+  return loadJSON(K_LOCAL_USERS, []);
+}
+function saveUser(user) {
+  if (!user || !user.id) return;
+  if (FB_READY) {
+    FB_DATA.users[user.id] = user;
+    fbPut('users/' + user.id, user);
+  }
+  const arr = loadJSON(K_LOCAL_USERS, []);
+  const i = arr.findIndex(u => u.id === user.id);
+  if (i >= 0) arr[i] = user; else arr.push(user);
+  safeSet(K_LOCAL_USERS, JSON.stringify(arr));
+}
+function saveUsers(arr) {
+  if (!Array.isArray(arr)) return;
+  arr.forEach(saveUser);
+}
+function deleteUserFromDb(id) {
+  if (FB_READY) { delete FB_DATA.users[id]; fbDelete('users/' + id); }
+  const arr = loadJSON(K_LOCAL_USERS, []).filter(u => u.id !== id);
+  safeSet(K_LOCAL_USERS, JSON.stringify(arr));
+}
+
+/* reviews */
+function loadReviews() {
+  if (FB_READY) return Object.values(FB_DATA.reviews || {}).filter(Boolean);
+  return loadJSON(K_LOCAL_REVIEWS, []);
+}
+function saveReview(review) {
+  if (!review || !review.id) return;
+  if (FB_READY) { FB_DATA.reviews[review.id] = review; fbPut('reviews/' + review.id, review); }
+  const arr = loadJSON(K_LOCAL_REVIEWS, []);
+  const i = arr.findIndex(r => r.id === review.id);
+  if (i >= 0) arr[i] = review; else arr.unshift(review);
+  safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
+}
+function saveReviews(arr){ if (Array.isArray(arr)) arr.forEach(saveReview); }
+function deleteReviewFromDb(id) {
+  if (FB_READY) { delete FB_DATA.reviews[id]; fbDelete('reviews/' + id); }
+  const arr = loadJSON(K_LOCAL_REVIEWS, []).filter(r => r.id !== id);
+  safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
+}
+
+/* chat */
+function loadChat() {
+  if (FB_READY) {
+    return Object.values(FB_DATA.chat || {}).filter(Boolean)
+      .sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
+  }
+  return loadJSON(K_LOCAL_CHAT, []);
+}
+function saveMessage(msg) {
+  if (!msg || !msg.id) return;
+  if (FB_READY) { FB_DATA.chat[msg.id] = msg; fbPut('chat/' + msg.id, msg); }
+  let arr = loadJSON(K_LOCAL_CHAT, []);
+  arr.push(msg);
+  if (arr.length > CHAT_MAX) arr = arr.slice(-CHAT_MAX);
+  safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
+}
+function deleteMessageFromDb(id) {
+  if (FB_READY) { delete FB_DATA.chat[id]; fbDelete('chat/' + id); }
+  const arr = loadJSON(K_LOCAL_CHAT, []).filter(m => m.id !== id);
+  safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
+}
+
+/* bans */
+function loadBans() {
+  if (FB_READY) return JSON.parse(JSON.stringify(FB_DATA.bans || {}));
+  return loadJSON(K_LOCAL_BANS, {});
+}
+function saveBans(obj) {
+  if (!obj || typeof obj !== 'object') return;
+  if (FB_READY) {
+    Object.keys(obj).forEach(uid => {
+      FB_DATA.bans[uid] = obj[uid];
+      fbPut('bans/' + uid, obj[uid]);
+    });
+  }
+  safeSet(K_LOCAL_BANS, JSON.stringify(obj));
+}
+function saveBan(userId, ban) {
+  if (FB_READY) { FB_DATA.bans[userId] = ban; fbPut('bans/' + userId, ban); }
+  const obj = loadJSON(K_LOCAL_BANS, {});
+  obj[userId] = ban;
+  safeSet(K_LOCAL_BANS, JSON.stringify(obj));
+}
+function deleteBan(userId) {
+  if (FB_READY) { delete FB_DATA.bans[userId]; fbDelete('bans/' + userId); }
+  const obj = loadJSON(K_LOCAL_BANS, {});
+  delete obj[userId];
+  safeSet(K_LOCAL_BANS, JSON.stringify(obj));
+}
+
+/* edits + layout */
+function loadEdits(){ return loadJSON(K_EDITS, {}); }
+function saveEdits(o){ safeSet(K_EDITS, JSON.stringify(o)); }
+function loadLayout(){ return loadJSON(K_LAYOUT, {}); }
+function saveLayoutStore(o){ safeSet(K_LAYOUT, JSON.stringify(o)); }
+
+/* перенос локальных в облако */
+async function mergeLocalIntoCloud() {
+  if (!FB_READY) return;
+  let changed = 0;
+  try {
+    const lu = loadJSON(K_LOCAL_USERS, []);
+    for (const u of lu) if (u && u.id && !FB_DATA.users[u.id]) { FB_DATA.users[u.id] = u; await fbPut('users/' + u.id, u); changed++; }
+  } catch(e){}
+  try {
+    const lr = loadJSON(K_LOCAL_REVIEWS, []);
+    for (const r of lr) if (r && r.id && !FB_DATA.reviews[r.id]) { FB_DATA.reviews[r.id] = r; await fbPut('reviews/' + r.id, r); changed++; }
+  } catch(e){}
+  try {
+    const lc = loadJSON(K_LOCAL_CHAT, []);
+    for (const m of lc) if (m && m.id && !FB_DATA.chat[m.id]) { FB_DATA.chat[m.id] = m; await fbPut('chat/' + m.id, m); changed++; }
+  } catch(e){}
+  if (changed) console.log('[FB] migrated:', changed);
+}
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function hashPassword(pwd) {
+  let h = 5381; const s = 'vf::' + pwd + '::salt';
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) + h) + s.charCodeAt(i); h &= h; }
+  return 'h' + Math.abs(h).toString(36);
+}
+function getSessionUserId(){ return safeGet(K_SESSION); }
+function setSession(id){ id ? safeSet(K_SESSION, id) : safeRemove(K_SESSION); }
+function getCurrentUser(){
+  const id = getSessionUserId();
+  return id ? loadUsers().find(u => u.id === id) || null : null;
+}
+function initialsOf(n){ n = String(n||'').trim(); return n ? n.slice(0,2).toUpperCase() : '?'; }
+function isCreatorName(n){ return String(n||'').toLowerCase() === CREATOR_NICKNAME; }
+function escapeHtml(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function renderNameWithBadges(u, cls) {
+  if (!u) return '';
+  let html = `<span class="${cls || 'rn-text'}">${escapeHtml(u.nickname)}</span>`;
+  if (u.isAdmin) html += ` <span class="verified-badge" title="Администратор">✓</span>`;
+  if (u.isCreator) html += ` <span class="creator-tag">Создатель</span>`;
+  return html;
+}
+function renderAvatar(el, u) {
+  if (!el) return;
+  if (u && u.avatar) el.innerHTML = `<img src="${u.avatar}" alt="">`;
+  else el.textContent = initialsOf(u ? u.nickname : '?');
+}
+
+/* ============================================================
+   TABS
+   ============================================================ */
+function switchTab(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const t = document.getElementById('panel-' + id);
+  if (t) t.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el && el.classList) el.classList.add('active');
+  if (id === 'reviews') syncReviewsForm();
+}
+
+/* ============================================================
+   BANS
+   ============================================================ */
+function isUserBanned(userId) {
+  const bans = loadBans();
+  const b = bans[userId];
+  if (!b) return null;
+  if (b.until === 'forever') return b;
+  if (Date.now() < b.until) return b;
+  deleteBan(userId);
+  return null;
+}
+function formatBanUntil(until) {
+  if (until === 'forever') return 'НАВСЕГДА';
+  try {
+    const d = new Date(until);
+    const diff = Math.max(0, until - Date.now());
+    const days = Math.floor(diff/86400000);
+    const hours = Math.floor((diff%86400000)/3600000);
+    const mins = Math.floor((diff%3600000)/60000);
+    let left = '';
+    if (days > 0) left = `${days} д. ${hours} ч.`;
+    else if (hours > 0) left = `${hours} ч. ${mins} мин.`;
+    else left = `${mins} мин.`;
+    return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()} (осталось ${left})`;
+  } catch (e) { return '—'; }
+}
+function checkBan() {
+  const me = getCurrentUser();
+  if (!me) return false;
+  const ban = isUserBanned(me.id);
+  if (ban) {
+    document.getElementById('banUntil').textContent = formatBanUntil(ban.until);
+    if (ban.reason) {
+      document.getElementById('banReasonRow').style.display = '';
+      document.getElementById('banReason').textContent = ban.reason;
     }
-    const embers = [];
-    const COUNT = Math.min(70, Math.floor(window.innerWidth / 22));
-    for (let i = 0; i < COUNT; i++) embers.push(spawnEmber(false));
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = 'lighter';
-      for (const e of embers) {
-        e.flick += 0.05;
-        const a = e.alpha * (0.65 + 0.35 * Math.sin(e.flick));
-        const grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 6);
-        grd.addColorStop(0, `hsla(${e.hue}, 100%, 68%, ${a})`);
-        grd.addColorStop(1, `hsla(${e.hue}, 100%, 50%, 0)`);
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(e.x, e.y, e.r * 6, 0, Math.PI * 2);
-        ctx.fill();
-        e.x += e.vx; e.y += e.vy;
-        if (e.y < -20 || e.x < -30 || e.x > W + 30) Object.assign(e, spawnEmber(true));
-      }
-      requestAnimationFrame(draw);
+    document.getElementById('banOverlay').classList.add('show');
+    document.body.classList.add('ban-locked');
+    try { bgMusic.pause(); } catch(e){}
+    return true;
+  }
+  return false;
+}
+
+/* ============================================================
+   AUTH
+   ============================================================ */
+function migrate() {
+  const users = loadUsers(); let changed = false;
+  users.forEach(u => {
+    if (isCreatorName(u.nickname) && (!u.isAdmin || !u.isCreator)) {
+      u.isAdmin = true; u.isCreator = true; saveUser(u); changed = true;
     }
-    draw();
-    const bgImage = document.getElementById('bgImage');
-    const isTouch = matchMedia('(hover: none)').matches;
-    if (!isTouch) {
-      document.addEventListener('mousemove', e => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 24;
-        const y = (e.clientY / window.innerHeight - 0.5) * 24;
-        bgImage.style.transform = `translate(${x}px, ${y}px)`;
-      });
+  });
+  return changed;
+}
+
+function updateAuthUI() {
+  const u = getCurrentUser();
+  const authBtn = document.getElementById('authBtn');
+  const userChip = document.getElementById('userChip');
+  const miniAv = document.getElementById('userAvatarMini');
+  const miniName = document.getElementById('userNameMini');
+  if (u) {
+    authBtn.style.display = 'none';
+    userChip.style.display = '';
+    miniName.innerHTML = renderNameWithBadges(u, 'uc-name');
+    renderAvatar(miniAv, u);
+  } else {
+    authBtn.style.display = '';
+    userChip.style.display = 'none';
+    if (typeof editModeActive !== 'undefined' && editModeActive) disableEditMode();
+    if (typeof interfaceManageActive !== 'undefined' && interfaceManageActive) disableInterfaceManage();
+  }
+  syncReviewsForm();
+  updateChatLockUI();
+}
+
+const authModal = document.getElementById('authModal');
+const profileModal = document.getElementById('profileModal');
+const adminModal = document.getElementById('adminModal');
+const banModal = document.getElementById('banModal');
+const bansModal = document.getElementById('bansModal');
+const chatModal = document.getElementById('chatModal');
+
+function openAuth(tab) {
+  authModal.classList.add('open');
+  document.body.classList.add('modal-open');
+  switchAuthTab(tab === 'register' ? 'register' : 'login');
+}
+function closeAuth() {
+  authModal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  document.getElementById('loginMsg').classList.remove('show');
+  document.getElementById('regMsg').classList.remove('show');
+}
+function switchAuthTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+  document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+}
+document.querySelectorAll('.modal-tab').forEach(t => t.addEventListener('click', () => switchAuthTab(t.dataset.tab)));
+authModal.addEventListener('click', e => { if (e.target === authModal) closeAuth(); });
+
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const nick = document.getElementById('loginNick').value.trim();
+  const pwd = document.getElementById('loginPwd').value;
+  const msg = document.getElementById('loginMsg');
+  if (!nick || !pwd) { msg.textContent = 'Заполни ник и пароль'; msg.className = 'modal-msg show err'; return; }
+  await fbLoadAll();
+  const users = loadUsers();
+  const user = users.find(u => u.nickname.toLowerCase() === nick.toLowerCase());
+  if (!user) { msg.textContent = 'Пользователь не найден'; msg.className = 'modal-msg show err'; return; }
+  if (user.passwordHash !== hashPassword(pwd)) { msg.textContent = 'Неверный пароль'; msg.className = 'modal-msg show err'; return; }
+  if (isUserBanned(user.id)) {
+    msg.textContent = 'Ваш аккаунт заблокирован';
+    msg.className = 'modal-msg show err';
+    closeAuth(); setTimeout(checkBan, 100);
+    return;
+  }
+  setSession(user.id);
+  msg.textContent = 'Добро пожаловать, ' + user.nickname + '!';
+  msg.className = 'modal-msg show ok';
+  updateAuthUI(); renderReviews(); renderChat();
+  setTimeout(() => closeAuth(), 700);
+  document.getElementById('loginForm').reset();
+});
+
+document.getElementById('registerForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const nick = document.getElementById('regNick').value.trim();
+  const pwd = document.getElementById('regPwd').value;
+  const msg = document.getElementById('regMsg');
+  if (nick.length < 2) { msg.textContent = 'Ник слишком короткий (мин. 2)'; msg.className = 'modal-msg show err'; return; }
+  if (pwd.length < 4) { msg.textContent = 'Пароль минимум 4 символа'; msg.className = 'modal-msg show err'; return; }
+  await fbLoadAll();
+  const users = loadUsers();
+  if (users.some(u => u.nickname.toLowerCase() === nick.toLowerCase())) {
+    msg.textContent = 'Такой ник уже занят'; msg.className = 'modal-msg show err'; return;
+  }
+  const isCreator = isCreatorName(nick);
+  const user = {
+    id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    nickname: nick,
+    passwordHash: hashPassword(pwd),
+    avatar: null,
+    createdAt: new Date().toISOString(),
+    isAdmin: isCreator,
+    isCreator: isCreator
+  };
+  saveUser(user);
+  setSession(user.id);
+  msg.textContent = isCreator ? '👑 Добро пожаловать, Создатель!' : 'Аккаунт создан!';
+  msg.className = 'modal-msg show ok';
+  updateAuthUI(); renderReviews(); renderChat();
+  setTimeout(() => closeAuth(), 900);
+  document.getElementById('registerForm').reset();
+});
+
+function openProfile() {
+  const u = getCurrentUser();
+  if (!u) { openAuth(); return; }
+  document.getElementById('profileNick').value = u.nickname;
+  renderAvatar(document.getElementById('profileAvatar'), u);
+  document.getElementById('profileMsg').classList.remove('show');
+  document.getElementById('adminTools').style.display = u.isAdmin ? '' : 'none';
+  document.getElementById('creatorTools').style.display = u.isCreator ? '' : 'none';
+  const editBtn = document.getElementById('editModeBtn');
+  if (editBtn) {
+    editBtn.classList.toggle('active', editModeActive);
+    editBtn.textContent = editModeActive ? '✏️ Режим редактирования ВКЛ' : '✏️ Режим редактирования';
+  }
+  const ifBtn = document.getElementById('interfaceManageBtn');
+  if (ifBtn) {
+    ifBtn.classList.toggle('active', interfaceManageActive);
+    ifBtn.textContent = interfaceManageActive ? '🎨 Управление Интерфейсом ВКЛ' : '🎨 Управление Интерфейсом';
+  }
+  profileModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeProfile() { profileModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
+profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
+
+document.getElementById('avatarInput').addEventListener('change', e => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { showProfileMsg('Нужно выбрать изображение', 'err'); return; }
+  if (file.size > 8 * 1024 * 1024) { showProfileMsg('Файл слишком большой (макс 8 МБ)', 'err'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const size = 200, canvas = document.createElement('canvas');
+      canvas.width = size; canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      const minSide = Math.min(img.width, img.height);
+      const sx = (img.width - minSide)/2, sy = (img.height - minSide)/2;
+      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+      const u = getCurrentUser(); if (!u) return;
+      u.avatar = dataUrl;
+      saveUser(u);
+      renderAvatar(document.getElementById('profileAvatar'), u);
+      updateAuthUI(); renderReviews(); renderChat();
+      showProfileMsg('Аватарка обновлена', 'ok');
+    };
+    img.onerror = () => showProfileMsg('Не удалось прочитать изображение', 'err');
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+function removeAvatar() {
+  const u = getCurrentUser(); if (!u) return;
+  u.avatar = null; saveUser(u);
+  renderAvatar(document.getElementById('profileAvatar'), u);
+  updateAuthUI(); renderReviews(); renderChat();
+  showProfileMsg('Аватарка удалена', 'ok');
+}
+
+async function saveProfile() {
+  const u = getCurrentUser(); if (!u) return;
+  const newNick = document.getElementById('profileNick').value.trim();
+  if (newNick.length < 2) { showProfileMsg('Ник слишком короткий', 'err'); return; }
+  await fbLoadAll();
+  const users = loadUsers();
+  if (users.some(x => x.id !== u.id && x.nickname.toLowerCase() === newNick.toLowerCase())) {
+    showProfileMsg('Этот ник уже занят', 'err'); return;
+  }
+  u.nickname = newNick;
+  if (isCreatorName(newNick)) { u.isAdmin = true; u.isCreator = true; }
+  saveUser(u);
+  updateAuthUI(); renderReviews(); renderChat();
+  showProfileMsg('Профиль сохранён', 'ok');
+}
+function showProfileMsg(text, type) {
+  const msg = document.getElementById('profileMsg');
+  msg.textContent = text; msg.className = 'modal-msg show ' + type;
+  clearTimeout(showProfileMsg._t);
+  showProfileMsg._t = setTimeout(() => msg.classList.remove('show'), 3000);
+}
+function logout() {
+  setSession(null);
+  closeProfile();
+  updateAuthUI(); renderReviews(); renderChat();
+  if (editModeActive) disableEditMode();
+  if (interfaceManageActive) disableInterfaceManage();
+}
+
+/* ============================================================
+   ADMIN PANEL
+   ============================================================ */
+async function openAdminPanel() {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin) return;
+  await fbLoadAll();
+  renderAdminUsers(); renderAdminBans();
+  adminModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeAdminPanel() { adminModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
+adminModal.addEventListener('click', e => { if (e.target === adminModal) closeAdminPanel(); });
+
+function openBansModal() {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin) return;
+  renderBansModal();
+  bansModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeBansModal() { bansModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
+bansModal.addEventListener('click', e => { if (e.target === bansModal) closeBansModal(); });
+
+function renderAdminUsers() {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin) return;
+  const users = loadUsers();
+  const bans = loadBans();
+  const list = document.getElementById('adminUsersList');
+  const countEl = document.getElementById('adminUsersCount');
+  if (countEl) countEl.textContent = users.length;
+  if (!users.length) {
+    list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-mute);font-size:.85rem;border:1px dashed rgba(255,255,255,.1);border-radius:12px;">Пользователей пока нет</div>`;
+    return;
+  }
+  const sorted = users.slice().sort((a, b) => {
+    if (a.isCreator && !b.isCreator) return -1;
+    if (!a.isCreator && b.isCreator) return 1;
+    if (a.id === me.id && b.id !== me.id) return -1;
+    if (a.id !== me.id && b.id === me.id) return 1;
+    if (a.isAdmin && !b.isAdmin) return -1;
+    if (!a.isAdmin && b.isAdmin) return 1;
+    return (a.createdAt || '') > (b.createdAt || '') ? -1 : 1;
+  });
+  list.innerHTML = sorted.map(u => {
+    const isCreator = !!u.isCreator;
+    const isMe = u.id === me.id;
+    const ban = bans[u.id];
+    const isBanned = !!ban && (ban.until === 'forever' || Date.now() < ban.until);
+    const adminToggleDisabled = isCreator || isMe;
+    const banBtnDisabled = isCreator || isMe;
+    const delBtnDisabled = isCreator || isMe;
+    return `
+      <div class="admin-user-row">
+        <div class="admin-user-info">
+          <span class="admin-user-avatar">${u.avatar ? `<img src="${u.avatar}" alt="">` : initialsOf(u.nickname)}</span>
+          <span class="admin-user-name">${renderNameWithBadges(u, 'aun-text')}${isMe ? ' <span style="color:var(--text-mute);font-size:.7rem;">(вы)</span>' : ''}</span>
+        </div>
+        <div class="admin-user-actions">
+          <label class="admin-toggle ${adminToggleDisabled ? 'disabled' : ''}" title="Админ">
+            <input type="checkbox" ${u.isAdmin ? 'checked' : ''} ${adminToggleDisabled ? 'disabled' : ''} onchange="toggleAdmin('${u.id}', this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+          <button class="ban-btn ${isBanned ? 'unban' : ''}" ${banBtnDisabled ? 'disabled style="opacity:.35;cursor:not-allowed;"' : ''} onclick="${isBanned ? `unbanUser('${u.id}')` : `openBanModal('${u.id}')`}" title="${isBanned ? 'Разбанить' : 'Забанить'}">${isBanned ? '✓' : '🚫'}</button>
+          <button class="del-btn" ${delBtnDisabled ? 'disabled style="opacity:.35;cursor:not-allowed;"' : ''} onclick="deleteUser('${u.id}')" title="Удалить">🗑</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderAdminBans() {
+  const bans = loadBans();
+  const list = document.getElementById('adminBansList');
+  let changed = false;
+  Object.keys(bans).forEach(uid => {
+    const b = bans[uid];
+    if (b.until !== 'forever' && Date.now() >= b.until) { delete bans[uid]; changed = true; }
+  });
+  if (changed) saveBans(bans);
+  const entries = Object.entries(bans);
+  if (!entries.length) {
+    list.innerHTML = `<div style="padding:16px;text-align:center;color:var(--text-mute);font-size:.78rem;border:1px dashed rgba(255,255,255,.08);border-radius:10px;">Активных банов нет</div>`;
+    return;
+  }
+  const users = loadUsers();
+  list.innerHTML = entries.map(([uid, b]) => {
+    const u = users.find(x => x.id === uid);
+    const nick = u ? u.nickname : 'удалённый';
+    return `
+      <div class="ban-item">
+        <div class="ban-item-info">
+          <div class="ban-item-ip">${escapeHtml(nick)}</div>
+          <div class="ban-item-meta">${b.until === 'forever' ? '⛔ Навсегда' : '⏱ До ' + formatBanUntil(b.until)}${b.reason ? ' · ' + escapeHtml(b.reason) : ''}</div>
+        </div>
+        <button class="ban-btn unban" onclick="unbanUser('${escapeHtml(uid)}')">Разбанить</button>
+      </div>`;
+  }).join('');
+}
+
+function renderBansModal() {
+  const bans = loadBans();
+  const list = document.getElementById('bansModalList');
+  let changed = false;
+  Object.keys(bans).forEach(uid => {
+    const b = bans[uid];
+    if (b.until !== 'forever' && Date.now() >= b.until) { delete bans[uid]; changed = true; }
+  });
+  if (changed) saveBans(bans);
+  const entries = Object.entries(bans);
+  if (!entries.length) {
+    list.innerHTML = `<div style="padding:30px;text-align:center;color:var(--text-mute);font-size:.9rem;border:1px dashed rgba(255,255,255,.1);border-radius:14px;">Активных банов нет</div>`;
+    return;
+  }
+  const users = loadUsers();
+  list.innerHTML = entries.map(([uid, b]) => {
+    const u = users.find(x => x.id === uid);
+    const nick = u ? u.nickname : 'удалённый';
+    return `
+      <div class="ban-item">
+        <div class="ban-item-info">
+          <div class="ban-item-ip">${escapeHtml(nick)}</div>
+          <div class="ban-item-meta">${b.until === 'forever' ? '⛔ Навсегда' : '⏱ До ' + formatBanUntil(b.until)}${b.reason ? ' · ' + escapeHtml(b.reason) : ''}</div>
+        </div>
+        <button class="ban-btn unban" onclick="unbanUser('${escapeHtml(uid)}'); renderBansModal();">Разбанить</button>
+      </div>`;
+  }).join('');
+}
+
+function toggleAdmin(userId, value) {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin) return;
+  const u = loadUsers().find(x => x.id === userId);
+  if (!u) return;
+  if (u.isCreator) return;
+  u.isAdmin = !!value;
+  if (u.isCreator) u.isAdmin = true;
+  saveUser(u);
+  renderAdminUsers();
+}
+
+let banTargetId = null;
+let banMinutes = 0;
+function openBanModal(userId) {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin) return;
+  const u = loadUsers().find(x => x.id === userId);
+  if (!u) return;
+  banTargetId = userId;
+  banMinutes = 0;
+  document.getElementById('banModalSub').textContent = `Забанить: ${u.nickname}`;
+  document.getElementById('banReasonInput').value = '';
+  document.getElementById('banModalMsg').classList.remove('show');
+  document.querySelectorAll('.ban-duration').forEach(b => b.classList.toggle('active', b.dataset.min === '0'));
+  banModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeBanModal() { banModal.classList.remove('open'); document.body.classList.remove('modal-open'); banTargetId = null; }
+banModal.addEventListener('click', e => { if (e.target === banModal) closeBanModal(); });
+
+document.querySelectorAll('.ban-duration').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.ban-duration').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    banMinutes = parseInt(b.dataset.min, 10) || 0;
+  });
+});
+
+async function confirmBan() {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin || !banTargetId) return;
+  const reason = document.getElementById('banReasonInput').value.trim();
+  const until = banMinutes === 0 ? 'forever' : (Date.now() + banMinutes * 60000);
+  saveBan(banTargetId, {
+    until,
+    reason: reason || '',
+    bannedAt: new Date().toISOString(),
+    bannedBy: me.nickname
+  });
+  const msg = document.getElementById('banModalMsg');
+  msg.textContent = 'Забанен';
+  msg.className = 'modal-msg show ok';
+  renderAdminUsers(); renderAdminBans();
+  setTimeout(closeBanModal, 600);
+}
+
+function unbanUser(userId) {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin) return;
+  deleteBan(userId);
+  renderAdminUsers(); renderAdminBans();
+  const bm = document.getElementById('bansModal');
+  if (bm && bm.classList.contains('open')) renderBansModal();
+}
+
+function deleteUser(userId) {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin) return;
+  const u = loadUsers().find(x => x.id === userId);
+  if (!u || u.isCreator) return;
+  if (!confirm(`Удалить пользователя "${u.nickname}"?`)) return;
+  deleteUserFromDb(userId);
+  deleteBan(userId);
+  // Удалить его отзывы и сообщения
+  loadReviews().filter(r => r.userId === userId).forEach(r => deleteReviewFromDb(r.id));
+  loadChat().filter(m => m.userId === userId).forEach(m => deleteMessageFromDb(m.id));
+  renderAdminUsers(); renderAdminBans(); renderReviews(); renderChat();
+}
+
+/* ============================================================
+   REVIEWS
+   ============================================================ */
+let currentRating = 0;
+const starPicker = document.getElementById('starPicker');
+const ratingInput = document.getElementById('ratingInput');
+if (starPicker) {
+  const stars = starPicker.querySelectorAll('.star-pick');
+  stars.forEach(st => {
+    st.addEventListener('mouseenter', () => {
+      const v = parseInt(st.dataset.v, 10);
+      stars.forEach(s => s.classList.toggle('preview', parseInt(s.dataset.v,10) <= v));
+    });
+    st.addEventListener('mouseleave', () => stars.forEach(s => s.classList.remove('preview')));
+    st.addEventListener('click', () => {
+      currentRating = parseInt(st.dataset.v, 10);
+      ratingInput.value = currentRating;
+      stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.v,10) <= currentRating));
+    });
+  });
+}
+
+function syncReviewsForm() {
+  const me = getCurrentUser();
+  const loggedNote = document.getElementById('loggedNote');
+  const nameField = document.getElementById('nameField');
+  if (me) {
+    loggedNote.style.display = '';
+    renderAvatar(document.getElementById('loggedAvatarMini'), me);
+    document.getElementById('loggedNameMini').innerHTML = renderNameWithBadges(me, 'ln-name');
+    nameField.style.display = 'none';
+  } else {
+    loggedNote.style.display = 'none';
+    nameField.style.display = '';
+  }
+}
+
+function renderReviews() {
+  const list = document.getElementById('reviewsList');
+  if (!list) return;
+  const reviews = loadReviews().slice().sort((a,b) => (a.date||'') < (b.date||'') ? 1 : -1);
+  const me = getCurrentUser();
+  if (!reviews.length) {
+    list.innerHTML = `<div class="reviews-empty"><b>Пока нет отзывов</b>Стань первым, кто поделится впечатлением.</div>`;
+    return;
+  }
+  const users = loadUsers();
+  list.innerHTML = reviews.map(r => {
+    const u = r.userId ? users.find(x => x.id === r.userId) : null;
+    const isAuthor = me && (r.userId === me.id || (me.isAdmin && !u));
+    const stars = Array.from({length:5}, (_,i) => `<span class="${i < (r.rating||0) ? '' : 'empty'}">★</span>`).join('');
+    const nameHtml = u ? renderNameWithBadges(u, 'rn-text') : `<span class="rn-text">${escapeHtml(r.name || 'Гость')}</span>`;
+    const avatarHtml = u && u.avatar ? `<img src="${u.avatar}" alt="">` : initialsOf(u ? u.nickname : (r.name || '?'));
+    return `
+      <article class="review-item">
+        ${(isAuthor || (me && me.isAdmin)) ? `<button class="review-delete" onclick="deleteReview('${r.id}')" title="Удалить">×</button>` : ''}
+        <div class="review-author">
+          <div class="review-avatar">${avatarHtml}</div>
+          <div class="review-head">
+            <div class="review-name">${nameHtml}</div>
+            <div class="review-date">${formatDate(r.date)}</div>
+          </div>
+        </div>
+        <div class="review-stars">${stars}</div>
+        ${r.text ? `<div class="review-text">${escapeHtml(r.text)}</div>` : ''}
+      </article>
+    `;
+  }).join('');
+}
+function formatDate(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  } catch(e){ return ''; }
+}
+
+const reviewForm = document.getElementById('reviewForm');
+if (reviewForm) {
+  reviewForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const msg = document.getElementById('formMsg');
+    const me = getCurrentUser();
+    const name = me ? me.nickname : document.getElementById('reviewName').value.trim();
+    const text = document.getElementById('reviewText').value.trim();
+    if (!name) { msg.textContent = 'Укажи имя'; msg.className = 'form-message show err'; return; }
+    if (!currentRating) { msg.textContent = 'Поставь оценку'; msg.className = 'form-message show err'; return; }
+    const review = {
+      id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      userId: me ? me.id : null,
+      name,
+      rating: currentRating,
+      text,
+      date: new Date().toISOString()
+    };
+    saveReview(review);
+    msg.textContent = 'Отзыв отправлен!'; msg.className = 'form-message show ok';
+    reviewForm.reset();
+    currentRating = 0; ratingInput.value = 0;
+    document.querySelectorAll('.star-pick').forEach(s => s.classList.remove('active'));
+    renderReviews();
+    setTimeout(() => msg.classList.remove('show'), 2500);
+  });
+}
+function deleteReview(id) {
+  const me = getCurrentUser();
+  if (!me) return;
+  const reviews = loadReviews();
+  const r = reviews.find(x => x.id === id);
+  if (!r) return;
+  if (r.userId !== me.id && !me.isAdmin) return;
+  if (!confirm('Удалить отзыв?')) return;
+  deleteReviewFromDb(id);
+  renderReviews();
+}
+
+/* ============================================================
+   CHAT
+   ============================================================ */
+function updateChatLockUI() {
+  const me = getCurrentUser();
+  const locked1 = document.getElementById('chatLocked');
+  const locked2 = document.getElementById('chatModalLocked');
+  const form1 = document.getElementById('chatForm');
+  const form2 = document.getElementById('chatModalForm');
+  if (me) {
+    if (locked1) locked1.style.display = 'none';
+    if (locked2) locked2.style.display = 'none';
+    if (form1) form1.style.display = '';
+    if (form2) form2.style.display = '';
+  } else {
+    if (locked1) locked1.style.display = '';
+    if (locked2) locked2.style.display = '';
+    if (form1) form1.style.display = 'none';
+    if (form2) form2.style.display = 'none';
+  }
+}
+
+function renderChat() {
+  const messages = loadChat();
+  const me = getCurrentUser();
+  const users = loadUsers();
+  const html = messages.length ? messages.map(m => {
+    const own = me && m.userId === me.id;
+    const u = users.find(x => x.id === m.userId);
+    const nameHtml = u ? renderNameWithBadges(u, 'cmn-text') : `<span class="cmn-text">${escapeHtml(m.name || '?')}</span>`;
+    const avHtml = u && u.avatar ? `<img src="${u.avatar}" alt="">` : (u ? initialsOf(u.nickname) : initialsOf(m.name));
+    const canDel = me && (m.userId === me.id || me.isAdmin);
+    return `
+      <div class="chat-msg ${own ? 'own' : ''}">
+        <div class="chat-msg-avatar">${avHtml}</div>
+        <div class="chat-msg-body">
+          <div class="chat-msg-head">
+            <span class="chat-msg-name">${nameHtml}</span>
+            <span class="chat-msg-time">${formatDate(m.date)}</span>
+          </div>
+          <div class="chat-msg-text">${escapeHtml(m.text)}</div>
+        </div>
+        ${canDel ? `<button class="chat-msg-delete" onclick="deleteChatMsg('${m.id}')" title="Удалить">×</button>` : ''}
+      </div>
+    `;
+  }).join('') : `<div class="chat-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Пока сообщений нет. Будь первым!</div>`;
+  const c1 = document.getElementById('chatMessages');
+  const c2 = document.getElementById('chatModalMessages');
+  if (c1) c1.innerHTML = html;
+  if (c2) c2.innerHTML = html;
+  const count = messages.length;
+  const el1 = document.getElementById('chatCount');
+  const el2 = document.getElementById('chatModalCount');
+  const el3 = document.getElementById('chatMiniCount');
+  if (el1) el1.textContent = count;
+  if (el2) el2.textContent = count;
+  if (el3) el3.textContent = count;
+  if (c1) c1.scrollTop = c1.scrollHeight;
+  if (c2) c2.scrollTop = c2.scrollHeight;
+  updateChatLockUI();
+}
+
+function sendChatMessage(text) {
+  const me = getCurrentUser();
+  if (!me || !text.trim()) return;
+  const msg = {
+    id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+    userId: me.id,
+    name: me.nickname,
+    text: text.trim().slice(0, 500),
+    date: new Date().toISOString()
+  };
+  saveMessage(msg);
+  renderChat();
+}
+
+const chatForm = document.getElementById('chatForm');
+if (chatForm) chatForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const inp = document.getElementById('chatInput');
+  sendChatMessage(inp.value);
+  inp.value = '';
+});
+const chatModalForm = document.getElementById('chatModalForm');
+if (chatModalForm) chatModalForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const inp = document.getElementById('chatModalInput');
+  sendChatMessage(inp.value);
+  inp.value = '';
+});
+
+function deleteChatMsg(id) {
+  const me = getCurrentUser();
+  if (!me) return;
+  const m = loadChat().find(x => x.id === id);
+  if (!m) return;
+  if (m.userId !== me.id && !me.isAdmin) return;
+  if (!confirm('Удалить сообщение?')) return;
+  deleteMessageFromDb(id);
+  renderChat();
+}
+
+function openChatModal() {
+  renderChat();
+  chatModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeChatModal() { chatModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
+chatModal.addEventListener('click', e => { if (e.target === chatModal) closeChatModal(); });
+
+/* ============================================================
+   EDIT MODE (Создатель)
+   ============================================================ */
+let editModeActive = false;
+const EDITABLE_SELECTORS = '.hero-title, .hero-lead, .panel-head h2, .panel-head p, .card h3, .card p, .hero-eyebrow, .video-label, .footer span, .review-form-title, .review-form-hint';
+
+function applyEdits() {
+  const edits = loadEdits();
+  Object.keys(edits).forEach(sel => {
+    document.querySelectorAll(sel).forEach(el => { el.innerHTML = edits[sel]; });
+  });
+}
+function toggleEditMode() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  editModeActive = !editModeActive;
+  if (editModeActive) enableEditMode();
+  else disableEditMode();
+  const btn = document.getElementById('editModeBtn');
+  if (btn) {
+    btn.classList.toggle('active', editModeActive);
+    btn.textContent = editModeActive ? '✏️ Режим редактирования ВКЛ' : '✏️ Режим редактирования';
+  }
+}
+function enableEditMode() {
+  document.querySelectorAll(EDITABLE_SELECTORS).forEach(el => {
+    el.setAttribute('data-vf-editable', '1');
+    el.setAttribute('contenteditable', 'true');
+    el.addEventListener('blur', onEditBlur);
+  });
+}
+function disableEditMode() {
+  editModeActive = false;
+  document.querySelectorAll('[data-vf-editable="1"]').forEach(el => {
+    el.removeAttribute('data-vf-editable');
+    el.removeAttribute('contenteditable');
+    el.removeEventListener('blur', onEditBlur);
+  });
+}
+function onEditBlur(e) {
+  const el = e.target;
+  const edits = loadEdits();
+  // Ищем уникальный селектор
+  let sel = null;
+  for (const s of EDITABLE_SELECTORS.split(',')) {
+    s = s.trim();
+    if (el.matches(s)) { sel = s; break; }
+  }
+  if (!sel) return;
+  edits[sel] = el.innerHTML;
+  saveEdits(edits);
+}
+
+/* ============================================================
+   INTERFACE MANAGE (drag&drop порядок карточек)
+   ============================================================ */
+let interfaceManageActive = false;
+function toggleInterfaceManage() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  interfaceManageActive = !interfaceManageActive;
+  if (interfaceManageActive) enableInterfaceManage();
+  else disableInterfaceManage();
+  const btn = document.getElementById('interfaceManageBtn');
+  if (btn) {
+    btn.classList.toggle('active', interfaceManageActive);
+    btn.textContent = interfaceManageActive ? '🎨 Управление Интерфейсом ВКЛ' : '🎨 Управление Интерфейсом';
+  }
+}
+function enableInterfaceManage() {
+  applyLayout();
+  document.querySelectorAll('[data-drag-container]').forEach(cont => {
+    cont.querySelectorAll('.card').forEach(card => {
+      card.setAttribute('draggable', 'true');
+      card.classList.add('drag-enabled');
+      card.addEventListener('dragstart', onDragStart);
+      card.addEventListener('dragend', onDragEnd);
+      card.addEventListener('dragover', onDragOver);
+      card.addEventListener('dragleave', onDragLeave);
+      card.addEventListener('drop', onDrop);
+    });
+  });
+}
+function disableInterfaceManage() {
+  interfaceManageActive = false;
+  document.querySelectorAll('[data-drag-container] .card').forEach(card => {
+    card.removeAttribute('draggable');
+    card.classList.remove('drag-enabled', 'dragging', 'drag-over');
+    card.removeEventListener('dragstart', onDragStart);
+    card.removeEventListener('dragend', onDragEnd);
+    card.removeEventListener('dragover', onDragOver);
+    card.removeEventListener('dragleave', onDragLeave);
+    card.removeEventListener('drop', onDrop);
+  });
+}
+let dragSrc = null;
+function onDragStart(e) {
+  dragSrc = this;
+  this.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+function onDragEnd() {
+  this.classList.remove('dragging');
+  document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+  saveLayoutOrder();
+}
+function onDragOver(e) {
+  e.preventDefault();
+  if (this === dragSrc) return;
+  this.classList.add('drag-over');
+}
+function onDragLeave() {
+  this.classList.remove('drag-over');
+}
+function onDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  this.classList.remove('drag-over');
+  if (this === dragSrc) return;
+  const parent = this.parentNode;
+  const cards = Array.from(parent.children);
+  const srcIdx = cards.indexOf(dragSrc);
+  const dstIdx = cards.indexOf(this);
+  if (srcIdx < 0 || dstIdx < 0) return;
+  if (srcIdx < dstIdx) parent.insertBefore(dragSrc, this.nextSibling);
+  else parent.insertBefore(dragSrc, this);
+  saveLayoutOrder();
+}
+function saveLayoutOrder() {
+  const layout = {};
+  document.querySelectorAll('[data-drag-container]').forEach(cont => {
+    const key = cont.dataset.dragContainer;
+    const order = Array.from(cont.querySelectorAll('.card')).map(c => c.querySelector('h3') ? c.querySelector('h3').textContent.trim() : '');
+    layout[key] = order;
+  });
+  saveLayoutStore(layout);
+}
+function applyLayout() {
+  const layout = loadLayout();
+  Object.keys(layout).forEach(key => {
+    const cont = document.querySelector(`[data-drag-container="${key}"]`);
+    if (!cont) return;
+    const order = layout[key];
+    const cards = Array.from(cont.querySelectorAll('.card'));
+    const map = {};
+    cards.forEach(c => { const t = c.querySelector('h3') ? c.querySelector('h3').textContent.trim() : ''; map[t] = c; });
+    order.forEach(title => { if (map[title]) cont.appendChild(map[title]); });
+  });
+}
+
+/* ============================================================
+   EXPORT / IMPORT
+   ============================================================ */
+function exportData() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  const data = {
+    exportedAt: new Date().toISOString(),
+    users: loadUsers(),
+    reviews: loadReviews(),
+    chat: loadChat(),
+    bans: loadBans(),
+    edits: loadEdits(),
+    layout: loadLayout()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'vipfirestorm-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+async function importData(input) {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  const file = input.files && input.files[0];
+  if (!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    if (!confirm('Импортировать данные? Текущие записи будут дополнены.')) return;
+    if (Array.isArray(data.users)) data.users.forEach(saveUser);
+    if (Array.isArray(data.reviews)) data.reviews.forEach(saveReview);
+    if (Array.isArray(data.chat)) data.chat.forEach(saveMessage);
+    if (data.bans && typeof data.bans === 'object') {
+      Object.keys(data.bans).forEach(uid => saveBan(uid, data.bans[uid]));
     }
-  </script>
+    if (data.edits && typeof data.edits === 'object') saveEdits(data.edits);
+    if (data.layout && typeof data.layout === 'object') saveLayoutStore(data.layout);
+    applyEdits(); applyLayout();
+    renderReviews(); renderChat(); updateAuthUI();
+    alert('Импорт завершён!');
+  } catch (e) {
+    alert('Ошибка импорта: ' + e.message);
+  }
+  input.value = '';
+}
+
+/* ============================================================
+   MUSIC
+   ============================================================ */
+const bgMusic = document.getElementById('bgMusic');
+const musicBtn = document.getElementById('musicBtn');
+const volumeSlider = document.getElementById('volumeSlider');
+const volVal = document.getElementById('volVal');
+const musicIconOff = document.getElementById('musicIconOff');
+const musicIconOn = document.getElementById('musicIconOn');
+let musicStarted = false;
+
+if (musicBtn) musicBtn.addEventListener('click', () => {
+  if (!musicStarted) {
+    bgMusic.volume = (volumeSlider ? parseInt(volumeSlider.value,10) : 50) / 100;
+    bgMusic.play().then(() => {
+      musicStarted = true;
+      musicBtn.classList.add('playing');
+      if (musicIconOff) musicIconOff.style.display = 'none';
+      if (musicIconOn) musicIconOn.style.display = '';
+    }).catch(() => {});
+  } else {
+    if (bgMusic.paused) {
+      bgMusic.play();
+      musicBtn.classList.add('playing');
+      if (musicIconOff) musicIconOff.style.display = 'none';
+      if (musicIconOn) musicIconOn.style.display = '';
+    } else {
+      bgMusic.pause();
+      musicBtn.classList.remove('playing');
+      if (musicIconOff) musicIconOff.style.display = '';
+      if (musicIconOn) musicIconOn.style.display = 'none';
+    }
+  }
+});
+if (volumeSlider) volumeSlider.addEventListener('input', () => {
+  const v = parseInt(volumeSlider.value, 10);
+  if (volVal) volVal.textContent = v + '%';
+  bgMusic.volume = v / 100;
+});
+
+/* ============================================================
+   PARALLAX BG
+   ============================================================ */
+const bgImage = document.getElementById('bgImage');
+let mouseX = 0, mouseY = 0;
+window.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / window.innerWidth - 0.5) * 20;
+  mouseY = (e.clientY / window.innerHeight - 0.5) * 20;
+  if (bgImage) bgImage.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+});
+
+/* ============================================================
+   EMBERS (частицы)
+   ============================================================ */
+(function initEmbers() {
+  const cvs = document.getElementById('embers');
+  if (!cvs) return;
+  const ctx = cvs.getContext('2d');
+  let w, h, particles = [];
+  function resize() {
+    w = cvs.width = window.innerWidth;
+    h = cvs.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 2 + 0.6,
+      vy: -(Math.random() * 0.5 + 0.2),
+      vx: (Math.random() - 0.5) * 0.3,
+      a: Math.random() * 0.5 + 0.2
+    });
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -10) { p.y = h + 10; p.x = Math.random() * w; }
+      if (p.x < -10) p.x = w + 10;
+      if (p.x > w + 10) p.x = -10;
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 6);
+      grad.addColorStop(0, `rgba(255,140,80,${p.a})`);
+      grad.addColorStop(1, 'rgba(255,80,40,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 6, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ============================================================
+   YOUTUBE IFRAME
+   ============================================================ */
+(function initYt() {
+  const el = document.getElementById('ytPlayer');
+  if (!el) return;
+  // Подставь свой video ID
+  const VIDEO_ID = 'dQw4w9WgXcQ';
+  el.innerHTML = `<iframe src="https://www.youtube.com/embed/${VIDEO_ID}?rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+})();
+
+/* ============================================================
+   DOWNLOAD COUNTER (сохраняется локально)
+   ============================================================ */
+(function initDownloads() {
+  const K = 'vf_downloads_v1';
+  let n = parseInt(safeGet(K) || '6', 10) || 6;
+  document.querySelectorAll('.js-download').forEach(a => {
+    a.addEventListener('click', () => {
+      n++;
+      safeSet(K, String(n));
+      document.querySelectorAll('[data-count]').forEach(el => el.textContent = n);
+    });
+  });
+  document.querySelectorAll('[data-count]').forEach(el => el.textContent = n);
+})();
+
+/* ============================================================
+   POLLING
+   ============================================================ */
+function startPolling() {
+  if (POLL_TIMER) clearInterval(POLL_TIMER);
+  POLL_TIMER = setInterval(async () => {
+    const ok = await fbLoadAll();
+    if (ok) {
+      renderChat();
+      renderReviews();
+      const adminM = document.getElementById('adminModal');
+      const bansM = document.getElementById('bansModal');
+      if (adminM && adminM.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
+      if (bansM && bansM.classList.contains('open')) renderBansModal();
+      updateAuthUI();
+      checkBan();
+    }
+  }, POLL_MS);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+(async function init() {
+  applyEdits();
+  applyLayout();
+  const ok = await fbLoadAll();
+  if (ok) await mergeLocalIntoCloud();
+  migrate();
+  updateAuthUI();
+  renderReviews();
+  renderChat();
+  checkBan();
+  startPolling();
+  console.log('[VF] init done. FB_READY =', FB_READY);
+})();
+</script>
 </body>
 </html>
