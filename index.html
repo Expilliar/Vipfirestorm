@@ -459,7 +459,9 @@ body.modal-open, body.ban-locked { overflow: hidden; }
         </div>
         <div>
           <div class="video-label">Визуальная информация об Аддоне</div>
-          <div class="video-frame"><div class="video-embed"><div id="ytPlayer"></div></div></div>
+          <div class="video-frame"><div class="video-embed">
+            <iframe id="ytPlayer" src="https://www.youtube.com/embed/-NZJbbG1BLY?rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+          </div></div>
         </div>
       </div>
     </section>
@@ -584,6 +586,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       <button type="button" class="edit-mode-btn" id="interfaceManageBtn" onclick="toggleInterfaceManage()">🎨 Управление Интерфейсом</button>
       <button type="button" class="admin-btn" onclick="exportData()">💾 Экспорт базы</button>
       <button type="button" class="admin-btn" onclick="document.getElementById('importInput').click()">📥 Импорт базы</button>
+      <button type="button" class="admin-btn" onclick="forceResyncToFirebase()">🔄 Перезаписать Firebase</button>
       <input type="file" id="importInput" accept=".json,application/json" style="display:none" onchange="importData(this)">
     </div>
 
@@ -715,7 +718,6 @@ async function fbSave(path, data) {
   }
 }
 
-// Удаление через PUT null (Firebase-совместимый способ, тот же метод, что и save)
 async function fbDelete(path) {
   try {
     FB_BUSY++;
@@ -724,16 +726,30 @@ async function fbDelete(path) {
       headers: { 'Content-Type': 'application/json' },
       body: 'null'
     });
-    if (!r.ok) {
-      console.error('[FB] DELETE (PUT null) failed:', path, r.status);
-      // Fallback на DELETE метод
-      const r2 = await fetch(`${FB_URL}/${path}.json`, { method: 'DELETE' });
-      if (!r2.ok) { console.error('[FB] DELETE (method) failed:', path, r2.status); return false; }
-    }
-    console.log('[FB] Удалено:', path);
+    if (!r.ok) { console.error('[FB] DELETE (PUT null) failed:', path, r.status); return false; }
+    console.log('[FB] Удалено (PUT null):', path);
     return true;
   } catch (e) {
     console.error('[FB] DELETE error:', path, e.message);
+    return false;
+  } finally {
+    FB_BUSY--;
+  }
+}
+
+async function fbPutBranch(branch) {
+  try {
+    FB_BUSY++;
+    const r = await fetch(`${FB_URL}/${branch}.json`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(FB_DATA[branch] || {})
+    });
+    if (!r.ok) { console.error('[FB] PUT branch failed:', branch, r.status); return false; }
+    console.log('[FB] Ветка перезаписана:', branch, '| элементов:', Object.keys(FB_DATA[branch] || {}).length);
+    return true;
+  } catch (e) {
+    console.error('[FB] PUT branch error:', branch, e.message);
     return false;
   } finally {
     FB_BUSY--;
@@ -753,6 +769,24 @@ async function debugFirebase() {
     console.log('[Firebase dump]', d);
     alert(info);
   } catch (e) { alert('Ошибка: ' + e.message); }
+}
+
+async function forceResyncToFirebase() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) { alert('Только Создатель'); return; }
+  if (!confirm('Это перезапишет всю базу Firebase данными из памяти браузера. Продолжить?')) return;
+  try {
+    FB_BUSY++;
+    const r = await fetch(FB_URL + '/.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(FB_DATA)
+    });
+    FB_BUSY--;
+    if (!r.ok) { alert('Ошибка: ' + r.status); return; }
+    alert('✓ Вся база перезаписана в Firebase');
+    console.log('[FB] Force resync OK');
+  } catch (e) { FB_BUSY--; alert('Ошибка: ' + e.message); }
 }
 
 /* ============================================================
@@ -788,8 +822,8 @@ async function deleteUserFromDb(id) {
   const arr = loadJSON(K_LOCAL_USERS, []).filter(u => u.id !== id);
   safeSet(K_LOCAL_USERS, JSON.stringify(arr));
   if (FB_READY) {
-    const ok = await fbDelete('users/' + id);
-    if (!ok) console.error('[Admin] Не удалось удалить из Firebase:', id);
+    await fbDelete('users/' + id);
+    await fbPutBranch('users');
   }
 }
 
@@ -808,8 +842,8 @@ async function deleteReviewFromDb(id) {
   const arr = loadJSON(K_LOCAL_REVIEWS, []).filter(r => r.id !== id);
   safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
   if (FB_READY) {
-    const ok = await fbDelete('reviews/' + id);
-    if (!ok) console.error('[Review] Не удалось удалить из Firebase:', id);
+    await fbDelete('reviews/' + id);
+    await fbPutBranch('reviews');
   }
 }
 
@@ -828,8 +862,8 @@ async function deleteMessageFromDb(id) {
   const arr = loadJSON(K_LOCAL_CHAT, []).filter(m => m.id !== id);
   safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
   if (FB_READY) {
-    const ok = await fbDelete('chat/' + id);
-    if (!ok) console.error('[Chat] Не удалось удалить из Firebase:', id);
+    await fbDelete('chat/' + id);
+    await fbPutBranch('chat');
   }
 }
 
@@ -845,7 +879,10 @@ async function deleteBan(userId) {
   const obj = loadJSON(K_LOCAL_BANS, {});
   delete obj[userId];
   safeSet(K_LOCAL_BANS, JSON.stringify(obj));
-  if (FB_READY) await fbDelete('bans/' + userId);
+  if (FB_READY) {
+    await fbDelete('bans/' + userId);
+    await fbPutBranch('bans');
+  }
 }
 
 function loadEdits() { return loadJSON(K_EDITS, {}); }
@@ -1284,19 +1321,46 @@ async function deleteUser(userId) {
   if (!me.isCreator && user.isAdmin) { alert('Только Создатель может удалять администраторов'); return; }
   if (!confirm(`Удалить аккаунт "${user.nickname}"?`)) return;
 
-  // Удаляем всё связанное с пользователем
-  const hisReviews = loadReviews().filter(r => r.userId === userId);
-  for (const r of hisReviews) await deleteReviewFromDb(r.id);
-  const hisChat = loadChat().filter(m => m.userId === userId);
-  for (const m of hisChat) await deleteMessageFromDb(m.id);
-  await deleteBan(userId);
-  await deleteUserFromDb(userId);
+  console.log('[Admin] Начинаю удаление:', user.nickname, user.id);
 
-  // Обновляем UI
+  const hisReviews = loadReviews().filter(r => r.userId === userId);
+  for (const r of hisReviews) {
+    delete FB_DATA.reviews[r.id];
+    const arr = loadJSON(K_LOCAL_REVIEWS, []).filter(x => x.id !== r.id);
+    safeSet(K_LOCAL_REVIEWS, JSON.stringify(arr));
+  }
+  if (FB_READY && hisReviews.length) await fbPutBranch('reviews');
+
+  const hisChat = loadChat().filter(m => m.userId === userId);
+  for (const m of hisChat) {
+    delete FB_DATA.chat[m.id];
+    const arr = loadJSON(K_LOCAL_CHAT, []).filter(x => x.id !== m.id);
+    safeSet(K_LOCAL_CHAT, JSON.stringify(arr));
+  }
+  if (FB_READY && hisChat.length) await fbPutBranch('chat');
+
+  await deleteBan(userId);
+
+  delete FB_DATA.users[userId];
+  const arr = loadJSON(K_LOCAL_USERS, []).filter(u => u.id !== userId);
+  safeSet(K_LOCAL_USERS, JSON.stringify(arr));
+  if (FB_READY) {
+    await fbDelete('users/' + userId);
+    await fbPutBranch('users');
+  }
+
+  await fbLoadAll();
+  const check = loadUsers().find(u => u.id === userId);
+  if (check) {
+    alert('⚠️ Ошибка: пользователь всё ещё в Firebase. Проверь правила базы.\n\nОткрой F12 → Console для деталей.');
+    console.error('[Admin] НЕ УДАЛОСЬ удалить юзера из Firebase:', userId, check);
+  } else {
+    console.log('[Admin] ✓ Удалён окончательно:', user.nickname);
+  }
+
   renderAdminUsers();
   renderReviews();
   renderChat();
-  console.log('[Admin] Удалён:', user.nickname);
 }
 
 let banTarget = { userId: null, nick: null, minutes: 0 };
@@ -1925,45 +1989,16 @@ bgMusic.addEventListener('play', () => setPlayingIcon(true));
 bgMusic.addEventListener('pause', () => setPlayingIcon(false));
 
 /* ============================================================
-   YOUTUBE — с fallback на прямой iframe
+   YOUTUBE — прямой iframe
    ============================================================ */
-let ytPlayer = null, musicWasPlayingBeforeVideo = false, ytInited = false;
-
-function ytFallbackToIframe() {
-  if (ytInited) return;
-  const el = document.getElementById('ytPlayer');
-  if (!el || el.tagName === 'IFRAME') return;
-  el.outerHTML = '<iframe id="ytPlayer" src="https://www.youtube.com/embed/-NZJbbG1BLY?rel=0&modestbranding=1&playsinline=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-  console.log('[YT] Использован fallback-iframe');
-}
-
-const ytScript = document.createElement('script');
-ytScript.src = 'https://www.youtube.com/iframe_api';
-ytScript.onerror = () => { console.warn('[YT] API не загрузился'); ytFallbackToIframe(); };
-document.head.appendChild(ytScript);
-
-window.onYouTubeIframeAPIReady = function () {
-  try {
-    ytPlayer = new YT.Player('ytPlayer', {
-      videoId: '-NZJbbG1BLY',
-      playerVars: { rel: 0, modestbranding: 1, playsinline: 1 },
-      events: { onStateChange: onPlayerStateChange }
+setTimeout(() => {
+  const ytFrame = document.getElementById('ytPlayer');
+  if (ytFrame && ytFrame.tagName === 'IFRAME') {
+    ytFrame.addEventListener('click', () => {
+      if (!bgMusic.paused) { musicManuallyPaused = true; bgMusic.pause(); }
     });
-    ytInited = true;
-  } catch (e) {
-    console.warn('[YT] Ошибка:', e);
-    ytFallbackToIframe();
   }
-};
-
-// Если через 3.5 сек API не загрузился — рендерим прямой iframe
-setTimeout(ytFallbackToIframe, 3500);
-
-function onPlayerStateChange(event) {
-  const state = event.data;
-  if (state === 1 || state === 3) { if (!bgMusic.paused) { musicWasPlayingBeforeVideo = true; bgMusic.pause(); } return; }
-  if (state === 2 || state === 0) { if (musicWasPlayingBeforeVideo && !musicManuallyPaused) { bgMusic.muted = false; bgMusic.play().then(() => setPlayingIcon(true)).catch(() => {}); musicWasPlayingBeforeVideo = false; } }
-}
+}, 500);
 
 /* ============================================================
    СЧЁТЧИК ЗАГРУЗОК
