@@ -932,6 +932,46 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     function safeRemove(key) { try { localStorage.removeItem(key); } catch (e) {} }
     function loadJSON(key, fallback) { const r = safeGet(key); if (!r) return fallback; try { return JSON.parse(r) || fallback; } catch (e) { return fallback; } }
 
+    // Объединение локальных данных в облако (для аккаунтов, созданных до включения облака)
+    function mergeLocalIntoCloud() {
+      if (!CLOUD_READY) return false;
+      let changed = false;
+      try {
+        const localUsers = loadJSON(USERS_KEY, []);
+        if (Array.isArray(localUsers) && localUsers.length) {
+          const cloudIds = new Set(CLOUD_DATA.users.map(u => u.id));
+          localUsers.forEach(u => { if (u && u.id && !cloudIds.has(u.id)) { CLOUD_DATA.users.push(u); changed = true; } });
+        }
+      } catch (e) {}
+      try {
+        const localReviews = loadJSON(REVIEWS_KEY, []);
+        if (Array.isArray(localReviews) && localReviews.length) {
+          const cloudIds = new Set(CLOUD_DATA.reviews.map(r => r.id));
+          localReviews.forEach(r => { if (r && r.id && !cloudIds.has(r.id)) { CLOUD_DATA.reviews.push(r); changed = true; } });
+        }
+      } catch (e) {}
+      try {
+        const localChat = loadJSON(CHAT_KEY, []);
+        if (Array.isArray(localChat) && localChat.length) {
+          const cloudIds = new Set(CLOUD_DATA.chat.map(m => m.id));
+          localChat.forEach(m => { if (m && m.id && !cloudIds.has(m.id)) { CLOUD_DATA.chat.push(m); changed = true; } });
+        }
+      } catch (e) {}
+      try {
+        const localBans = loadJSON(BANS_KEY, {});
+        if (localBans && typeof localBans === 'object') {
+          Object.keys(localBans).forEach(ip => {
+            if (!CLOUD_DATA.bans[ip]) { CLOUD_DATA.bans[ip] = localBans[ip]; changed = true; }
+          });
+        }
+      } catch (e) {}
+      if (changed) {
+        console.log('[Cloud] Локальные данные объединены с облаком');
+        cloudPush();
+      }
+      return changed;
+    }
+
     // Хранилища с поддержкой облака (приоритет — облако)
     function loadUsers() { return CLOUD_READY ? CLOUD_DATA.users.slice() : loadJSON(USERS_KEY, []); }
     function saveUsers(a) {
@@ -1113,6 +1153,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       const msg = document.getElementById('loginMsg');
       if (!nick || !pwd) { msg.textContent = 'Заполни ник и пароль'; msg.className = 'modal-msg show err'; return; }
       await cloudLoad();
+      mergeLocalIntoCloud();
       const users = loadUsers();
       const user = users.find(u => u.nickname.toLowerCase() === nick.toLowerCase());
       if (!user) { msg.textContent = 'Пользователь не найден'; msg.className = 'modal-msg show err'; return; }
@@ -1140,6 +1181,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       if (nick.length < 2) { msg.textContent = 'Ник слишком короткий (мин. 2)'; msg.className = 'modal-msg show err'; return; }
       if (pwd.length < 4) { msg.textContent = 'Пароль минимум 4 символа'; msg.className = 'modal-msg show err'; return; }
       await cloudLoad();
+      mergeLocalIntoCloud();
       const users = loadUsers();
       if (users.some(u => u.nickname.toLowerCase() === nick.toLowerCase())) {
         msg.textContent = 'Такой ник уже занят'; msg.className = 'modal-msg show err'; return;
@@ -1269,6 +1311,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       const me = getCurrentUser();
       if (!me || !me.isAdmin) return;
       await cloudLoad();
+      mergeLocalIntoCloud();
       renderAdminUsers();
       renderAdminBans();
       adminModal.classList.add('open');
@@ -1660,7 +1703,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       if (!name) { nameInput.classList.add('error'); ok = false; }
       if (rating < 1 || rating > 5) { starPicker.style.filter = 'drop-shadow(0 0 10px rgba(255,46,99,.6))'; setTimeout(() => starPicker.style.filter = '', 900); ok = false; }
       if (!ok) { showMsg('Заполни обязательные поля.', 'err'); return; }
-      // Свежая синхронизация перед записью
       await cloudLoad();
       const review = {
         id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
@@ -1776,7 +1818,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       if (!u) { openAuth(); return; }
       text = String(text || '').trim();
       if (!text || text.length > 500) return;
-      // Свежая синхронизация перед записью
       await cloudLoad();
       const list = loadChat();
       list.push({
@@ -2167,7 +2208,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
        ИНИЦИАЛИЗАЦИЯ
        ============================================================ */
     (async function init() {
-      // 1) Мгновенный рендер из локальных данных (пока облако грузится)
+      // 1) Мгновенный рендер из локальных данных
       updateAuthUI(); renderReviews(); renderChat();
       migrate();
       initDragKeys(); applyLayout(); applyEdits();
@@ -2176,12 +2217,12 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       cloudSetStatus('offline', 'Подключение...');
       const ok = await cloudLoad();
       if (ok) {
+        mergeLocalIntoCloud();
         updateAuthUI(); renderReviews(); renderChat();
         migrate();
 
         // Периодическая синхронизация каждые 6 секунд
         setInterval(async () => {
-          // Не тянем из облака, если пользователь сейчас печатает
           const ae = document.activeElement;
           if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
           const ok2 = await cloudLoad();
