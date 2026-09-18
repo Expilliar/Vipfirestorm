@@ -225,6 +225,8 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .logout-btn:hover { background: rgba(255,46,99,.2); }
 .admin-btn { width: 100%; margin-top: 10px; padding: 12px 22px; border-radius: 12px; font: inherit; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .82rem; cursor: pointer; border: 1px solid rgba(255,179,71,.4); background: rgba(255,179,71,.12); color: #ffb347; transition: all .25s; }
 .admin-btn:hover { background: rgba(255,179,71,.25); }
+.link-btn { display: block; width: 100%; margin-top: 10px; padding: 12px 22px; border-radius: 12px; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .82rem; letter-spacing: .04em; text-align: center; text-decoration: none; border: 1px solid rgba(99,179,255,.4); background: rgba(99,179,255,.12); color: #8bc4ff; transition: all .25s; box-sizing: border-box; }
+.link-btn:hover { background: rgba(99,179,255,.25); border-color: rgba(99,179,255,.7); transform: translateY(-1px); }
 
 .profile-section { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.08); }
 .profile-section-title { font-family: 'Unbounded', sans-serif; font-size: .74rem; font-weight: 700; color: #ffb347; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; text-align: center; }
@@ -236,11 +238,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 [data-vf-editable="1"] { outline: 1px dashed rgba(255,179,71,.4); outline-offset: 3px; border-radius: 4px; transition: outline-color .2s, background .2s; cursor: text; }
 [data-vf-editable="1"]:hover { outline-color: rgba(255,179,71,.85); background: rgba(255,179,71,.05); }
 [data-vf-editable="1"]:focus { outline: 2px solid #ffb347; outline-offset: 3px; }
-
-.drag-enabled { cursor: grab; }
-.drag-enabled:hover { outline: 2px dashed rgba(255,179,71,.5); outline-offset: 3px; border-radius: 8px; }
-.drag-enabled.dragging { opacity: .35; }
-.drag-enabled.drag-over { outline: 2px solid #ffb347; outline-offset: 3px; border-radius: 8px; }
 
 .admin-users { display: flex; flex-direction: column; gap: 10px; max-height: 45vh; overflow-y: auto; }
 .admin-user-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); }
@@ -469,7 +466,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     <section class="panels">
       <div class="panel active" id="panel-features">
         <div class="panel-head"><h2>Модули системы</h2><p>Передовой аддон для максимального комфорта в World of Warcraft Firestorm.</p></div>
-        <div class="cards" data-drag-container="features">
+        <div class="cards">
           <article class="card"><div class="card-ico">◈</div><h3>Классовый телепорт</h3><p>Интерфейс мгновенного доступа ко всем ключевым точкам мира под специализацию вашего персонажа.</p></article>
           <article class="card"><div class="card-ico">✉</div><h3>Авто-приём ПМ</h3><p>Интеллектуальная система приёма в группу по ключевым словам в личных сообщениях.</p></article>
           <article class="card"><div class="card-ico">⟳</div><h3>FastReparty</h3><p>Мгновенный перезапуск рейдовых групп одной кнопкой с полным сохранением состава.</p></article>
@@ -478,7 +475,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       </div>
       <div class="panel" id="panel-teleport">
         <div class="panel-head"><h2>Система телепортации</h2><p>Быстрый переход между локациями дополнений.</p></div>
-        <div class="cards" data-drag-container="teleport">
+        <div class="cards">
           <article class="card"><div class="card-ico">⬢</div><h3>Штормград / Огриммар</h3><p>Моментальный прыжок к основным вендорам и банковским слотам вашей фракции.</p></article>
           <article class="card"><div class="card-ico">✦</div><h3>Актуальные зоны</h3><p>Прямой доступ к локациям текущего контента Firestorm без промежуточных точек.</p></article>
           <article class="card"><div class="card-ico">◉</div><h3>Рейдовые порталы</h3><p>Быстрое перемещение ко входам рейдов и подземелий актуального сезона.</p></article>
@@ -486,7 +483,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       </div>
       <div class="panel" id="panel-automation">
         <div class="panel-head"><h2>Модули автоматизации</h2><p>Скрипты, ускоряющие рутинные действия в рейдах и подземельях.</p></div>
-        <div class="cards" data-drag-container="automation">
+        <div class="cards">
           <article class="card"><div class="card-ico">⚡</div><h3>Авто-приглашение</h3><p>Активация по фразам <code>+</code> <code>inv</code> <code>инв</code> с настраиваемым списком ключевых слов.</p></article>
           <article class="card"><div class="card-ico">⟳</div><h3>Умный ресет</h3><p>Мгновенный сброс подземелий в пати-моде с автоматическим подтверждением.</p></article>
           <article class="card"><div class="card-ico">⌘</div><h3>Менеджер группы</h3><p>Автоматическое назначение ролей, исключение неактивных игроков и приглашение замен.</p></article>
@@ -494,7 +491,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       </div>
       <div class="panel" id="panel-commands">
         <div class="panel-head"><h2>Интерфейсные команды</h2><p>Список консольных команд для управления аддоном прямо из чата игры.</p></div>
-        <div class="cards" data-drag-container="commands">
+        <div class="cards">
           <article class="card"><div class="card-ico">⌘</div><h3>/vf или /vipf</h3><p>Открытие главного графического меню телепортации.</p></article>
           <article class="card"><div class="card-ico">⟳</div><h3>/freparty</h3><p>Мгновенное пересоздание рейдовой группы с сохранением состава.</p></article>
           <article class="card"><div class="card-ico">⚡</div><h3>/vfa</h3><p>Открытие панели автоматизации и фильтров авто-приглашения.</p></article>
@@ -583,11 +580,13 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     <div class="profile-section" id="creatorTools" style="display:none">
       <div class="profile-section-title">🛠 Инструменты Создателя</div>
       <button type="button" class="edit-mode-btn" id="editModeBtn" onclick="toggleEditMode()">✏️ Режим редактирования</button>
-      <button type="button" class="edit-mode-btn" id="interfaceManageBtn" onclick="toggleInterfaceManage()">🎨 Управление Интерфейсом</button>
-      <button type="button" class="admin-btn" onclick="exportData()">💾 Экспорт базы</button>
-      <button type="button" class="admin-btn" onclick="document.getElementById('importInput').click()">📥 Импорт базы</button>
-      <button type="button" class="admin-btn" onclick="clearLocalCache()">🧹 Очистить локальный кэш</button>
-      <input type="file" id="importInput" accept=".json,application/json" style="display:none" onchange="importData(this)">
+      <button type="button" class="admin-btn" onclick="resetAllEdits()">🗑 Сбросить правки</button>
+    </div>
+
+    <div class="profile-section">
+      <div class="profile-section-title">🔗 Ссылки проекта</div>
+      <a class="link-btn" href="https://github.com/Expilliar/Vipfirestorm/tree/main" target="_blank" rel="noopener">🌐 Сайт (GitHub)</a>
+      <a class="link-btn" href="https://console.firebase.google.com/u/0/project/vipfirestorm-ee1f6/database/vipfirestorm-ee1f6-default-rtdb/data" target="_blank" rel="noopener">🗄 База (Firebase)</a>
     </div>
 
     <button type="button" class="logout-btn" onclick="logout()">Выйти</button>
@@ -657,17 +656,18 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 
 <script>
 /* ============================================================
-   FIREBASE
+   FIREBASE — база + SSE (real-time)
    ============================================================ */
 const FB_URL = 'https://vipfirestorm-ee1f6-default-rtdb.firebaseio.com';
 
 window.addEventListener('error', e => console.error('[VF Error]', e.message));
 window.addEventListener('unhandledrejection', e => console.error('[VF Promise]', e.reason));
 
-let FB_DATA = { users: {}, reviews: {}, chat: {}, bans: {} };
+let FB_DATA = { users: {}, reviews: {}, chat: {}, bans: {}, edits: {} };
 let FB_READY = false;
 let FB_SAVING = 0;
 let FB_BUSY = 0;
+let SSE_STATE = 'off';
 
 function setCloudStatus(state, text) {
   const chip = document.getElementById('cloudChip');
@@ -678,20 +678,24 @@ function setCloudStatus(state, text) {
   if (txt) txt.textContent = text || (state === 'online' ? 'Облако' : state === 'error' ? 'Ошибка' : 'Локально');
 }
 
+function normalizeData(d) {
+  d = d || {};
+  return {
+    users: d.users && typeof d.users === 'object' ? d.users : {},
+    reviews: d.reviews && typeof d.reviews === 'object' ? d.reviews : {},
+    chat: d.chat && typeof d.chat === 'object' ? d.chat : {},
+    bans: d.bans && typeof d.bans === 'object' ? d.bans : {},
+    edits: d.edits && typeof d.edits === 'object' ? d.edits : {}
+  };
+}
+
 async function fbLoadAll(force) {
-  if (!force && (FB_BUSY > 0 || FB_SAVING > 0)) {
-    return false;
-  }
+  if (!force && (FB_BUSY > 0 || FB_SAVING > 0)) return false;
   try {
     const r = await fetch(FB_URL + '/.json?t=' + Date.now(), { cache: 'no-store' });
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    const d = await r.json() || {};
-    FB_DATA = {
-      users: d.users && typeof d.users === 'object' ? d.users : {},
-      reviews: d.reviews && typeof d.reviews === 'object' ? d.reviews : {},
-      chat: d.chat && typeof d.chat === 'object' ? d.chat : {},
-      bans: d.bans && typeof d.bans === 'object' ? d.bans : {}
-    };
+    const d = await r.json();
+    FB_DATA = normalizeData(d);
     FB_READY = true;
     setCloudStatus('online');
     return true;
@@ -713,12 +717,8 @@ async function fbSave(path, data) {
     });
     if (!r.ok) { console.error('[FB] PUT failed:', path, r.status); return false; }
     return true;
-  } catch (e) {
-    console.warn('[FB] Ошибка записи', path, e.message);
-    return false;
-  } finally {
-    FB_SAVING--; FB_BUSY--;
-  }
+  } catch (e) { console.warn('[FB] Ошибка записи', path, e.message); return false; }
+  finally { FB_SAVING--; FB_BUSY--; }
 }
 
 async function fbDelete(path) {
@@ -732,12 +732,8 @@ async function fbDelete(path) {
     if (!r.ok) { console.error('[FB] DELETE failed:', path, r.status); return false; }
     console.log('[FB] Удалено:', path);
     return true;
-  } catch (e) {
-    console.error('[FB] DELETE error:', path, e.message);
-    return false;
-  } finally {
-    FB_BUSY--;
-  }
+  } catch (e) { console.error('[FB] DELETE error:', path, e.message); return false; }
+  finally { FB_BUSY--; }
 }
 
 async function fbPutBranch(branch) {
@@ -751,117 +747,111 @@ async function fbPutBranch(branch) {
     if (!r.ok) { console.error('[FB] PUT branch failed:', branch, r.status); return false; }
     console.log('[FB] Ветка перезаписана:', branch, '| элементов:', Object.keys(FB_DATA[branch] || {}).length);
     return true;
-  } catch (e) {
-    console.error('[FB] PUT branch error:', branch, e.message);
-    return false;
-  } finally {
-    FB_BUSY--;
-  }
-}
-
-async function debugFirebase() {
-  try {
-    const r = await fetch(FB_URL + '/.json?t=' + Date.now(), { cache: 'no-store' });
-    const d = await r.json() || {};
-    const info = '📊 Состояние Firebase:\n\n' +
-      '👥 Users: ' + Object.keys(d.users || {}).length + '\n' +
-      '⭐ Reviews: ' + Object.keys(d.reviews || {}).length + '\n' +
-      '💬 Chat: ' + Object.keys(d.chat || {}).length + '\n' +
-      '🚫 Bans: ' + Object.keys(d.bans || {}).length + '\n\n' +
-      '👤 Пользователи:\n' + Object.values(d.users || {}).map(u => '  • ' + u.nickname + (u.isAdmin ? ' [ADMIN]' : '') + (u.isCreator ? ' [CREATOR]' : '')).join('\n');
-    console.log('[Firebase dump]', d);
-    alert(info);
-  } catch (e) { alert('Ошибка: ' + e.message); }
-}
-
-function clearLocalCache() {
-  const me = getCurrentUser();
-  if (!me || !me.isCreator) return;
-  if (!confirm('Очистить локальный кэш браузера?')) return;
-  safeRemove('vf_users_v1');
-  safeRemove('vf_reviews_v1');
-  safeRemove('vf_chat_v1');
-  safeRemove('vf_bans_v1');
-  safeRemove('vf_migrated_v1');
-  alert('Кэш очищен. Страница перезагрузится.');
-  location.reload();
+  } catch (e) { console.error('[FB] PUT branch error:', branch, e.message); return false; }
+  finally { FB_BUSY--; }
 }
 
 /* ============================================================
-   КОНСТАНТЫ + ХЕЛПЕРЫ
+   SSE — REAL-TIME ЧЕРЕЗ FIREBASE REST STREAMING
+   ============================================================ */
+let sseRetry = 1000;
+
+async function startSSE() {
+  try {
+    const res = await fetch(FB_URL + '/.json', {
+      headers: { 'Accept': 'text/event-stream' },
+      cache: 'no-store'
+    });
+    if (!res.ok) throw new Error('SSE HTTP ' + res.status);
+    if (!res.body) throw new Error('SSE no body');
+    SSE_STATE = 'on';
+    sseRetry = 1000;
+    setCloudStatus('online');
+    console.log('[SSE] Подключено');
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += decoder.decode(value, { stream: true });
+      let split;
+      while ((split = buf.search(/\r?\n\r?\n/)) !== -1) {
+        const raw = buf.slice(0, split);
+        buf = buf.slice(split).replace(/^\r?\n\r?\n/, '');
+        if (raw.trim()) handleSSE(raw);
+      }
+    }
+    SSE_STATE = 'off';
+  } catch (e) {
+    console.warn('[SSE] Ошибка:', e.message);
+    SSE_STATE = 'off';
+  }
+  setTimeout(startSSE, sseRetry);
+  sseRetry = Math.min(sseRetry * 2, 15000);
+}
+
+function handleSSE(raw) {
+  let type = 'message', data = '';
+  raw.split(/\r?\n/).forEach(line => {
+    if (line.startsWith('event: ')) type = line.slice(7).trim();
+    else if (line.startsWith('data: ')) data += line.slice(6);
+    else if (line.startsWith('data:')) data += line.slice(5);
+  });
+  if (!data) return;
+  if (type === 'keep-alive' || type === 'cancel' || type === 'auth_revoked') return;
+  try {
+    const parsed = JSON.parse(data);
+    applySSEChange(parsed.path || '/', parsed.data);
+    renderAllFromSSE();
+  } catch (e) { console.warn('[SSE] Parse:', e.message); }
+}
+
+function applySSEChange(path, data) {
+  const parts = path.split('/').filter(Boolean);
+  if (parts.length === 0) { FB_DATA = normalizeData(data); FB_READY = true; return; }
+  const branch = parts[0];
+  if (!['users','reviews','chat','bans','edits'].includes(branch)) return;
+  if (parts.length === 1) { FB_DATA[branch] = (data && typeof data === 'object') ? data : {}; return; }
+  if (data === null) { if (FB_DATA[branch]) delete FB_DATA[branch][parts[1]]; }
+  else { if (!FB_DATA[branch]) FB_DATA[branch] = {}; FB_DATA[branch][parts[1]] = data; }
+}
+
+function renderAllFromSSE() {
+  updateAuthUI();
+  renderReviews();
+  renderChat();
+  applyEditsFromCloud();
+  if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
+  if (bansModal.classList.contains('open')) renderBansModal();
+}
+
+/* ============================================================
+   ХЕЛПЕРЫ
    ============================================================ */
 const K_SESSION = 'vf_session_v1';
-const K_EDITS = 'vf_edits_v1';
-const K_LAYOUT = 'vf_layout_v1';
 const CHAT_MAX = 500;
 const CREATOR_NICKNAME = 'ищусебя';
 
 function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 function safeSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
 function safeRemove(k) { try { localStorage.removeItem(k); } catch (e) {} }
-function loadJSON(k, fb) { const r = safeGet(k); if (!r) return fb; try { return JSON.parse(r) || fb; } catch (e) { return fb; } }
 
-// ВАЖНО: все данные читаем ТОЛЬКО из Firebase. localStorage больше не используется для контента.
 function loadUsers() { return Object.values(FB_DATA.users || {}).filter(Boolean); }
 function loadReviews() { return Object.values(FB_DATA.reviews || {}).filter(Boolean); }
 function loadChat() { return Object.values(FB_DATA.chat || {}).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1); }
 function loadBans() { return JSON.parse(JSON.stringify(FB_DATA.bans || {})); }
 
-function saveUser(user) {
-  if (!user || !user.id) return;
-  FB_DATA.users[user.id] = user;
-  fbSave('users/' + user.id, user);
-}
-async function deleteUserFromDb(id) {
-  FB_BUSY++;
-  delete FB_DATA.users[id];
-  await fbDelete('users/' + id);
-  await fbPutBranch('users');
-  FB_BUSY--;
-}
-
-function saveReview(review) {
-  if (!review || !review.id) return;
-  FB_DATA.reviews[review.id] = review;
-  fbSave('reviews/' + review.id, review);
-}
-async function deleteReviewFromDb(id) {
-  FB_BUSY++;
-  delete FB_DATA.reviews[id];
-  await fbDelete('reviews/' + id);
-  await fbPutBranch('reviews');
-  FB_BUSY--;
-}
-
-function saveMessage(msg) {
-  if (!msg || !msg.id) return;
-  FB_DATA.chat[msg.id] = msg;
-  fbSave('chat/' + msg.id, msg);
-}
-async function deleteMessageFromDb(id) {
-  FB_BUSY++;
-  delete FB_DATA.chat[id];
-  await fbDelete('chat/' + id);
-  await fbPutBranch('chat');
-  FB_BUSY--;
-}
-
-function saveBan(userId, ban) {
-  FB_DATA.bans[userId] = ban;
-  fbSave('bans/' + userId, ban);
-}
-async function deleteBan(userId) {
-  FB_BUSY++;
-  delete FB_DATA.bans[userId];
-  await fbDelete('bans/' + userId);
-  await fbPutBranch('bans');
-  FB_BUSY--;
-}
-
-function loadEdits() { return loadJSON(K_EDITS, {}); }
-function saveEdits(o) { safeSet(K_EDITS, JSON.stringify(o)); }
-function loadLayout() { return loadJSON(K_LAYOUT, {}); }
-function saveLayoutStore(o) { safeSet(K_LAYOUT, JSON.stringify(o)); }
+function saveUser(user) { if (!user || !user.id) return; FB_DATA.users[user.id] = user; fbSave('users/' + user.id, user); }
+async function deleteUserFromDb(id) { FB_BUSY++; delete FB_DATA.users[id]; await fbDelete('users/' + id); await fbPutBranch('users'); FB_BUSY--; }
+function saveReview(review) { if (!review || !review.id) return; FB_DATA.reviews[review.id] = review; fbSave('reviews/' + review.id, review); }
+async function deleteReviewFromDb(id) { FB_BUSY++; delete FB_DATA.reviews[id]; await fbDelete('reviews/' + id); await fbPutBranch('reviews'); FB_BUSY--; }
+function saveMessage(msg) { if (!msg || !msg.id) return; FB_DATA.chat[msg.id] = msg; fbSave('chat/' + msg.id, msg); }
+async function deleteMessageFromDb(id) { FB_BUSY++; delete FB_DATA.chat[id]; await fbDelete('chat/' + id); await fbPutBranch('chat'); FB_BUSY--; }
+function saveBan(userId, ban) { FB_DATA.bans[userId] = ban; fbSave('bans/' + userId, ban); }
+async function deleteBan(userId) { FB_BUSY++; delete FB_DATA.bans[userId]; await fbDelete('bans/' + userId); await fbPutBranch('bans'); FB_BUSY--; }
 
 function hashPassword(pwd) {
   let h = 5381; const s = 'vf::' + pwd + '::salt';
@@ -939,15 +929,6 @@ function checkBan() {
   return false;
 }
 
-function migrate() {
-  const users = loadUsers();
-  users.forEach(u => {
-    if (isCreatorName(u.nickname) && (!u.isAdmin || !u.isCreator)) {
-      u.isAdmin = true; u.isCreator = true; saveUser(u);
-    }
-  });
-}
-
 function updateAuthUI() {
   const u = getCurrentUser();
   const authBtn = document.getElementById('authBtn');
@@ -963,7 +944,6 @@ function updateAuthUI() {
     authBtn.style.display = '';
     userChip.style.display = 'none';
     if (editModeActive) disableEditMode();
-    if (interfaceManageActive) disableInterfaceManage();
   }
   syncReviewsForm();
   updateChatLockUI();
@@ -997,11 +977,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   const user = users.find(u => u.nickname.toLowerCase() === nick.toLowerCase());
   if (!user) { msg.textContent = 'Пользователь не найден'; msg.className = 'modal-msg show err'; return; }
   if (user.passwordHash !== hashPassword(pwd)) { msg.textContent = 'Неверный пароль'; msg.className = 'modal-msg show err'; return; }
-  if (isUserBanned(user.id)) {
-    msg.textContent = 'Ваш аккаунт заблокирован'; msg.className = 'modal-msg show err';
-    closeAuth(); setTimeout(checkBan, 100);
-    return;
-  }
+  if (isUserBanned(user.id)) { msg.textContent = 'Ваш аккаунт заблокирован'; msg.className = 'modal-msg show err'; closeAuth(); setTimeout(checkBan, 100); return; }
   setSession(user.id);
   msg.textContent = 'Добро пожаловать, ' + user.nickname + '!';
   msg.className = 'modal-msg show ok';
@@ -1019,21 +995,14 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
   if (pwd.length < 4) { msg.textContent = 'Пароль минимум 4 символа'; msg.className = 'modal-msg show err'; return; }
   await fbLoadAll(true);
   const users = loadUsers();
-  if (users.some(u => u.nickname.toLowerCase() === nick.toLowerCase())) {
-    msg.textContent = 'Такой ник уже занят'; msg.className = 'modal-msg show err'; return;
-  }
+  if (users.some(u => u.nickname.toLowerCase() === nick.toLowerCase())) { msg.textContent = 'Такой ник уже занят'; msg.className = 'modal-msg show err'; return; }
   const isCreator = isCreatorName(nick);
   const user = {
     id: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-    nickname: nick,
-    passwordHash: hashPassword(pwd),
-    avatar: null,
-    createdAt: new Date().toISOString(),
-    isAdmin: isCreator,
-    isCreator: isCreator
+    nickname: nick, passwordHash: hashPassword(pwd), avatar: null,
+    createdAt: new Date().toISOString(), isAdmin: isCreator, isCreator: isCreator
   };
-  saveUser(user);
-  setSession(user.id);
+  saveUser(user); setSession(user.id);
   msg.textContent = isCreator ? '👑 Добро пожаловать, Создатель!' : 'Аккаунт создан!';
   msg.className = 'modal-msg show ok';
   updateAuthUI(); renderReviews(); renderChat();
@@ -1052,9 +1021,6 @@ function openProfile() {
   const editBtn = document.getElementById('editModeBtn');
   editBtn.classList.toggle('active', editModeActive);
   editBtn.textContent = editModeActive ? '✏️ Режим редактирования ВКЛ' : '✏️ Режим редактирования';
-  const ifBtn = document.getElementById('interfaceManageBtn');
-  ifBtn.classList.toggle('active', interfaceManageActive);
-  ifBtn.textContent = interfaceManageActive ? '🎨 Управление Интерфейсом ВКЛ' : '🎨 Управление Интерфейсом';
   profileModal.classList.add('open');
   document.body.classList.add('modal-open');
 }
@@ -1122,7 +1088,6 @@ function logout() {
   closeProfile();
   updateAuthUI(); renderReviews(); renderChat();
   if (editModeActive) disableEditMode();
-  if (interfaceManageActive) disableInterfaceManage();
 }
 
 async function openAdminPanel() {
@@ -1130,8 +1095,7 @@ async function openAdminPanel() {
   if (!me || !me.isAdmin) return;
   await fbLoadAll(true);
   renderAdminUsers(); renderAdminBans();
-  adminModal.classList.add('open');
-  document.body.classList.add('modal-open');
+  adminModal.classList.add('open'); document.body.classList.add('modal-open');
 }
 function closeAdminPanel() { adminModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
 adminModal.addEventListener('click', e => { if (e.target === adminModal) closeAdminPanel(); });
@@ -1139,9 +1103,7 @@ adminModal.addEventListener('click', e => { if (e.target === adminModal) closeAd
 function openBansModal() {
   const me = getCurrentUser();
   if (!me || !me.isAdmin) return;
-  renderBansModal();
-  bansModal.classList.add('open');
-  document.body.classList.add('modal-open');
+  renderBansModal(); bansModal.classList.add('open'); document.body.classList.add('modal-open');
 }
 function closeBansModal() { bansModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
 bansModal.addEventListener('click', e => { if (e.target === bansModal) closeBansModal(); });
@@ -1149,15 +1111,11 @@ bansModal.addEventListener('click', e => { if (e.target === bansModal) closeBans
 function renderAdminUsers() {
   const me = getCurrentUser();
   if (!me || !me.isAdmin) return;
-  const users = loadUsers();
-  const bans = loadBans();
+  const users = loadUsers(), bans = loadBans();
   const list = document.getElementById('adminUsersList');
   const countEl = document.getElementById('adminUsersCount');
   if (countEl) countEl.textContent = users.length;
-  if (!users.length) {
-    list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-mute);font-size:.85rem;border:1px dashed rgba(255,255,255,.1);border-radius:12px;">Пользователей пока нет</div>`;
-    return;
-  }
+  if (!users.length) { list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-mute);font-size:.85rem;border:1px dashed rgba(255,255,255,.1);border-radius:12px;">Пользователей пока нет</div>`; return; }
   const sorted = users.slice().sort((a, b) => {
     if (a.isCreator && !b.isCreator) return -1;
     if (!a.isCreator && b.isCreator) return 1;
@@ -1168,93 +1126,42 @@ function renderAdminUsers() {
     return (a.createdAt || '') > (b.createdAt || '') ? -1 : 1;
   });
   list.innerHTML = sorted.map(u => {
-    const isCreator = !!u.isCreator;
-    const isMe = u.id === me.id;
+    const isCreator = !!u.isCreator, isMe = u.id === me.id;
     const canToggle = !isCreator && !isMe;
     const canDelete = !isMe && (me.isCreator || (!isCreator && !u.isAdmin));
     const isBanned = bans[u.id];
     const avHtml = u.avatar ? `<img src="${u.avatar}" alt="">` : initialsOf(u.nickname);
-    const banBtn = (!isMe && !isCreator)
-      ? (isBanned
-        ? `<button class="ban-btn unban" title="Разбанить" onclick="unbanUser('${escapeHtml(u.id)}')">🔓</button>`
-        : `<button class="ban-btn" title="Забанить" onclick="openBanModal('${escapeHtml(u.id)}', '${escapeHtml(u.nickname)}')">🚫</button>`)
-      : '';
-    const delBtn = canDelete
-      ? `<button class="del-btn" title="Удалить аккаунт" onclick="deleteUser('${escapeHtml(u.id)}')">🗑</button>`
-      : '';
+    const banBtn = (!isMe && !isCreator) ? (isBanned
+      ? `<button class="ban-btn unban" title="Разбанить" onclick="unbanUser('${escapeHtml(u.id)}')">🔓</button>`
+      : `<button class="ban-btn" title="Забанить" onclick="openBanModal('${escapeHtml(u.id)}', '${escapeHtml(u.nickname)}')">🚫</button>`) : '';
+    const delBtn = canDelete ? `<button class="del-btn" title="Удалить" onclick="deleteUser('${escapeHtml(u.id)}')">🗑</button>` : '';
     const created = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ru-RU') : '';
-    return `
-      <div class="admin-user-row">
-        <div class="admin-user-info">
-          <div class="admin-user-avatar">${avHtml}</div>
-          <div class="admin-user-name">${renderNameWithBadges(u, 'aun-text')}${isMe ? ' <span style="color:var(--text-mute);font-weight:400;font-size:.72rem;">(вы)</span>' : ''}${created ? ` <span style="color:var(--text-mute);font-weight:400;font-size:.62rem;">· ${created}</span>` : ''}</div>
-        </div>
-        <div class="admin-user-actions">
-          ${banBtn}
-          ${delBtn}
-          <label class="admin-toggle ${canToggle ? '' : 'disabled'}" title="${canToggle ? 'Админка' : (isCreator ? 'Нельзя снять с Создателя' : 'Нельзя менять себе')}">
-            <input type="checkbox" ${u.isAdmin ? 'checked' : ''} ${canToggle ? '' : 'disabled'} data-uid="${u.id}">
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>`;
+    return `<div class="admin-user-row"><div class="admin-user-info"><div class="admin-user-avatar">${avHtml}</div><div class="admin-user-name">${renderNameWithBadges(u, 'aun-text')}${isMe ? ' <span style="color:var(--text-mute);font-weight:400;font-size:.72rem;">(вы)</span>' : ''}${created ? ` <span style="color:var(--text-mute);font-weight:400;font-size:.62rem;">· ${created}</span>` : ''}</div></div><div class="admin-user-actions">${banBtn}${delBtn}<label class="admin-toggle ${canToggle ? '' : 'disabled'}" title="${canToggle ? 'Админка' : (isCreator ? 'Нельзя снять с Создателя' : 'Нельзя менять себе')}"><input type="checkbox" ${u.isAdmin ? 'checked' : ''} ${canToggle ? '' : 'disabled'} data-uid="${u.id}"><span class="toggle-slider"></span></label></div></div>`;
   }).join('');
-  list.querySelectorAll('input[data-uid]').forEach(cb => {
-    cb.addEventListener('change', () => toggleAdmin(cb.dataset.uid, cb.checked));
-  });
+  list.querySelectorAll('input[data-uid]').forEach(cb => cb.addEventListener('change', () => toggleAdmin(cb.dataset.uid, cb.checked)));
 }
 
 function renderAdminBans() {
-  const bans = loadBans();
-  const list = document.getElementById('adminBansList');
-  const users = loadUsers();
-  Object.keys(bans).forEach(uid => {
-    const b = bans[uid];
-    if (b.until !== 'forever' && Date.now() >= b.until) deleteBan(uid);
-  });
+  const bans = loadBans(), list = document.getElementById('adminBansList'), users = loadUsers();
+  Object.keys(bans).forEach(uid => { const b = bans[uid]; if (b.until !== 'forever' && Date.now() >= b.until) deleteBan(uid); });
   const entries = Object.entries(loadBans());
-  if (!entries.length) {
-    list.innerHTML = `<div style="padding:14px;text-align:center;color:var(--text-mute);font-size:.82rem;border:1px dashed rgba(255,255,255,.1);border-radius:12px;">Активных банов нет</div>`;
-    return;
-  }
+  if (!entries.length) { list.innerHTML = `<div style="padding:14px;text-align:center;color:var(--text-mute);font-size:.82rem;border:1px dashed rgba(255,255,255,.1);border-radius:12px;">Активных банов нет</div>`; return; }
   list.innerHTML = entries.map(([uid, b]) => {
     const u = users.find(x => x.id === uid);
     const nick = u ? u.nickname : 'удалённый';
-    return `
-      <div class="ban-item">
-        <div class="ban-item-info">
-          <div class="ban-item-ip">${escapeHtml(nick)}</div>
-          <div class="ban-item-meta">${b.until === 'forever' ? '⛔ Навсегда' : '⏱ До ' + formatBanUntil(b.until)}${b.reason ? ' · ' + escapeHtml(b.reason) : ''}</div>
-        </div>
-        <button class="ban-btn unban" onclick="unbanUser('${escapeHtml(uid)}')">Разбанить</button>
-      </div>`;
+    return `<div class="ban-item"><div class="ban-item-info"><div class="ban-item-ip">${escapeHtml(nick)}</div><div class="ban-item-meta">${b.until === 'forever' ? '⛔ Навсегда' : '⏱ До ' + formatBanUntil(b.until)}${b.reason ? ' · ' + escapeHtml(b.reason) : ''}</div></div><button class="ban-btn unban" onclick="unbanUser('${escapeHtml(uid)}')">Разбанить</button></div>`;
   }).join('');
 }
 
 function renderBansModal() {
-  const bans = loadBans();
-  const list = document.getElementById('bansModalList');
-  const users = loadUsers();
-  Object.keys(bans).forEach(uid => {
-    const b = bans[uid];
-    if (b.until !== 'forever' && Date.now() >= b.until) deleteBan(uid);
-  });
+  const bans = loadBans(), list = document.getElementById('bansModalList'), users = loadUsers();
+  Object.keys(bans).forEach(uid => { const b = bans[uid]; if (b.until !== 'forever' && Date.now() >= b.until) deleteBan(uid); });
   const entries = Object.entries(loadBans());
-  if (!entries.length) {
-    list.innerHTML = `<div style="padding:30px;text-align:center;color:var(--text-mute);font-size:.9rem;border:1px dashed rgba(255,255,255,.1);border-radius:14px;">Активных банов нет</div>`;
-    return;
-  }
+  if (!entries.length) { list.innerHTML = `<div style="padding:30px;text-align:center;color:var(--text-mute);font-size:.9rem;border:1px dashed rgba(255,255,255,.1);border-radius:14px;">Активных банов нет</div>`; return; }
   list.innerHTML = entries.map(([uid, b]) => {
     const u = users.find(x => x.id === uid);
     const nick = u ? u.nickname : 'удалённый';
-    return `
-      <div class="ban-item">
-        <div class="ban-item-info">
-          <div class="ban-item-ip">${escapeHtml(nick)}</div>
-          <div class="ban-item-meta">${b.until === 'forever' ? '⛔ Навсегда' : '⏱ До ' + formatBanUntil(b.until)}${b.reason ? ' · ' + escapeHtml(b.reason) : ''}${b.bannedBy ? ' · забанил: ' + escapeHtml(b.bannedBy) : ''}</div>
-        </div>
-        <button class="ban-btn unban" onclick="unbanUser('${escapeHtml(uid)}');renderBansModal();">Разбанить</button>
-      </div>`;
+    return `<div class="ban-item"><div class="ban-item-info"><div class="ban-item-ip">${escapeHtml(nick)}</div><div class="ban-item-meta">${b.until === 'forever' ? '⛔ Навсегда' : '⏱ До ' + formatBanUntil(b.until)}${b.reason ? ' · ' + escapeHtml(b.reason) : ''}${b.bannedBy ? ' · забанил: ' + escapeHtml(b.bannedBy) : ''}</div></div><button class="ban-btn unban" onclick="unbanUser('${escapeHtml(uid)}');renderBansModal();">Разбанить</button></div>`;
   }).join('');
 }
 
@@ -1262,59 +1169,36 @@ async function toggleAdmin(userId, isAdmin) {
   const me = getCurrentUser();
   if (!me || !me.isAdmin) return;
   await fbLoadAll(true);
-  const users = loadUsers();
-  const u = users.find(x => x.id === userId);
-  if (!u) return;
-  if (u.isCreator) return;
-  if (u.id === me.id) return;
-  u.isAdmin = isAdmin;
-  saveUser(u);
-  renderAdminUsers();
-  updateAuthUI();
+  const users = loadUsers(); const u = users.find(x => x.id === userId);
+  if (!u || u.isCreator || u.id === me.id) return;
+  u.isAdmin = isAdmin; saveUser(u);
+  renderAdminUsers(); updateAuthUI();
 }
 
 async function deleteUser(userId) {
   const me = getCurrentUser();
   if (!me || !me.isAdmin) return;
   await fbLoadAll(true);
-  const users = loadUsers();
-  const user = users.find(u => u.id === userId);
+  const users = loadUsers(); const user = users.find(u => u.id === userId);
   if (!user) return;
   if (user.id === me.id) { alert('Нельзя удалить свой аккаунт'); return; }
   if (user.isCreator) { alert('Нельзя удалить Создателя'); return; }
   if (!me.isCreator && user.isAdmin) { alert('Только Создатель может удалять администраторов'); return; }
   if (!confirm(`Удалить аккаунт "${user.nickname}"?`)) return;
-
   console.log('[Admin] Удаляю:', user.nickname, user.id);
-
-  // Удаляем его отзывы
   const hisReviews = loadReviews().filter(r => r.userId === userId);
   for (const r of hisReviews) { delete FB_DATA.reviews[r.id]; await fbDelete('reviews/' + r.id); }
   if (hisReviews.length) await fbPutBranch('reviews');
-
-  // Удаляем его сообщения
   const hisChat = loadChat().filter(m => m.userId === userId);
   for (const m of hisChat) { delete FB_DATA.chat[m.id]; await fbDelete('chat/' + m.id); }
   if (hisChat.length) await fbPutBranch('chat');
-
-  // Удаляем бан
   await deleteBan(userId);
-
-  // Удаляем самого юзера
   delete FB_DATA.users[userId];
   await fbDelete('users/' + userId);
   await fbPutBranch('users');
-
-  // Проверяем
   await fbLoadAll(true);
-  const check = loadUsers().find(u => u.id === userId);
-  if (check) {
-    alert('⚠️ Не удалось удалить из Firebase. Проверь правила базы.');
-    console.error('[Admin] Юзер всё ещё в Firebase:', userId);
-  } else {
-    console.log('[Admin] ✓ Удалён:', user.nickname);
-  }
-
+  if (loadUsers().find(u => u.id === userId)) { alert('⚠️ Не удалось удалить'); console.error('[Admin] Юзер ещё в Firebase'); }
+  else console.log('[Admin] ✓ Удалён:', user.nickname);
   renderAdminUsers(); renderReviews(); renderChat();
 }
 
@@ -1327,12 +1211,10 @@ function openBanModal(userId, nick) {
   document.getElementById('banReasonInput').value = '';
   document.querySelectorAll('.ban-duration').forEach(b => b.classList.toggle('active', b.dataset.min === '0'));
   document.getElementById('banModalMsg').classList.remove('show');
-  banModal.classList.add('open');
-  document.body.classList.add('modal-open');
+  banModal.classList.add('open'); document.body.classList.add('modal-open');
 }
 function closeBanModal() { banModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
 banModal.addEventListener('click', e => { if (e.target === banModal) closeBanModal(); });
-
 document.querySelectorAll('.ban-duration').forEach(b => {
   b.addEventListener('click', () => {
     document.querySelectorAll('.ban-duration').forEach(x => x.classList.remove('active'));
@@ -1340,11 +1222,9 @@ document.querySelectorAll('.ban-duration').forEach(b => {
     banTarget.minutes = parseInt(b.dataset.min, 10) || 0;
   });
 });
-
 function confirmBan() {
   const me = getCurrentUser();
-  if (!me || !me.isAdmin) { closeBanModal(); return; }
-  if (!banTarget.userId) { closeBanModal(); return; }
+  if (!me || !me.isAdmin || !banTarget.userId) { closeBanModal(); return; }
   const until = banTarget.minutes === 0 ? 'forever' : Date.now() + banTarget.minutes * 60000;
   const reason = document.getElementById('banReasonInput').value.trim();
   saveBan(banTarget.userId, { until, reason, bannedAt: Date.now(), bannedBy: me.nickname });
@@ -1354,13 +1234,11 @@ function confirmBan() {
   renderAdminUsers(); renderAdminBans();
   setTimeout(() => { closeBanModal(); checkBan(); }, 900);
 }
-
 async function unbanUser(userId) {
   const me = getCurrentUser();
   if (!me || !me.isAdmin) return;
   await deleteBan(userId);
-  renderAdminUsers(); renderAdminBans();
-  checkBan();
+  renderAdminUsers(); renderAdminBans(); checkBan();
 }
 
 document.addEventListener('keydown', e => {
@@ -1374,45 +1252,24 @@ document.addEventListener('keydown', e => {
   }
 });
 
-function exportData() {
-  const me = getCurrentUser();
-  if (!me || !me.isCreator) return;
-  const data = {
-    users: loadUsers(), reviews: loadReviews(), chat: loadChat(), bans: loadBans(),
-    edits: loadEdits(), layout: loadLayout(),
-    exportedAt: new Date().toISOString()
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'vipfirestorm-backup-' + new Date().toISOString().slice(0,19).replace(/[:T]/g,'-') + '.json';
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  showProfileMsg('Экспорт готов', 'ok');
+async function debugFirebase() {
+  try {
+    const r = await fetch(FB_URL + '/.json?t=' + Date.now(), { cache: 'no-store' });
+    const d = await r.json() || {};
+    const info = '📊 Firebase:\n\n👥 Users: ' + Object.keys(d.users||{}).length + '\n⭐ Reviews: ' + Object.keys(d.reviews||{}).length + '\n💬 Chat: ' + Object.keys(d.chat||{}).length + '\n🚫 Bans: ' + Object.keys(d.bans||{}).length + '\n✏️ Edits: ' + Object.keys(d.edits||{}).length + '\n\n👤 Пользователи:\n' + Object.values(d.users||{}).map(u => '  • ' + u.nickname + (u.isAdmin?' [ADMIN]':'') + (u.isCreator?' [CREATOR]':'')).join('\n');
+    console.log('[FB dump]', d);
+    alert(info);
+  } catch (e) { alert('Ошибка: ' + e.message); }
 }
 
-function importData(input) {
+async function resetAllEdits() {
   const me = getCurrentUser();
-  if (!me || !me.isCreator) { input.value = ''; return; }
-  const file = input.files && input.files[0];
-  if (!file) return;
-  if (!confirm('Импортировать базу? Данные добавятся к текущим.')) { input.value = ''; return; }
-  const reader = new FileReader();
-  reader.onload = async ev => {
-    try {
-      const parsed = JSON.parse(ev.target.result);
-      if (parsed.users && Array.isArray(parsed.users)) parsed.users.forEach(u => saveUser(u));
-      if (parsed.reviews && Array.isArray(parsed.reviews)) parsed.reviews.forEach(r => saveReview(r));
-      if (parsed.chat && Array.isArray(parsed.chat)) parsed.chat.forEach(m => saveMessage(m));
-      if (parsed.bans && typeof parsed.bans === 'object') Object.keys(parsed.bans).forEach(uid => saveBan(uid, parsed.bans[uid]));
-      if (parsed.edits) saveEdits(parsed.edits);
-      if (parsed.layout) saveLayoutStore(parsed.layout);
-      alert('База импортирована. Перезагрузка...');
-      location.reload();
-    } catch (e) { alert('Ошибка: ' + e.message); }
-  };
-  reader.readAsText(file);
-  input.value = '';
+  if (!me || !me.isCreator) return;
+  if (!confirm('Сбросить ВСЕ правки текста у всех пользователей?')) return;
+  FB_DATA.edits = {};
+  await fbSave('edits', {});
+  applyEditsFromCloud();
+  alert('Правки сброшены');
 }
 
 /* ============================================================
@@ -1448,10 +1305,7 @@ function renderReviews() {
   const list = loadReviews().slice().sort((a, b) => (a.date || '') < (b.date || '') ? 1 : -1);
   const me = getCurrentUser();
   const amIAdmin = me && me.isAdmin;
-  if (!list.length) {
-    reviewsList.innerHTML = `<div class="reviews-empty"><b>Пока отзывов нет</b>Стань первым.</div>`;
-    return;
-  }
+  if (!list.length) { reviewsList.innerHTML = `<div class="reviews-empty"><b>Пока отзывов нет</b>Стань первым.</div>`; return; }
   const users = loadUsers();
   reviewsList.innerHTML = list.map(r => {
     const stars = Array.from({length: 5}, (_, i) => `<span class="${i < r.rating ? '' : 'empty'}">★</span>`).join('');
@@ -1469,11 +1323,7 @@ function renderReviews() {
   }).join('');
   if (amIAdmin) {
     reviewsList.querySelectorAll('.review-delete').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        btn.disabled = true;
-        await deleteReviewFromDb(btn.dataset.del);
-        renderReviews();
-      });
+      btn.addEventListener('click', async () => { btn.disabled = true; await deleteReviewFromDb(btn.dataset.del); renderReviews(); });
     });
   }
 }
@@ -1485,15 +1335,10 @@ function syncReviewsForm() {
   const noteName = document.getElementById('loggedNameMini');
   if (!note) return;
   if (u) {
-    nameField.style.display = 'none';
-    nameInput.value = u.nickname;
-    note.style.display = '';
-    noteName.innerHTML = renderNameWithBadges(u, '');
-    renderAvatar(noteAv, u);
+    nameField.style.display = 'none'; nameInput.value = u.nickname;
+    note.style.display = ''; noteName.innerHTML = renderNameWithBadges(u, ''); renderAvatar(noteAv, u);
   } else {
-    nameField.style.display = '';
-    nameInput.value = '';
-    note.style.display = 'none';
+    nameField.style.display = ''; nameInput.value = ''; note.style.display = 'none';
   }
 }
 
@@ -1514,15 +1359,9 @@ form.addEventListener('submit', async e => {
   if (!name) { nameInput.classList.add('error'); ok = false; }
   if (rating < 1 || rating > 5) { starPicker.style.filter = 'drop-shadow(0 0 10px rgba(255,46,99,.6))'; setTimeout(() => starPicker.style.filter = '', 900); ok = false; }
   if (!ok) { showMsg('Заполни обязательные поля.', 'err'); return; }
-  const review = {
-    id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
-    name, text, rating, date: new Date().toISOString(),
-    userId: u ? u.id : null
-  };
-  saveReview(review);
-  renderReviews();
-  form.reset();
-  currentRating = 0; ratingInput.value = 0;
+  const review = { id: 'r_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8), name, text, rating, date: new Date().toISOString(), userId: u ? u.id : null };
+  saveReview(review); renderReviews();
+  form.reset(); currentRating = 0; ratingInput.value = 0;
   starBtns.forEach(b => b.classList.remove('active', 'preview'));
   syncReviewsForm();
   showMsg('Спасибо! Твой отзыв добавлен.', 'ok');
@@ -1565,6 +1404,7 @@ function renderChatInto(containerEl) {
     return;
   }
   const canDelete = me && me.isAdmin;
+  const nearBottom = containerEl.scrollHeight - containerEl.scrollTop - containerEl.clientHeight < 60;
   containerEl.innerHTML = list.map(m => {
     const linked = m.userId ? users.find(u => u.id === m.userId) : null;
     const isMine = me && m.userId === me.id;
@@ -1580,7 +1420,7 @@ function renderChatInto(containerEl) {
     const delBtn = canDelete ? `<button type="button" class="chat-msg-delete" data-del-id="${escapeHtml(m.id)}" title="Удалить">×</button>` : '';
     return `<div class="chat-msg ${isMine ? 'own' : ''}" data-id="${escapeHtml(m.id)}">${delBtn}<div class="chat-msg-avatar">${avatarHtml}</div><div class="chat-msg-body"><div class="chat-msg-head"><div class="chat-msg-name">${nameHtml}</div><div class="chat-msg-time">${time}</div></div><div class="chat-msg-text">${escapeHtml(m.text)}</div></div></div>`;
   }).join('');
-  containerEl.scrollTop = containerEl.scrollHeight;
+  if (nearBottom) containerEl.scrollTop = containerEl.scrollHeight;
   if (canDelete) {
     containerEl.querySelectorAll('.chat-msg-delete').forEach(btn => {
       btn.addEventListener('click', async ev => {
@@ -1610,49 +1450,23 @@ function addChatMessage(text) {
   if (!u) { openAuth(); return; }
   text = String(text || '').trim();
   if (!text || text.length > 500) return;
-  const msg = {
-    id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-    userId: u.id, name: u.nickname, text, date: new Date().toISOString()
-  };
+  const msg = { id: 'm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), userId: u.id, name: u.nickname, text, date: new Date().toISOString() };
   saveMessage(msg);
   renderChat();
+  setTimeout(() => {
+    if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+    if (chatModalMessages && chatModal.classList.contains('open')) chatModalMessages.scrollTop = chatModalMessages.scrollHeight;
+  }, 50);
 }
 
-chatForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const text = chatInput.value.trim();
-  if (!text) return;
-  chatInput.value = '';
-  addChatMessage(text);
-});
-
-function openChatModal() {
-  chatModal.classList.add('open');
-  document.body.classList.add('modal-open');
-  updateChatLockUI();
-  renderChat();
-  setTimeout(() => { try { chatModalInput.focus(); } catch (e) {} }, 150);
-}
+chatForm.addEventListener('submit', e => { e.preventDefault(); const t = chatInput.value.trim(); if (!t) return; chatInput.value = ''; addChatMessage(t); });
+function openChatModal() { chatModal.classList.add('open'); document.body.classList.add('modal-open'); updateChatLockUI(); renderChat(); setTimeout(() => { try { chatModalInput.focus(); } catch (e) {} }, 150); }
 function closeChatModal() { chatModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
 chatModal.addEventListener('click', e => { if (e.target === chatModal) closeChatModal(); });
+chatModalForm.addEventListener('submit', e => { e.preventDefault(); const t = chatModalInput.value.trim(); if (!t) return; chatModalInput.value = ''; addChatMessage(t); });
 
-chatModalForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const text = chatModalInput.value.trim();
-  if (!text) return;
-  chatModalInput.value = '';
-  addChatMessage(text);
-});
-
-chatBar.addEventListener('click', e => {
-  if (e.target.closest('.chat-form, .chat-input, .chat-send')) return;
-  chatBar.classList.toggle('open');
-});
-chatInput.addEventListener('blur', () => {
-  setTimeout(() => {
-    if (!chatBar.matches(':hover') && !chatBar.querySelector(':focus-within')) chatBar.classList.remove('open');
-  }, 150);
-});
+chatBar.addEventListener('click', e => { if (e.target.closest('.chat-form, .chat-input, .chat-send')) return; chatBar.classList.toggle('open'); });
+chatInput.addEventListener('blur', () => { setTimeout(() => { if (!chatBar.matches(':hover') && !chatBar.querySelector(':focus-within')) chatBar.classList.remove('open'); }, 150); });
 
 /* ============================================================
    РЕЖИМ РЕДАКТИРОВАНИЯ
@@ -1666,13 +1480,11 @@ function isEditableEl(el) {
   if (!['H1','H2','H3','H4','H5','H6','P','SPAN','A','BUTTON','LABEL','LI','STRONG','EM','B','CODE'].includes(tag)) return false;
   if (el.closest('#reviewForm, #chatBar, .modal, .rail, .topbar .music-wrap, .ban-overlay, #banOverlay, .chat-bar')) return false;
   if (el.closest('input, textarea, select, script, style, svg, canvas, video, iframe')) return false;
-  if (el.classList.contains('chip-youtube')) return false;
+  if (el.classList.contains('chip-youtube') || el.classList.contains('link-btn')) return false;
   const children = Array.from(el.children);
   const hasBlockChild = children.some(c => ['DIV','P','H1','H2','H3','H4','H5','H6','UL','OL','LI','SECTION','ARTICLE','HEADER','FOOTER','NAV','MAIN','ASIDE','FORM','SVG','IMG','VIDEO','CANVAS'].includes(c.tagName));
   if (hasBlockChild) return false;
-  const txt = (el.textContent || '').trim();
-  if (!txt) return false;
-  return true;
+  return !!(el.textContent || '').trim();
 }
 
 function computeEditKey(el) {
@@ -1705,17 +1517,17 @@ function handleEditBlur(e) {
   if (!key) return;
   const current = el.innerHTML.trim();
   const original = (el.dataset.vfOriginal || '').trim();
-  const edits = loadEdits();
+  const edits = FB_DATA.edits || (FB_DATA.edits = {});
   if (current && current !== original) edits[key] = current;
   else delete edits[key];
-  saveEdits(edits);
+  fbSave('edits', edits);
+  console.log('[Edit] Сохранено:', key, '=', current.slice(0, 40));
 }
 
 function enableEditMode() {
   const me = getCurrentUser();
   if (!me || !me.isCreator) return;
   if (editModeActive) return;
-  if (interfaceManageActive) disableInterfaceManage();
   editModeActive = true;
   const all = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, a, button, label, li, strong, em, b, code'));
   const candidates = all.filter(el => isEditableEl(el));
@@ -1733,11 +1545,12 @@ function enableEditMode() {
   const btn = document.getElementById('editModeBtn');
   if (btn) { btn.classList.add('active'); btn.textContent = '✏️ Режим редактирования ВКЛ'; }
   window.addEventListener('beforeunload', editBeforeUnload);
+  console.log('[Edit] Включён, элементов:', editTargets.length);
 }
 
 function disableEditMode() {
   if (!editModeActive) return;
-  const edits = loadEdits();
+  const edits = FB_DATA.edits || (FB_DATA.edits = {});
   editTargets.forEach(el => {
     const key = el.dataset.vfEditKey;
     if (!key) return;
@@ -1746,7 +1559,7 @@ function disableEditMode() {
     if (current && current !== original) edits[key] = current;
     else delete edits[key];
   });
-  saveEdits(edits);
+  fbSave('edits', edits);
   editTargets.forEach(el => {
     el.removeAttribute('contenteditable');
     delete el.dataset.vfEditable;
@@ -1758,139 +1571,34 @@ function disableEditMode() {
   const btn = document.getElementById('editModeBtn');
   if (btn) { btn.classList.remove('active'); btn.textContent = '✏️ Режим редактирования'; }
   window.removeEventListener('beforeunload', editBeforeUnload);
+  console.log('[Edit] Выключен, сохранено:', Object.keys(edits).length);
 }
 
 function toggleEditMode() {
   const me = getCurrentUser();
   if (!me || !me.isCreator) return;
-  if (editModeActive) disableEditMode();
-  else enableEditMode();
+  if (editModeActive) disableEditMode(); else enableEditMode();
   closeProfile();
 }
 
 function editBeforeUnload(e) { if (editModeActive) { e.preventDefault(); e.returnValue = ''; return ''; } }
 
-function applyEdits() {
-  const edits = loadEdits();
+function applyEditsFromCloud() {
+  const edits = FB_DATA.edits || {};
   const keys = Object.keys(edits);
   if (!keys.length) return;
   const all = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, a, button, label, li, strong, em, b, code');
+  let applied = 0;
   all.forEach(el => {
     if (el.closest('#reviewForm, #chatBar, .modal, .rail, .topbar .music-wrap, .chat-bar')) return;
     if (el.closest('input, textarea, select, script, style, svg, canvas, video, iframe')) return;
     const key = computeEditKey(el);
-    if (edits[key] !== undefined && edits[key]) el.innerHTML = edits[key];
+    if (edits[key] !== undefined && edits[key] && el.innerHTML !== edits[key]) {
+      el.innerHTML = edits[key];
+      applied++;
+    }
   });
-}
-
-/* ============================================================
-   УПРАВЛЕНИЕ ИНТЕРФЕЙСОМ
-   ============================================================ */
-let interfaceManageActive = false;
-let draggedEl = null;
-
-function getContainers() { return Array.from(document.querySelectorAll('[data-drag-container]')); }
-function containerKey(el) { return el.dataset.dragContainer || 'container'; }
-
-function initDragKeys() {
-  getContainers().forEach(c => {
-    const ck = containerKey(c);
-    Array.from(c.children).forEach((ch, i) => { ch.dataset.vfDragKey = ck + '::' + i; });
-  });
-}
-
-function saveLayoutFn() {
-  const layout = {};
-  getContainers().forEach(c => {
-    const ck = containerKey(c);
-    layout[ck] = Array.from(c.children).map(ch => ch.dataset.vfDragKey).filter(Boolean);
-  });
-  saveLayoutStore(layout);
-}
-
-function applyLayout() {
-  const layout = loadLayout();
-  if (!layout || !Object.keys(layout).length) return;
-  const keyToEl = {};
-  document.querySelectorAll('[data-vf-drag-key]').forEach(el => { keyToEl[el.dataset.vfDragKey] = el; });
-  getContainers().forEach(c => {
-    const ck = containerKey(c);
-    const order = layout[ck];
-    if (!Array.isArray(order)) return;
-    order.forEach(k => {
-      const el = keyToEl[k];
-      if (el && el.parentNode === c) c.appendChild(el);
-    });
-  });
-}
-
-function dragStart(e) { draggedEl = this; this.classList.add('dragging'); try { e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', ''); } catch (_) {} }
-function dragEnd() { this.classList.remove('dragging'); document.querySelectorAll('.drag-over').forEach(x => x.classList.remove('drag-over')); draggedEl = null; }
-function dragOver(e) {
-  if (!draggedEl || draggedEl === this) return;
-  if (draggedEl.parentNode !== this.parentNode) return;
-  e.preventDefault();
-  try { e.dataTransfer.dropEffect = 'move'; } catch (_) {}
-  this.classList.add('drag-over');
-}
-function dragLeave() { this.classList.remove('drag-over'); }
-function dropHandler(e) {
-  if (!draggedEl || draggedEl === this) return;
-  if (draggedEl.parentNode !== this.parentNode) return;
-  e.preventDefault(); e.stopPropagation();
-  this.classList.remove('drag-over');
-  const parent = this.parentNode;
-  const children = Array.from(parent.children);
-  const fromIdx = children.indexOf(draggedEl);
-  const toIdx = children.indexOf(this);
-  if (fromIdx < toIdx) parent.insertBefore(draggedEl, this.nextSibling);
-  else parent.insertBefore(draggedEl, this);
-  saveLayoutFn();
-}
-
-function enableInterfaceManage() {
-  const me = getCurrentUser();
-  if (!me || !me.isCreator) return;
-  if (editModeActive) disableEditMode();
-  interfaceManageActive = true;
-  initDragKeys();
-  getContainers().forEach(c => {
-    Array.from(c.children).forEach(ch => {
-      ch.setAttribute('draggable', 'true');
-      ch.classList.add('drag-enabled');
-      ch.addEventListener('dragstart', dragStart);
-      ch.addEventListener('dragend', dragEnd);
-      ch.addEventListener('dragover', dragOver);
-      ch.addEventListener('dragleave', dragLeave);
-      ch.addEventListener('drop', dropHandler);
-    });
-  });
-  const btn = document.getElementById('interfaceManageBtn');
-  if (btn) { btn.classList.add('active'); btn.textContent = '🎨 Управление Интерфейсом ВКЛ'; }
-}
-
-function disableInterfaceManage() {
-  if (!interfaceManageActive) return;
-  interfaceManageActive = false;
-  document.querySelectorAll('.drag-enabled').forEach(el => {
-    el.removeAttribute('draggable');
-    el.classList.remove('drag-enabled', 'dragging', 'drag-over');
-    el.removeEventListener('dragstart', dragStart);
-    el.removeEventListener('dragend', dragEnd);
-    el.removeEventListener('dragover', dragOver);
-    el.removeEventListener('dragleave', dragLeave);
-    el.removeEventListener('drop', dropHandler);
-  });
-  const btn = document.getElementById('interfaceManageBtn');
-  if (btn) { btn.classList.remove('active'); btn.textContent = '🎨 Управление Интерфейсом'; }
-}
-
-function toggleInterfaceManage() {
-  const me = getCurrentUser();
-  if (!me || !me.isCreator) return;
-  if (interfaceManageActive) disableInterfaceManage();
-  else enableInterfaceManage();
-  closeProfile();
+  if (applied) console.log('[Edit] Применено из облака:', applied);
 }
 
 /* ============================================================
@@ -1943,15 +1651,10 @@ musicBtn.addEventListener('click', e => {
 bgMusic.addEventListener('play', () => setPlayingIcon(true));
 bgMusic.addEventListener('pause', () => setPlayingIcon(false));
 
-/* ============================================================
-   YOUTUBE — прямой iframe
-   ============================================================ */
 setTimeout(() => {
   const ytFrame = document.getElementById('ytPlayer');
   if (ytFrame && ytFrame.tagName === 'IFRAME') {
-    ytFrame.addEventListener('click', () => {
-      if (!bgMusic.paused) { musicManuallyPaused = true; bgMusic.pause(); }
-    });
+    ytFrame.addEventListener('click', () => { if (!bgMusic.paused) { musicManuallyPaused = true; bgMusic.pause(); } });
   }
 }, 500);
 
@@ -1963,20 +1666,13 @@ const API_NS = 'vipfirestorm-expilliar';
 const API_KEY = 'addon-downloads-v1';
 const API_URL = 'https://abacus.jasoncameron.dev';
 const KEY_DONE = 'vf_downloaded_flag_v2';
-async function fetchServerCount() {
-  try { const r = await fetch(`${API_URL}/get/${API_NS}/${API_KEY}`, { cache: 'no-store' }); if (r.ok) { const d = await r.json(); return typeof d.value === 'number' ? d.value : 0; } } catch (e) {}
-  return null;
-}
-async function hitServerCount() {
-  try { const r = await fetch(`${API_URL}/hit/${API_NS}/${API_KEY}`, { cache: 'no-store' }); if (r.ok) { const d = await r.json(); return typeof d.value === 'number' ? d.value : null; } } catch (e) {}
-  return null;
-}
+async function fetchServerCount() { try { const r = await fetch(`${API_URL}/get/${API_NS}/${API_KEY}`, { cache: 'no-store' }); if (r.ok) { const d = await r.json(); return typeof d.value === 'number' ? d.value : 0; } } catch (e) {} return null; }
+async function hitServerCount() { try { const r = await fetch(`${API_URL}/hit/${API_NS}/${API_KEY}`, { cache: 'no-store' }); if (r.ok) { const d = await r.json(); return typeof d.value === 'number' ? d.value : null; } } catch (e) {} return null; }
 function renderCount(v) { if (v === null || typeof v !== 'number') return; const p = (v + BASE_OFFSET).toLocaleString('ru-RU'); document.querySelectorAll('[data-count]').forEach(el => { el.textContent = p; }); }
 async function initCounter() { const v = await fetchServerCount(); renderCount(v === null ? 0 : v); }
 async function registerDownload() { if (localStorage.getItem(KEY_DONE)) return; localStorage.setItem(KEY_DONE, '1'); const nv = await hitServerCount(); if (nv !== null) renderCount(nv); }
 document.querySelectorAll('.js-download').forEach(btn => btn.addEventListener('click', registerDownload));
-initCounter();
-setInterval(initCounter, 30000);
+initCounter(); setInterval(initCounter, 30000);
 
 /* ============================================================
    ИСКРЫ + ПАРАЛЛАКС
@@ -1986,25 +1682,18 @@ const ctx = canvas.getContext('2d');
 let W = 0, H = 0;
 function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
 resize(); window.addEventListener('resize', resize);
-function spawnEmber(fromBottom) {
-  return { x: Math.random() * W, y: fromBottom ? H + Math.random() * 120 : Math.random() * H, r: Math.random() * 2 + 0.6, vy: -(0.2 + Math.random() * 0.7), vx: (Math.random() - 0.5) * 0.35, hue: 15 + Math.random() * 30, alpha: 0.25 + Math.random() * 0.5, flick: Math.random() * Math.PI * 2 };
-}
-const embers = [];
-const COUNT = Math.min(70, Math.floor(window.innerWidth / 22));
+function spawnEmber(fromBottom) { return { x: Math.random() * W, y: fromBottom ? H + Math.random() * 120 : Math.random() * H, r: Math.random() * 2 + 0.6, vy: -(0.2 + Math.random() * 0.7), vx: (Math.random() - 0.5) * 0.35, hue: 15 + Math.random() * 30, alpha: 0.25 + Math.random() * 0.5, flick: Math.random() * Math.PI * 2 }; }
+const embers = []; const COUNT = Math.min(70, Math.floor(window.innerWidth / 22));
 for (let i = 0; i < COUNT; i++) embers.push(spawnEmber(false));
 function draw() {
-  ctx.clearRect(0, 0, W, H);
-  ctx.globalCompositeOperation = 'lighter';
+  ctx.clearRect(0, 0, W, H); ctx.globalCompositeOperation = 'lighter';
   for (const e of embers) {
     e.flick += 0.05;
     const a = e.alpha * (0.65 + 0.35 * Math.sin(e.flick));
     const grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 6);
     grd.addColorStop(0, `hsla(${e.hue}, 100%, 68%, ${a})`);
     grd.addColorStop(1, `hsla(${e.hue}, 100%, 50%, 0)`);
-    ctx.fillStyle = grd;
-    ctx.beginPath();
-    ctx.arc(e.x, e.y, e.r * 6, 0, Math.PI * 2);
-    ctx.fill();
+    ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(e.x, e.y, e.r * 6, 0, Math.PI * 2); ctx.fill();
     e.x += e.vx; e.y += e.vy;
     if (e.y < -20 || e.x < -30 || e.x > W + 30) Object.assign(e, spawnEmber(true));
   }
@@ -2012,8 +1701,7 @@ function draw() {
 }
 draw();
 const bgImage = document.getElementById('bgImage');
-const isTouch = matchMedia('(hover: none)').matches;
-if (!isTouch) {
+if (!matchMedia('(hover: none)').matches) {
   document.addEventListener('mousemove', e => {
     const x = (e.clientX / window.innerWidth - 0.5) * 24;
     const y = (e.clientY / window.innerHeight - 0.5) * 24;
@@ -2025,43 +1713,41 @@ if (!isTouch) {
    ИНИЦИАЛИЗАЦИЯ
    ============================================================ */
 (async function init() {
-  // Принудительно очищаем старые локальные данные, чтобы они НИКОГДА не вернулись
   try {
     localStorage.removeItem('vf_users_v1');
     localStorage.removeItem('vf_reviews_v1');
     localStorage.removeItem('vf_chat_v1');
     localStorage.removeItem('vf_bans_v1');
     localStorage.removeItem('vf_migrated_v1');
+    localStorage.removeItem('vf_edits_v1');
+    localStorage.removeItem('vf_layout_v1');
   } catch (e) {}
-
-  updateAuthUI(); renderReviews(); renderChat();
-  migrate();
-  initDragKeys(); applyLayout(); applyEdits();
 
   setCloudStatus('offline', 'Подключение...');
   const ok = await fbLoadAll(true);
   if (ok) {
-    // Миграция ОТКЛЮЧЕНА — данных в localStorage больше нет, мигрировать нечего
-    migrate();
     updateAuthUI(); renderReviews(); renderChat();
+    applyEditsFromCloud();
     checkBan();
-
-    setInterval(async () => {
-      const ae = document.activeElement;
-      if (ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA')) return;
-      if (FB_BUSY > 0 || FB_SAVING > 0) return;
-      const ok2 = await fbLoadAll();
-      if (ok2) {
-        updateAuthUI(); renderReviews(); renderChat();
-        if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
-        if (bansModal.classList.contains('open')) renderBansModal();
-      }
-    }, 5000);
+  } else {
+    updateAuthUI(); renderReviews(); renderChat();
   }
 
+  startSSE();
+
+  setInterval(async () => {
+    if (SSE_STATE === 'on') return;
+    if (FB_BUSY > 0 || FB_SAVING > 0) return;
+    const ok2 = await fbLoadAll();
+    if (ok2) {
+      updateAuthUI(); renderReviews(); renderChat();
+      applyEditsFromCloud();
+      if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
+    }
+  }, 2000);
+
   setInterval(() => { checkBan(); }, 60000);
-  console.log('[VF] Готово. Облако:', FB_READY ? 'ONLINE' : 'OFFLINE');
-  console.log('[VF] Build v8.0 — Миграция удалена полностью, localStorage очищен');
+  console.log('[VF] Готово. SSE:', SSE_STATE);
 })();
 </script>
 </body>
