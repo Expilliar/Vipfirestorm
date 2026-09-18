@@ -49,7 +49,7 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,140,90,.4); background-clip: content-box; }
 
-/* ============== ФОН: КАРТИНКА + БЛОБЫ ============== */
+/* ============== ФОН ============== */
 .bg-image {
   position: fixed;
   top: -20px;
@@ -114,56 +114,6 @@ body {
   position: fixed; inset: 0;
   z-index: 1;
   pointer-events: none;
-}
-
-/* ============== ПОДСКАЗКА ВКЛЮЧИТЬ ЗВУК ============== */
-.sound-hint {
-  position: fixed;
-  left: 50%;
-  bottom: 28px;
-  transform: translateX(-50%) translateY(120%);
-  z-index: 999;
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 22px 12px 18px;
-  border-radius: 100px;
-  background: linear-gradient(135deg, #ff5c2b, #ff9500);
-  color: #1a0a05;
-  font-family: 'Sora', sans-serif;
-  font-weight: 600;
-  font-size: .88rem;
-  letter-spacing: .01em;
-  box-shadow:
-    0 18px 44px rgba(255,92,43,.55),
-    0 0 0 1px rgba(255,179,71,.6),
-    inset 0 1px 0 rgba(255,255,255,.5);
-  cursor: pointer;
-  border: none;
-  transition: transform .5s cubic-bezier(.2,.9,.3,1.3), box-shadow .3s;
-  animation: hintPulse 2.2s ease-in-out infinite;
-}
-.sound-hint.show {
-  transform: translateX(-50%) translateY(0);
-}
-.sound-hint:hover {
-  box-shadow:
-    0 22px 55px rgba(255,92,43,.7),
-    0 0 0 1px rgba(255,179,71,.8),
-    inset 0 1px 0 rgba(255,255,255,.6);
-}
-.sound-hint svg {
-  width: 20px; height: 20px;
-  flex-shrink: 0;
-  animation: speakerShake 1.6s ease-in-out infinite;
-}
-@keyframes hintPulse {
-  0%, 100% { box-shadow: 0 18px 44px rgba(255,92,43,.55), 0 0 0 1px rgba(255,179,71,.6), inset 0 1px 0 rgba(255,255,255,.5); }
-  50% { box-shadow: 0 18px 44px rgba(255,92,43,.75), 0 0 0 6px rgba(255,179,71,.25), inset 0 1px 0 rgba(255,255,255,.5); }
-}
-@keyframes speakerShake {
-  0%, 100% { transform: rotate(-8deg); }
-  50% { transform: rotate(8deg); }
 }
 
 /* ============== СЕТКА ============== */
@@ -316,7 +266,6 @@ body {
   min-width: 0;
 }
 
-/* ТОПБАР */
 .topbar {
   display: flex;
   align-items: center;
@@ -358,7 +307,6 @@ body {
 }
 .chip svg { color: #ffb37a; flex-shrink: 0; }
 
-/* Кнопка музыки */
 .music-btn {
   display: inline-flex;
   align-items: center;
@@ -545,7 +493,6 @@ body {
   text-transform: uppercase;
 }
 
-/* ПАНЕЛИ */
 .panels { display: flex; flex-direction: column; gap: 20px; }
 
 .panel { display: none; }
@@ -645,7 +592,6 @@ body {
   font-size: .82rem;
 }
 
-/* ФУТЕР */
 .footer {
   display: flex;
   align-items: center;
@@ -665,7 +611,6 @@ body {
   font-weight: 500;
 }
 
-/* ============== МОБИЛЬНАЯ ВЕРСИЯ ============== */
 @media (max-width: 860px) {
   .app { padding: 16px 16px 110px; }
 
@@ -703,12 +648,6 @@ body {
   .cards { grid-template-columns: 1fr; }
 
   .bg-image { transition: none; }
-
-  .sound-hint {
-    bottom: 100px;
-    font-size: .82rem;
-    padding: 11px 18px 11px 14px;
-  }
 }
 </style>
 </head>
@@ -727,18 +666,8 @@ body {
   <div class="grain"></div>
   <canvas id="embers"></canvas>
 
-  <!-- Аудио: фоновая музыка -->
-  <audio id="bgMusic" src="VipFirestorm Menu.mp3" loop preload="auto" autoplay playsinline></audio>
-
-  <!-- Плавающая подсказка "включить звук" (появляется, если браузер блокирует автозвук) -->
-  <button class="sound-hint" id="soundHint" aria-label="Включить звук">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
-      <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-      <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-    </svg>
-    <span>Нажмите, чтобы включить звук</span>
-  </button>
+  <!-- Аудио: фоновая музыка. Стартует без звука сразу, размьючивается при первом действии -->
+  <audio id="bgMusic" src="VipFirestorm Menu.mp3" loop preload="auto" playsinline></audio>
 
   <div class="app">
 
@@ -1011,14 +940,12 @@ body {
       const incr = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
       return BASE_DOWNLOADS + (isNaN(incr) ? 0 : incr);
     }
-
     function renderCounters() {
       const pretty = getDownloadCount().toLocaleString('ru-RU');
       document.querySelectorAll('[data-count]').forEach(el => {
         el.textContent = pretty;
       });
     }
-
     function registerDownload() {
       if (!localStorage.getItem(KEY_DONE)) {
         const incr = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
@@ -1027,30 +954,26 @@ body {
         renderCounters();
       }
     }
-
     document.querySelectorAll('.js-download').forEach(btn => {
       btn.addEventListener('click', registerDownload);
     });
-
     renderCounters();
 
     /* ============================================================
-       МУЗЫКА — МГНОВЕННЫЙ СТАРТ + МГНОВЕННОЕ РАЗМЬЮЧИВАНИЕ
-       ============================================================
-       Стратегия:
-       1) СРАЗУ запускаем трек БЕЗ ЗВУКА (muted) — браузер это разрешает
-          всегда. Музыка уже играет с 0-й секунды тихо.
-       2) Параллельно пробуем со звуком — если политика позволяет, будет
-          слышно сразу.
-       3) При МАЛЕЙШЕМ действии пользователя (mousemove, pointerdown,
-          keydown, scroll, touchstart) — моментально снимаем muted.
-          Даже движение мыши считается жестом в большинстве браузеров.
+       МУЗЫКА
+       ------------------------------------------------------------
+       1) Сразу при загрузке: ставим muted=true и вызываем play().
+          Это РАЗРЕШЕНО всеми браузерами → трек играет с 0-й секунды.
+       2) При ПЕРВОМ действии пользователя (клик, движение мыши,
+          тап, клавиша, скролл, колесо) — снимаем muted.
+          Даже движение мыши в большинстве браузеров трактуется
+          как "user gesture" — звук включится сам без клика.
+       3) После размьюта отписываемся от всех событий.
        ============================================================ */
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
     const musicIconOn = document.getElementById('musicIconOn');
     const musicIconOff = document.getElementById('musicIconOff');
-    const soundHint = document.getElementById('soundHint');
 
     bgMusic.volume = 0.5;
 
@@ -1066,101 +989,81 @@ body {
       }
     }
 
-    // 1) Старт СРАЗУ БЕЗ ЗВУКА (проходит везде)
+    // 1) Стартуем сразу — без звука
     bgMusic.muted = true;
     const startPromise = bgMusic.play();
     if (startPromise && typeof startPromise.then === 'function') {
       startPromise.then(() => {
         updateMusicUI(true);
-        // 2) Пробуем мгновенно со звуком
-        attemptSoundOn();
+        // Пробуем сразу со звуком (сработает, если браузер уже разрешает)
+        attemptUnmute();
       }).catch(() => {
-        // Совсем плохо — попробуем ещё раз после загрузки
+        // Если play() отклонён — попробуем по loadeddata
         bgMusic.addEventListener('loadeddata', () => {
           bgMusic.play().then(() => {
             updateMusicUI(true);
-            attemptSoundOn();
+            attemptUnmute();
           }).catch(() => {});
         }, { once: true });
       });
     }
 
-    // Пытаемся включить звук прямо сейчас (сработает, если политика разрешает)
-    function attemptSoundOn() {
-      try {
-        bgMusic.muted = false;
-        // Проверяем через короткий таймаут — если браузер отклонил,
-        // volume не изменится (или трек встанет на паузу)
-        setTimeout(() => {
-          if (bgMusic.paused || bgMusic.muted) {
-            bgMusic.muted = true;
-            if (bgMusic.paused) bgMusic.play().catch(() => {});
-            showSoundHint();
-          } else {
-            hideSoundHint();
-          }
-        }, 120);
-      } catch (e) {
-        bgMusic.muted = true;
-        showSoundHint();
-      }
+    // Пытаемся снять mute прямо сейчас (вдруг политика лояльна)
+    function attemptUnmute() {
+      bgMusic.muted = false;
+      // Если браузер отклонил — он поставит трек на паузу.
+      // Проверяем через 100мс и откатываемся на muted-play.
+      setTimeout(() => {
+        if (bgMusic.paused) {
+          bgMusic.muted = true;
+          bgMusic.play().catch(() => {});
+        }
+      }, 100);
     }
 
-    function showSoundHint() {
-      soundHint.classList.add('show');
-    }
-    function hideSoundHint() {
-      soundHint.classList.remove('show');
-    }
-
-    // 3) Снимаем muted при ЛЮБОМ действии пользователя.
-    // Используем capture: true, чтобы срабатывало даже если клик по элементу
-    // со stopPropagation.
+    // 2) Размьютим при первом действии пользователя (любом)
     let unlocked = false;
     function unlockAudio() {
       if (unlocked) return;
       unlocked = true;
+
       bgMusic.muted = false;
+      // Если браузер уже поставил на паузу — перезапускаем
       if (bgMusic.paused) {
         bgMusic.play().catch(() => {});
       } else {
-        // Иногда нужно "тронуть" play() чтобы браузер применил изменение
+        // На некоторых движках нужно дёрнуть play(), чтобы применился muted=false
         const p = bgMusic.play();
         if (p && p.catch) p.catch(() => {});
       }
-      updateMusicUI(!bgMusic.paused);
-      hideSoundHint();
+      updateMusicUI(true);
 
-      // Отписываемся от всех событий
-      events.forEach(evt => {
+      // Снимаем все слушатели
+      UNLOCK_EVENTS.forEach(evt => {
         document.removeEventListener(evt, unlockAudio, true);
         window.removeEventListener(evt, unlockAudio, true);
       });
     }
 
-    const events = ['pointerdown', 'mousedown', 'click', 'touchstart', 'touchend',
-                    'keydown', 'scroll', 'wheel', 'mousemove', 'pointermove'];
-    events.forEach(evt => {
-      document.addEventListener(evt, unlockAudio, { capture: true, once: false, passive: true });
-      window.addEventListener(evt, unlockAudio, { capture: true, once: false, passive: true });
+    const UNLOCK_EVENTS = [
+      'pointerdown', 'mousedown', 'click',
+      'touchstart', 'touchend',
+      'keydown',
+      'scroll', 'wheel',
+      'mousemove', 'pointermove'
+    ];
+    UNLOCK_EVENTS.forEach(evt => {
+      document.addEventListener(evt, unlockAudio, { capture: true, passive: true });
+      window.addEventListener(evt, unlockAudio, { capture: true, passive: true });
     });
 
-    // Клик по подсказке = тот же unlock
-    soundHint.addEventListener('click', (e) => {
-      e.stopPropagation();
-      unlockAudio();
-    });
-
-    // Ручное управление через кнопку в топбаре
+    // Кнопка в топбаре — вкл/выкл вручную
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (bgMusic.paused || bgMusic.muted) {
         unlocked = true;
         bgMusic.muted = false;
-        bgMusic.play().then(() => {
-          updateMusicUI(true);
-          hideSoundHint();
-        }).catch(() => {});
+        bgMusic.play().then(() => updateMusicUI(true)).catch(() => {});
       } else {
         bgMusic.pause();
         updateMusicUI(false);
@@ -1170,7 +1073,7 @@ body {
     bgMusic.addEventListener('play', () => updateMusicUI(true));
     bgMusic.addEventListener('pause', () => updateMusicUI(false));
 
-    // На всякий случай — если пользователь ушёл/вернулся
+    // Если пользователь свернул вкладку и вернулся — продолжаем
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && bgMusic.paused && !unlocked) {
         bgMusic.play().catch(() => {});
@@ -1178,7 +1081,7 @@ body {
     });
 
     /* ============================================================
-       ПАРАЛЛАКС ФОНА ОТ МЫШИ
+       ПАРАЛЛАКС ФОНА
        ============================================================ */
     const bgImage = document.getElementById('bgImage');
     const isTouch = matchMedia('(hover: none)').matches;
@@ -1191,7 +1094,7 @@ body {
     }
 
     /* ============================================================
-       УГОЛЬКИ
+       ИСКРЫ
        ============================================================ */
     const canvas = document.getElementById('embers');
     const ctx = canvas.getContext('2d');
@@ -1245,7 +1148,6 @@ body {
           Object.assign(e, spawnEmber(true));
         }
       }
-
       requestAnimationFrame(draw);
     }
     draw();
