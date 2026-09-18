@@ -3,571 +3,613 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VipFirestorm — Эпический аддон для WoW</title>
+    <title>VipFirestorm // Next-Gen HUD Interface</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
+
         :root {
-            --bg-dark: #030c08;
-            --card-bg: rgba(6, 20, 13, 0.78);
-            --card-hover: rgba(10, 34, 21, 0.92);
-            --gold: #fbbf24;
-            --gold-light: #fef08a;
-            --green: #4ade80;
-            --green-glow: rgba(74, 222, 128, 0.35);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: rgba(74, 222, 128, 0.25);
+            --neon-gold: #ffb703;
+            --neon-cyan: #00f5d4;
+            --neon-red: #f72585;
+            --bg-deep: #050508;
+            --panel-bg: rgba(10, 10, 18, 0.82);
+            --border-glow: rgba(0, 245, 212, 0.3);
         }
 
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            user-select: none;
         }
 
-        html, body {
-            width: 100%;
-            min-height: 100vh;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-        }
-
-        /* АБСОЛЮТНО НАДЕЖНЫЙ ВЫВОД ФОНА (картинка 100% не пропадет) */
-        .page-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
+        body, html {
             width: 100vw;
             height: 100vh;
-            object-fit: cover;
+            overflow: hidden;
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-deep);
+            color: #fff;
+        }
+
+        /* 100% НАДЕЖНЫЙ ФОН + ЭФФЕКТ КИНЕМАТОГРАФИЧНОГО ПАРАЛЛАКСА */
+        .absolute-bg-container {
+            position: fixed;
+            top: -10px;
+            left: -10px;
+            width: calc(100vw + 20px);
+            height: calc(100vh + 20px);
             z-index: -999;
-            animation: bgZoom 25s ease-in-out infinite alternate;
-            filter: brightness(0.65) contrast(1.1);
+            overflow: hidden;
         }
 
-        @keyframes bgZoom {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.08); }
+        .absolute-bg-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.5) contrast(1.2) saturate(1.1);
+            transform: scale(1.05);
+            transition: transform 0.2s ease-out;
         }
 
-        /* Защитный слой для читаемости */
-        .page-overlay {
+        .cyber-grid {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: radial-gradient(circle at center, rgba(3, 12, 8, 0.3) 0%, rgba(2, 8, 5, 0.85) 100%);
+            background-image: 
+                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
             z-index: -998;
             pointer-events: none;
         }
 
-        /* Живые световые лучи */
-        .light-ray {
+        /* ЧАСТИЦЫ МАГИИ (КАНВАС) */
+        #particleCanvas {
             position: fixed;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            filter: blur(120px);
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vw;
             z-index: -997;
             pointer-events: none;
-            opacity: 0.4;
-            animation: floatRay 12s ease-in-out infinite alternate;
-        }
-        .ray-1 { top: -100px; left: -100px; background: rgba(251, 191, 36, 0.3); }
-        .ray-2 { bottom: -100px; right: -100px; background: rgba(74, 222, 128, 0.3); animation-delay: -6s; }
-
-        @keyframes floatRay {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 40px) scale(1.2); }
         }
 
-        /* Главный экран */
-        .hero {
-            min-height: 100vh;
+        /* ГЛАВНЫЙ СЕКРЕТНЫЙ ИНТЕРФЕЙС (КОСМОПОРТ / HUD) */
+        .app-wrapper {
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 80px 1fr 60px;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-areas: 
+                "top top top"
+                "left center right"
+                "bottom bottom bottom";
+            padding: 20px;
+            gap: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ТОПБАР */
+        .hud-top {
+            grid-area: top;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(0, 245, 212, 0.1);
+            animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-gold));
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: #000;
+            font-size: 1.2rem;
+            box-shadow: 0 0 15px var(--neon-cyan);
+            animation: pulseLogo 3s infinite alternate;
+        }
+
+        @keyframes pulseLogo {
+            0% { box-shadow: 0 0 10px var(--neon-cyan); }
+            100% { box-shadow: 0 0 25px var(--neon-gold); }
+        }
+
+        .logo-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, var(--neon-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text span {
+            font-size: 0.8rem;
+            color: #8d99ae;
+            letter-spacing: 1px;
+        }
+
+        .system-stats {
+            display: flex;
+            gap: 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .stat-item span:first-child { color: #8d99ae; font-size: 0.7rem; }
+        .stat-item span:last-child { color: var(--neon-cyan); font-weight: 700; text-shadow: 0 0 8px var(--border-glow); }
+
+        /* ЛЕВАЯ ПАНЕЛЬ НАВИГАЦИИ */
+        .hud-left {
+            grid-area: left;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            animation: slideLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #ccd6f6;
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(0, 245, 212, 0.1);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 245, 212, 0.2);
+            transform: translateX(5px);
+        }
+
+        /* ЦЕНТРАЛЬНАЯ КОНСОЛЬ (ДИНАМИЧЕСКИЙ КОНТЕНТ) */
+        .hud-center {
+            grid-area: center;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            padding: 30px;
+            overflow-y: auto;
             position: relative;
-            text-align: center;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+            animation: fadeInCenter 0.8s ease;
         }
 
-        .hero-content {
-            max-width: 900px;
-            z-index: 2;
-            animation: heroAppear 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        .content-panel {
+            display: none;
+            animation: fadeTab 0.4s ease-out forwards;
+        }
+        .content-panel.active {
+            display: block;
         }
 
-        @keyframes heroAppear {
-            from { opacity: 0; transform: translateY(40px); }
+        @keyframes fadeTab {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .badge-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(10, 30, 20, 0.85);
-            border: 1px solid rgba(251, 191, 36, 0.4);
-            color: var(--gold);
-            padding: 8px 24px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-bottom: 25px;
-            backdrop-filter: blur(10px);
-        }
-
-        .dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--green);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--green);
-            animation: pulseDot 2s infinite;
-        }
-
-        @keyframes pulseDot {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.8); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        h1 {
-            font-size: clamp(3rem, 7vw, 5.5rem);
-            font-weight: 900;
-            letter-spacing: -1px;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff 20%, var(--gold-light) 60%, var(--green) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 10px 25px rgba(0,0,0,0.7));
-        }
-
-        .hero-desc {
-            font-size: clamp(1.05rem, 2vw, 1.3rem);
-            color: var(--text-muted);
-            line-height: 1.7;
-            max-width: 750px;
-            margin: 0 auto 40px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.9);
-        }
-
-        .hero-btns {
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #fff;
             display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px;
         }
 
-        .btn {
-            padding: 16px 32px;
-            border-radius: 14px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1rem;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
+        .panel-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+        }
+
+        .panel-desc {
+            color: #8d99ae;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        /* КАРТОЧКИ ФИЧ В НОВОМ ДИЗАЙНЕ */
+        .feature-grid-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .matrix-card {
+            background: rgba(5, 5, 10, 0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .btn-gold {
-            background: linear-gradient(135deg, #d97706, #b45309);
-            color: #fff;
-            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .btn-gold:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(217, 119, 6, 0.6);
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .btn-green {
-            background: linear-gradient(135deg, #16a34a, #15803d);
-            color: #fff;
-            box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);
-            border: 1px solid rgba(255,255,255,0.3);
-        }
-        .btn-green:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(22, 163, 74, 0.6);
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-        }
-
-        .btn-outline {
-            background: rgba(10, 25, 18, 0.7);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-        }
-        .btn-outline:hover {
-            background: rgba(15, 40, 28, 0.9);
-            border-color: var(--green);
-            transform: translateY(-4px);
-            color: var(--green);
-        }
-
-        /* Контейнер */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 80px 24px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            margin-bottom: 50px;
-            font-weight: 800;
-            color: #fff;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.8);
-        }
-        .section-title::after {
+        .matrix-card::before {
             content: '';
-            display: block;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--gold), transparent);
-            margin: 15px auto 0;
-            border-radius: 2px;
+            position: absolute;
+            top: 0; left: 0; width: 3px; height: 100%;
+            background: var(--neon-cyan);
+            opacity: 0.5;
+            transition: opacity 0.3s;
         }
 
-        /* ИНТЕРАКТИВНЫЙ ТЕРМИНАЛ / ДЕМО ФИЧ */
-        .interactive-showcase {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 40px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-            margin-bottom: 80px;
+        .matrix-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 10px 30px rgba(0, 245, 212, 0.15);
+            transform: translateY(-4px);
+        }
+        .matrix-card:hover::before { opacity: 1; }
+
+        .matrix-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--neon-gold);
         }
 
-        .tabs-header {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
+        .matrix-card p {
+            font-size: 0.95rem;
+            color: #a0aec0;
+            line-height: 1.5;
         }
 
-        .tab-btn {
-            background: rgba(5, 18, 12, 0.8);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 12px 24px;
+        /* ПРАВАЯ ПАНЕЛЬ (ТЕЛЕМЕТРИЯ И КНОПКА СКАЧИВАНИЯ) */
+        .hud-right {
+            grid-area: right;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
             border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .tab-btn.active, .tab-btn:hover {
-            background: rgba(22, 163, 74, 0.2);
-            color: var(--green);
-            border-color: var(--green);
-            box-shadow: 0 0 15px rgba(74, 222, 128, 0.2);
-        }
-
-        .tab-content {
-            display: none;
-            background: rgba(2, 10, 6, 0.9);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 30px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .tab-content h3 {
-            color: var(--gold);
-            margin-bottom: 12px;
-            font-size: 1.4rem;
-        }
-
-        .tab-content p {
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .demo-code-box {
-            background: #010503;
-            border: 1px solid rgba(74, 222, 128, 0.2);
-            padding: 15px 20px;
-            border-radius: 10px;
-            font-family: monospace;
-            color: var(--green);
-            font-size: 0.95rem;
-        }
-
-        /* Сетка карточек возможностей */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-            gap: 25px;
-            margin-bottom: 80px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 35px 25px;
-            backdrop-filter: blur(16px);
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            background: var(--card-hover);
-            border-color: var(--green);
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6), 0 0 20px var(--green-glow);
-        }
-
-        .card-icon {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            width: 70px;
-            height: 70px;
+            padding: 25px;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(6, 20, 13, 0.9));
-            border-radius: 16px;
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            box-shadow: inset 0 0 10px rgba(251, 191, 36, 0.1);
-        }
-
-        .card h3 {
-            font-size: 1.35rem;
-            margin-bottom: 12px;
-            color: #fff;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        .card code {
-            background: rgba(2, 8, 5, 0.9);
-            color: var(--gold);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-family: monospace;
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            font-size: 0.9rem;
-        }
-
-        /* Таблица слэш-команд */
-        .commands-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 40px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        .command-row {
-            display: flex;
+            flex-direction: column;
             justify-content: space-between;
-            align-items: center;
-            background: rgba(3, 12, 8, 0.85);
-            padding: 20px 25px;
-            border-radius: 12px;
-            border: 1px solid rgba(74, 222, 128, 0.1);
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-        .command-row:last-child {
-            margin-bottom: 0;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            animation: slideRight 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .command-row:hover {
-            border-color: var(--green);
-            transform: translateX(6px);
-            background: rgba(6, 22, 14, 0.95);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-
-        .command-row code {
-            background: rgba(1, 5, 3, 0.9);
-            color: var(--green);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-family: monospace;
-            border: 1px solid rgba(74, 222, 128, 0.3);
-            font-weight: 600;
-        }
-
-        .command-row span {
-            color: var(--text-muted);
-        }
-
-        footer {
+        .download-box {
             text-align: center;
-            padding: 50px 20px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            color: #64748b;
-            background-color: #010705;
-            position: relative;
-            z-index: 2;
+            background: linear-gradient(135deg, rgba(0, 245, 212, 0.1), rgba(255, 183, 3, 0.05));
+            border: 1px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 25px 15px;
+            box-shadow: inset 0 0 20px rgba(0, 245, 212, 0.1);
         }
 
-        @media (max-width: 768px) {
-            .command-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
+        .dl-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--neon-cyan), #0077b6);
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.4);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .dl-btn:hover {
+            background: linear-gradient(135deg, #fff, var(--neon-cyan));
+            box-shadow: 0 0 35px var(--neon-cyan);
+            transform: scale(1.03);
+        }
+
+        /* НИЖНИЙ СТАТУС БАР */
+        .hud-bottom {
+            grid-area: bottom;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.75rem;
+            color: #8d99ae;
+        }
+
+        .terminal-log {
+            color: var(--neon-cyan);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .terminal-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-cyan);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.2; }
+        }
+
+        @keyframes slideDown { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideLeft { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideRight { from { transform: translateX(30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeInCenter { from { transform: scale(0.97); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* АДАПТИВНОСТЬ ПОД МОБИЛКИ */
+        @media(max-width: 900px) {
+            .app-wrapper {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+                grid-template-areas: "top" "center" "left" "right";
+                overflow-y: auto;
+                height: auto;
             }
+            body, html { overflow-y: auto; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ПОЛНОЦЕННЫЙ ФОН (абсолютная гарантия отображения) -->
-    <img src="background.jpg" alt="Фон сайта" class="page-bg">
-    <div class="page-overlay"></div>
+    <!-- ФОН (абсолютная страховка) -->
+    <div class="absolute-bg-container">
+        <img src="background.jpg" alt="Background HUD Image" id="bgImage">
+    </div>
+    <div class="cyber-grid"></div>
+    <canvas id="particleCanvas"></canvas>
 
-    <!-- Лучи света -->
-    <div class="light-ray ray-1"></div>
-    <div class="light-ray ray-2"></div>
+    <!-- ИНТЕРФЕЙС ПРИЛОЖЕНИЯ -->
+    <div class="app-wrapper">
 
-    <header class="hero">
-        <div class="hero-content">
-            <div class="badge-status">
-                <span class="dot"></span>
-                ☀️ Спецпроект Expilliar для Firestorm WoW v3.4
-            </div>
-            <h1>VipFirestorm</h1>
-            <p class="hero-desc">Абсолютный флагман среди аддонов для комфортной игры. Умная автоматизация рейдов, мгновенные телепорты по классам и полный контроль над игровым процессом.</p>
-            <div class="hero-btns">
-                <a href="#features" class="btn btn-gold">⚡ Возможности</a>
-                <a href="#showcase" class="btn btn-outline">🖥️ Интерактив</a>
-                <a href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing" class="btn btn-green" target="_blank">📥 Скачать аддон</a>
-            </div>
-        </div>
-    </header>
-
-    <main class="container">
-
-        <!-- ИНТЕРАКТИВНЫЙ ПАНЕЛЬ-СМОТРЕТЬ РАБОТУ -->
-        <section class="interactive-showcase" id="showcase">
-            <h2 class="section-title" style="margin-bottom: 30px;">Живая демонстрация модулей</h2>
-            <div class="tabs-header">
-                <button class="tab-btn active" onclick="switchTab(event, 'tab-teleport')">🗺️ Телепортация</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tab-invite')">⚡ Автоинвайт</button>
-                <button class="tab-btn" onclick="switchTab(event, 'tab-reparty')">👥 FastReparty</button>
-            </div>
-
-            <div id="tab-teleport" class="tab-content active">
-                <h3>Умное меню телепортации классов</h3>
-                <p>Вызывается в один клик. Адаптируется под текущий класс персонажа, открывая быстрый доступ к столицам дополнений и ключевым точкам без долгих поисков порталов.</p>
-                <div class="demo-code-box">> Вызов интерфейса: /vf (или клик по иконке у миникарты)<br>> Статус: Готов к использованию (Задержка 0.0s)</div>
-            </div>
-
-            <div id="tab-invite" class="tab-content">
-                <h3>Автоматический прием в группу по ПМ</h3>
-                <p>Забудьте про ручной инвайт участников из чата. Аддон сам отслеживает ключевые слова в личных сообщениях и мгновенно формирует мощный старт для подземелий.</p>
-                <div class="demo-code-box">> Ключевые слова: +, inv, инв, плюс<br>> Фильтр спама: Включен (защита от ботов)</div>
-            </div>
-
-            <div id="tab-reparty" class="tab-content">
-                <h3>Мгновенный ресет группы (FastReparty)</h3>
-                <p>Специальная функция для рейдовых лидеров. Позволяет мгновенно пересоздать рейд в один клик, автоматически сохраняя список и рассылая инвайты заново.</p>
-                <div class="demo-code-box">> Команда: /freparty<br>> Результат: Роспуск -> Восстановление состава -> Успешно!</div>
-            </div>
-        </section>
-
-        <!-- СЕТКА ВОЗМОЖНОСТЕЙ -->
-        <h2 class="section-title" id="features">Ключевые особенности</h2>
-        <div class="grid">
-            <div class="card">
-                <div class="card-icon">🗺️</div>
-                <h3>Меню Телепортации</h3>
-                <p>Уникальный интерфейс под каждый класс персонажа с мгновенным доступом к банкам, аукционам и ключевым локациям (Орибос, Вальдраккен, Дорногал).</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">⚡</div>
-                <h3>Автоинвайт по ПМ</h3>
-                <p>Мгновенный прием игроков в группу по ключевым словам <code>+</code>, <code>inv</code>, <code>инв</code> в личных сообщениях. Управление в один клик.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">👥</div>
-                <h3>FastReparty</h3>
-                <p>Быстрый ресет группы или рейда командой <code>/freparty</code>. Сохранение состава и автоматическая рассылка приглашений.</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">✉️</div>
-                <h3>Умная почта</h3>
-                <p>Интегрированная кнопка в окне почты для моментального сбора всего золота из писем и очистки пустых сообщений.</p>
-            </div>
-        </div>
-
-        <!-- КОМАНДЫ -->
-        <section class="commands-box">
-            <h2 class="section-title" style="margin-bottom: 40px;">Основные слэш-команды</h2>
-            <div class="command-box">
-                <div class="command-row">
-                    <code>/vf</code> или <code>/vipf</code>
-                    <span>Открыть / закрыть главное меню телепортации</span>
-                </div>
-                <div class="command-row">
-                    <code>/freparty</code>
-                    <span>Быстрое пересоздание группы или рейда (для лидера)</span>
-                </div>
-                <div class="command-row">
-                    <code>ЛКМ / ПКМ по миникарте</code>
-                    <span>Главное меню / Переключение Зеленого огня</span>
+        <!-- ТОПБАР -->
+        <header class="hud-top">
+            <div class="logo-area">
+                <div class="logo-icon">VF</div>
+                <div class="logo-text">
+                    <h1>VIP FIRESTORM</h1>
+                    <span>EXPILLEAR PROJECT // v3.4 CORE</span>
                 </div>
             </div>
-        </section>
+            <div class="system-stats">
+                <div class="stat-item">
+                    <span>STATUS</span>
+                    <span>ONLINE [99.8%]</span>
+                </div>
+                <div class="stat-item">
+                    <span>LATENCY</span>
+                    <span>14ms</span>
+                </div>
+                <div class="stat-item">
+                    <span>CORE</span>
+                    <span>STABLE</span>
+                </div>
+            </div>
+        </header>
 
-    </main>
+        <!-- ЛЕВАЯ НАВИГАЦИЯ -->
+        <nav class="hud-left">
+            <button class="nav-btn active" onclick="switchPanel('features', this)">⚡ Модули системы</button>
+            <button class="nav-btn" onclick="switchPanel('teleport', this)">🗺️ Телепортация</button>
+            <button class="nav-btn" onclick="switchPanel('automation', this)">🤖 Автоматизация</button>
+            <button class="nav-btn" onclick="switchPanel('commands', this)">💻 Слэш-команды</button>
+        </nav>
 
-    <footer>
-        <p>VipFirestorm Addon &copy; 2026. Создано Expilliar для Firestorm WoW. Все права защищены.</p>
-    </footer>
+        <!-- ЦЕНТРАЛЬНАЯ КОНСОЛЬ -->
+        <main class="hud-center">
+            
+            <!-- ВКЛАДКА 1: ФИЧИ -->
+            <div id="panel-features" class="content-panel active">
+                <h2 class="panel-title">Модули аддона</h2>
+                <p class="panel-desc">Передовая сборка скриптов для максимального комфорта в World of Warcraft Firestorm. Полный контроль над игровыми механиками без просадки FPS.</p>
+                
+                <div class="feature-grid-matrix">
+                    <div class="matrix-card">
+                        <h4>Классовый Телепорт</h4>
+                        <p>Интерфейс мгновенного доступа ко всем ключевым точкам мира под специализацию вашего персонажа.</p>
+                    </div>
+                    <div class="matrix-card">
+                        <h4>Авто-прием ПМ</h4>
+                        <p>Интеллектуальная система приема в группу по ключевым словам в личных сообщениях с фильтрацией спама.</p>
+                    </div>
+                    <div class="matrix-card">
+                        <h4>FastReparty</h4>
+                        <p>Мгновенный перезапуск рейдовых групп одной кнопкой с сохранением состава.</p>
+                    </div>
+                    <div class="matrix-card">
+                        <h4>Лот-контроль</h4>
+                        <p>Автоматическая очистка почты, сбор золота и быстрый менеджмент сумок в один клик.</p>
+                    </div>
+                </div>
+            </div>
 
-    <!-- Скрипт переключения вкладок -->
+            <!-- ВКЛАДКА 2: ТЕЛЕПОРТАЦИЯ -->
+            <div id="panel-teleport" class="content-panel">
+                <h2 class="panel-title">Система Телепортации</h2>
+                <p class="panel-desc">Быстрый переход между локациями дополнений. Забудьте про долгое ожидание и поиск порталов в столицах.</p>
+                <div class="feature-grid-matrix">
+                    <div class="matrix-card">
+                        <h4>Штормград / Огриммар</h4>
+                        <p>Моментальный прыжок к основным вендорам и аукционам.</p>
+                    </div>
+                    <div class="matrix-card">
+                        <h4>Зоны актуальных патчей</h4>
+                        <p>Прямой доступ к локациям текущего контента Firestorm.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 3: АВТОМАТИЗАЦИЯ -->
+            <div id="panel-automation" class="content-panel">
+                <h2 class="panel-title">Модули Автоматизации</h2>
+                <p class="panel-desc">Скрипты, ускоряющие рутинные действия в рейдах и подземельях на 300%.</p>
+                <div class="feature-grid-matrix">
+                    <div class="matrix-card">
+                        <h4>Авто-приглашение</h4>
+                        <p>Активация по фразам: <code>+</code>, <code>inv</code>, <code>инв</code>.</p>
+                    </div>
+                    <div class="matrix-card">
+                        <h4>Умный Ресет</h4>
+                        <p>Мгновенный сброс подземелий в пати-моде.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ВКЛАДКА 4: КОМАНДЫ -->
+            <div id="panel-commands" class="content-panel">
+                <h2 class="panel-title">Интерфейсные Команды</h2>
+                <p class="panel-desc">Список консольных команд для управления аддоном прямо из чата игры:</p>
+                <div class="feature-grid-matrix">
+                    <div class="matrix-card">
+                        <h4>/vf или /vipf</h4>
+                        <p>Открытие главного графического меню телепортации.</p>
+                    </div>
+                    <div class="matrix-card">
+                        <h4>/freparty</h4>
+                        <p>Мгновенное пересоздание рейдовой группы.</p>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- ПРАВАЯ ПАНЕЛЬ -->
+        <aside class="hud-right">
+            <div>
+                <h3 style="font-family:'Orbitron',sans-serif; font-size:1rem; margin-bottom:15px; color:var(--neon-gold);">ТЕЛЕМЕТРИЯ СЕТИ</h3>
+                <p style="font-size:0.85rem; color:#8d99ae; line-height:1.5; margin-bottom: 20px;">Пакеты данных синхронизированы с серверами Firestorm. Угрозы вредоносного ПО не обнаружены.</p>
+            </div>
+            
+            <div class="download-box">
+                <span style="font-family:'Orbitron',sans-serif; font-size:0.75rem; color:var(--neon-cyan);">READY FOR DEPLOYMENT</span>
+                <a href="https://drive.google.com/file/d/1KyS7GSydYh7jcuQePBfCEvH_Lp2zXMg1/view?usp=sharing" target="_blank" class="dl-btn">📥 СКАЧАТЬ АДДОН</a>
+            </div>
+        </aside>
+
+        <!-- НИЖНИЙ БАР -->
+        <footer class="hud-bottom">
+            <div class="terminal-log">
+                <div class="terminal-dot"></div>
+                <span>SYSTEM CORE: background.jpg successfully bound to viewport layer.</span>
+            </div>
+            <div>EXPILLEAR SYSTEMS &copy; 2026</div>
+        </footer>
+
+    </div>
+
+    <!-- СКРИПТЫ ИНТЕРАКТИВА (ПЕРЕКЛЮЧАТЕЛИ И ЧАСТИЦЫ) -->
     <script>
-        function switchTab(evt, tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(c => c.classList.remove('active'));
+        function switchPanel(panelId, btnElement) {
+            // Переключение вкладок
+            document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById('panel-' + panelId).classList.add('active');
 
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(b => b.classList.remove('active'));
-
-            document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
+            // Переключение стилей кнопок
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
         }
-    </script>
 
+        // Параллакс эффект для фона от движения мыши
+        document.addEventListener('mousemove', (e) => {
+            const bg = document.getElementById('bgImage');
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            bg.style.transform = `scale(1.08) translate(${x}px, ${y}px)`;
+        });
+
+        // Анимация магических частиц на Canvas
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particles = [];
+        for(let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2 + 0.5,
+                speedY: Math.random() * 0.5 + 0.2,
+                opacity: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(0, 245, 212, 0.6)';
+            
+            particles.forEach(p => {
+                ctx.globalAlpha = p.opacity;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                p.y -= p.speedY;
+                if(p.y < 0) {
+                    p.y = canvas.height;
+                    p.x = Math.random() * canvas.width;
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    </script>
 </body>
 </html>
