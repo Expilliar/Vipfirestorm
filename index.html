@@ -371,7 +371,6 @@ body {
   pointer-events: none;
 }
 
-/* Двухколоночный layout внутри hero */
 .hero-inner {
   position: relative;
   z-index: 1;
@@ -567,11 +566,13 @@ body {
   background: #000;
   z-index: 1;
 }
+/* Обёртка для API-вставленного iframe */
+.video-embed #ytPlayer,
 .video-embed iframe {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   border: 0;
   display: block;
 }
@@ -677,7 +678,6 @@ body {
   font-weight: 500;
 }
 
-/* ============== АДАПТИВ ============== */
 @media (max-width: 1180px) {
   .hero-inner { gap: 36px; }
   .hero-title { font-size: clamp(1.8rem, 3.6vw, 2.6rem); }
@@ -918,14 +918,8 @@ body {
 
             <div class="video-frame">
               <div class="video-embed">
-                <!-- Без autoplay: видео запустится только когда пользователь сам нажмёт play -->
-                <iframe
-                  src="https://www.youtube.com/embed/-NZJbbG1BLY"
-                  title="Визуальная информация о VipFirestorm"
-                  loading="lazy"
-                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  referrerpolicy="strict-origin-when-cross-origin"
-                  allowfullscreen></iframe>
+                <!-- Плейсхолдер, куда YouTube IFrame API вставит свой плеер -->
+                <div id="ytPlayer"></div>
               </div>
             </div>
           </div>
@@ -1183,18 +1177,24 @@ body {
       e.stopPropagation();
       if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
 
+      // Помечаем, что пользователь вручную управляет музыкой,
+      // чтобы возврат после видео не включал трек против его воли.
+      musicManuallyPaused = bgMusic.paused === false ? true : false;
+
       if (bgMusic.muted && !bgMusic.paused) {
         bgMusic.muted = false;
         soundUnlocked = true;
         const p = bgMusic.play();
         if (p && p.catch) p.catch(() => {});
         setPlayingIcon(true);
+        musicManuallyPaused = false;
         return;
       }
       if (bgMusic.paused) {
         bgMusic.muted = false;
         soundUnlocked = true;
         bgMusic.play().then(() => setPlayingIcon(true)).catch(() => {});
+        musicManuallyPaused = false;
         return;
       }
       bgMusic.pause();
@@ -1211,64 +1211,75 @@ body {
     });
 
     /* ============================================================
-       ПАРАЛЛАКС
+       YOUTUBE IFRAME API
+       ------------------------------------------------------------
+       Логика синхронизации:
+         • Видео ИГРАЕТ (или буферизуется) → ставим музыку на паузу,
+           запоминаем, что она играла ДО этого.
+         • Видео ПАУЗА / ЗАВЕРШЕНО → если музыка играла до этого и
+           пользователь не выключал её вручную — включаем обратно.
+         • Если пользователь сам поставил музыку на паузу кнопкой —
+           после видео она НЕ включится принудительно.
        ============================================================ */
-    const bgImage = document.getElementById('bgImage');
-    const isTouch = matchMedia('(hover: none)').matches;
-    if (!isTouch) {
-      document.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 24;
-        const y = (e.clientY / window.innerHeight - 0.5) * 24;
-        bgImage.style.transform = `translate(${x}px, ${y}px)`;
+    let ytPlayer = null;
+    let musicWasPlayingBeforeVideo = false;   // играла ли музыка перед стартом видео
+    let musicManuallyPaused = false;         // выключил ли пользователь музыку вручную
+
+    // Загружаем IFrame API от YouTube
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+
+    // Функция вызывается самим YouTube, когда API готов
+    window.onYouTubeIframeAPIReady = function () {
+      ytPlayer = new YT.Player('ytPlayer', {
+        videoId: '-NZJbbG1BLY',
+        playerVars: {
+          rel: 0,
+          modestbranding: 1,
+          playsinline: 1
+          // НЕТ autoplay — пользователь должен сам нажать play
+        },
+        events: {
+          onReady: (e) => {
+            console.log('[YouTube] Плеер готов');
+          },
+          onStateChange: onPlayerStateChange
+        }
       });
-    }
+    };
 
-    /* ============================================================
-       ИСКРЫ
-       ============================================================ */
-    const canvas = document.getElementById('embers');
-    const ctx = canvas.getContext('2d');
-    let W = 0, H = 0;
-    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
-    resize();
-    window.addEventListener('resize', resize);
+    function onPlayerStateChange(event) {
+      const state = event.data;
+      // YT.PlayerState:
+      //   -1 (UNSTARTED), 0 (ENDED), 1 (PLAYING), 2 (PAUSED),
+      //   3 (BUFFERING), 5 (CUED)
 
-    function spawnEmber(fromBottom) {
-      return {
-        x: Math.random() * W,
-        y: fromBottom ? H + Math.random() * 120 : Math.random() * H,
-        r: Math.random() * 2 + 0.6,
-        vy: -(0.2 + Math.random() * 0.7),
-        vx: (Math.random() - 0.5) * 0.35,
-        hue: 15 + Math.random() * 30,
-        alpha: 0.25 + Math.random() * 0.5,
-        flick: Math.random() * Math.PI * 2
-      };
-    }
-    const embers = [];
-    const COUNT = Math.min(70, Math.floor(window.innerWidth / 22));
-    for (let i = 0; i < COUNT; i++) embers.push(spawnEmber(false));
-
-    function draw() {
-      ctx.clearRect(0, 0, W, H);
-      ctx.globalCompositeOperation = 'lighter';
-      for (const e of embers) {
-        e.flick += 0.05;
-        const a = e.alpha * (0.65 + 0.35 * Math.sin(e.flick));
-        const grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 6);
-        grd.addColorStop(0, `hsla(${e.hue}, 100%, 68%, ${a})`);
-        grd.addColorStop(1, `hsla(${e.hue}, 100%, 50%, 0)`);
-        ctx.fillStyle = grd;
-        ctx.beginPath();
-        ctx.arc(e.x, e.y, e.r * 6, 0, Math.PI * 2);
-        ctx.fill();
-        e.x += e.vx;
-        e.y += e.vy;
-        if (e.y < -20 || e.x < -30 || e.x > W + 30) Object.assign(e, spawnEmber(true));
+      // Видео играет или буферизуется → пауза музыки
+      if (state === 1 || state === 3) {
+        if (!bgMusic.paused) {
+          musicWasPlayingBeforeVideo = true;
+          bgMusic.pause();
+          console.log('[Sync] Видео пошло — музыка на паузе');
+        }
+        return;
       }
-      requestAnimationFrame(draw);
+
+      // Видео на паузе или завершилось → вернуть музыку
+      if (state === 2 || state === 0) {
+        if (musicWasPlayingBeforeVideo && !musicManuallyPaused) {
+          // Не пытаемся стартовать если браузер ещё не разблокировал звук — тогда трек уже играет в muted-режиме
+          bgMusic.muted = false;
+          bgMusic.play().then(() => {
+            setPlayingIcon(true);
+            console.log('[Sync] Видео на паузе — музыка вернулась');
+          }).catch(err => {
+            console.warn('[Sync] Не удалось вернуть музыку:', err.message);
+          });
+          musicWasPlayingBeforeVideo = false;
+        }
+      }
     }
-    draw();
   </script>
 </body>
 </html>
