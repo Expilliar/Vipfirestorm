@@ -242,6 +242,7 @@ body {
   border: 1px solid var(--line);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  flex-wrap: wrap;
 }
 .crumb {
   font-size: .78rem;
@@ -267,6 +268,23 @@ body {
 }
 .chip b { color: #ffb37a; font-weight: 600; font-variant-numeric: tabular-nums; }
 .chip svg { color: #ffb37a; flex-shrink: 0; }
+
+/* Discord badge */
+.chip-discord {
+  background: linear-gradient(135deg, rgba(88,101,242,.12), rgba(255,92,43,.08));
+  border-color: rgba(88,101,242,.32);
+  color: #c9d1ff;
+  cursor: default;
+  transition: all .25s;
+}
+.chip-discord:hover {
+  background: linear-gradient(135deg, rgba(88,101,242,.22), rgba(255,92,43,.14));
+  border-color: rgba(88,101,242,.55);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(88,101,242,.35);
+}
+.chip-discord svg { color: #7c8eff !important; }
+.chip-discord b { color: #fff !important; font-weight: 700; }
 
 .music-btn {
   display: inline-flex;
@@ -568,10 +586,11 @@ body {
   .nav-item.active::before { display: none; }
   .nav-lbl { display: none; }
   .rail-foot { display: none; }
-  .topbar { padding: 12px 16px; gap: 12px; }
+  .topbar { padding: 12px 16px; gap: 10px; }
   .crumb { font-size: .68rem; }
   .chips { gap: 6px; }
   .chip { padding: 6px 10px; font-size: .7rem; }
+  .chip-discord span { display: none; }
   .hero { padding: 34px 26px 28px; border-radius: 24px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn { justify-content: center; }
@@ -677,6 +696,15 @@ body {
             </svg>
             Скачали: <b data-count>6</b>
           </div>
+
+          <!-- Discord badge -->
+          <div class="chip chip-discord" title="Обратная связь Discord — Expilliar">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+            <span>Обратная связь Discord — <b>Expilliar</b></span>
+          </div>
+
           <div class="chip">Firestorm</div>
 
           <button class="music-btn" id="musicBtn" title="Включить / выключить музыку" aria-label="Переключить музыку">
@@ -716,12 +744,22 @@ body {
             </svg>
             Скачать аддон
           </a>
+
           <button class="btn btn-ghost" onclick="switchTab('commands', document.querySelectorAll('.nav-item')[3])">
             Список команд
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="9 18 15 12 9 6"/>
             </svg>
           </button>
+
+          <a class="btn btn-primary"
+             href="https://firestorm-servers.com/ru/teasing"
+             target="_blank" rel="noopener">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="6 4 20 12 6 20 6 4"/>
+            </svg>
+            Начать играть
+          </a>
         </div>
 
         <div class="hero-stats">
@@ -804,42 +842,105 @@ body {
     }
 
     /* ============================================================
-       СЧЁТЧИК ЗАГРУЗОК
+       СЧЁТЧИК ЗАГРУЗОК — РЕАЛЬНЫЙ, ЧЕРЕЗ СЕРВЕРНЫЙ API
+       ------------------------------------------------------------
+       Используем бесплатный abacus.jasoncameron.dev.
+       Счётчик живёт на сервере → цифра ОДНА для всех устройств.
+       "1 IP = 1 раз" делаем через флаг в localStorage:
+         • если с этого браузера уже кликали — не инкрементим
+         • если нет — вызываем /hit, инкрементим на сервере, ставим флаг
+       BASE_OFFSET = 6 — стартовое значение (то, что было у тебя).
+       Если хочешь начать с нуля — поставь 0.
        ============================================================ */
-    const BASE_DOWNLOADS = 6;
-    const KEY_COUNT = 'vf_downloads_incr';
-    const KEY_DONE  = 'vf_downloaded_flag';
+    const BASE_OFFSET = 6;
+    const API_NS  = 'vipfirestorm-expilliar';
+    const API_KEY = 'addon-downloads-v1';
+    const API_URL = `https://abacus.jasoncameron.dev`;
 
-    function getDownloadCount() {
-      const incr = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
-      return BASE_DOWNLOADS + (isNaN(incr) ? 0 : incr);
+    const KEY_DONE = 'vf_downloaded_flag_v2';
+
+    async function fetchServerCount() {
+      try {
+        const r = await fetch(`${API_URL}/get/${API_NS}/${API_KEY}`, { cache: 'no-store' });
+        if (r.ok) {
+          const d = await r.json();
+          return typeof d.value === 'number' ? d.value : 0;
+        }
+        if (r.status === 404) {
+          // Счётчик ещё не создан — создаём первым hit'ом
+          const h = await fetch(`${API_URL}/hit/${API_NS}/${API_KEY}`, { cache: 'no-store' });
+          if (h.ok) {
+            const hd = await h.json();
+            return typeof hd.value === 'number' ? hd.value : 0;
+          }
+        }
+      } catch (e) {
+        console.warn('[Counter] Ошибка чтения:', e.message);
+      }
+      return null;
     }
-    function renderCounters() {
-      const pretty = getDownloadCount().toLocaleString('ru-RU');
-      document.querySelectorAll('[data-count]').forEach(el => { el.textContent = pretty; });
+
+    async function hitServerCount() {
+      try {
+        const r = await fetch(`${API_URL}/hit/${API_NS}/${API_KEY}`, { cache: 'no-store' });
+        if (r.ok) {
+          const d = await r.json();
+          return typeof d.value === 'number' ? d.value : null;
+        }
+      } catch (e) {
+        console.warn('[Counter] Ошибка инкремента:', e.message);
+      }
+      return null;
     }
-    function registerDownload() {
-      if (!localStorage.getItem(KEY_DONE)) {
-        const incr = parseInt(localStorage.getItem(KEY_COUNT) || '0', 10);
-        localStorage.setItem(KEY_COUNT, (isNaN(incr) ? 0 : incr) + 1);
-        localStorage.setItem(KEY_DONE, '1');
-        renderCounters();
+
+    function renderCount(serverValue) {
+      if (serverValue === null || typeof serverValue !== 'number') return;
+      const total = serverValue + BASE_OFFSET;
+      const pretty = total.toLocaleString('ru-RU');
+      document.querySelectorAll('[data-count]').forEach(el => {
+        el.textContent = pretty;
+      });
+    }
+
+    async function initCounter() {
+      const v = await fetchServerCount();
+      renderCount(v === null ? 0 : v);
+      console.log('[Counter] С сервера:', v, 'Итого:', (v||0) + BASE_OFFSET);
+    }
+
+    async function registerDownload() {
+      // Если с этого устройства уже кликали — не инкрементим
+      if (localStorage.getItem(KEY_DONE)) {
+        console.log('[Counter] С этого устройства уже засчитано — пропускаем.');
+        return;
+      }
+      localStorage.setItem(KEY_DONE, '1');
+      const newV = await hitServerCount();
+      if (newV !== null) {
+        renderCount(newV);
+        console.log('[Counter] +1, теперь на сервере:', newV);
       }
     }
+
+    // Клик по кнопке "Скачать аддон" — инкремент
     document.querySelectorAll('.js-download').forEach(btn => {
       btn.addEventListener('click', registerDownload);
     });
-    renderCounters();
+
+    initCounter();
+
+    // Раз в 30 секунд обновляем показания (на случай, если кто-то ещё качает прямо сейчас)
+    setInterval(initCounter, 30000);
 
     /* ============================================================
-       МУЗЫКА — ИСПРАВЛЕННАЯ ЛОГИКА
+       МУЗЫКА
        ------------------------------------------------------------
-       ВАЖНО: раньше в списке "разблокирующих" событий были
-       mousemove и pointermove. Они срабатывают сразу при наведении
-       мыши — НО браузер их НЕ считает "жестом пользователя".
-       Функция unlock вызывалась вхолостую, ставила флаг и больше
-       не пыталась включить звук. Убрал их — теперь только
-       НАСТОЯЩИЕ user-gesture события.
+       Схема:
+       1) Сразу пробуем со звуком.
+       2) Если браузер запретил — играем muted (это разрешено везде).
+       3) При первом же НАСТОЯЩЕМ жесте (клик/клавиша/тап/скролл на мобиле)
+          снимаем mute. Плюс параллельно пробуем Web Audio API —
+          некоторые браузеры охотнее разрешают звук через AudioContext.
        ============================================================ */
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
@@ -849,10 +950,10 @@ body {
     bgMusic.volume = 0.5;
 
     bgMusic.addEventListener('error', () => {
-      console.error('[Music] Ошибка загрузки файла. Проверь имя и расположение VipFirestorm Menu.mp3', bgMusic.error);
+      console.error('[Music] Ошибка загрузки файла:', bgMusic.error);
     });
     bgMusic.addEventListener('loadedmetadata', () => {
-      console.log('[Music] Файл OK. Длительность:', bgMusic.duration.toFixed(1), 'сек');
+      console.log('[Music] Файл OK, длительность', bgMusic.duration.toFixed(1), 'сек');
     });
 
     function setPlayingIcon(isPlaying) {
@@ -867,62 +968,71 @@ body {
       }
     }
 
-    // Флаг: уже разблокировали звук
+    // Web Audio API — «разогрев» контекста (в некоторых браузерах помогает)
+    let audioCtx = null;
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    } catch (e) {}
+
     let soundUnlocked = false;
 
-    // ---- Устанавливаем обработчики на НАСТОЯЩИЕ жесты ----
-    const GESTURE_EVENTS = ['pointerdown', 'mousedown', 'click', 'keydown', 'touchstart', 'touchend'];
-
-    function handleGesture() {
+    function unlockAudio() {
       if (soundUnlocked) return;
       soundUnlocked = true;
 
-      // Снимаем mute и гарантируем воспроизведение
-      bgMusic.muted = false;
+      // 1) Пробуем разбудить AudioContext
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
 
+      // 2) Снимаем mute и гарантируем play
+      bgMusic.muted = false;
       if (bgMusic.paused) {
         bgMusic.play().then(() => {
           setPlayingIcon(true);
           console.log('[Music] ▶ Играет со звуком');
         }).catch(err => {
-          console.warn('[Music] Не удалось запустить:', err.message);
+          console.warn('[Music] Не удалось:', err.message);
         });
       } else {
-        console.log('[Music] 🔊 Звук разблокирован');
-        // Иногда нужно дёрнуть play(), чтобы браузер применил unmuted
         const p = bgMusic.play();
         if (p && p.catch) p.catch(() => {});
         setPlayingIcon(true);
+        console.log('[Music] 🔊 Размьючено');
       }
 
       // Отписываемся
       GESTURE_EVENTS.forEach(evt => {
-        document.removeEventListener(evt, handleGesture, true);
-        window.removeEventListener(evt, handleGesture, true);
+        document.removeEventListener(evt, unlockAudio, true);
+        window.removeEventListener(evt, unlockAudio, true);
       });
     }
 
+    const GESTURE_EVENTS = [
+      'pointerdown', 'mousedown', 'click', 'keydown',
+      'touchstart', 'touchend',
+      'scroll', 'wheel'
+    ];
     GESTURE_EVENTS.forEach(evt => {
-      document.addEventListener(evt, handleGesture, { capture: true });
-      window.addEventListener(evt, handleGesture, { capture: true });
+      document.addEventListener(evt, unlockAudio, { capture: true, passive: true });
+      window.addEventListener(evt, unlockAudio, { capture: true, passive: true });
     });
 
-    // ---- Стартовая попытка ----
-    // 1) Пробуем со звуком сразу (сработает, если браузер уже доверяет сайту)
+    // Стартовая попытка
     bgMusic.muted = false;
     const initialPlay = bgMusic.play();
-
     if (initialPlay && typeof initialPlay.then === 'function') {
       initialPlay.then(() => {
         setPlayingIcon(true);
-        soundUnlocked = true; // уже со звуком — разблокировка не нужна
+        soundUnlocked = true;
+        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
         console.log('[Music] ▶ Играет со звуком сразу');
       }).catch(() => {
-        // 2) Не разрешил — стартуем БЕЗ звука
         bgMusic.muted = true;
         bgMusic.play().then(() => {
           setPlayingIcon(true);
-          console.log('[Music] 🔇 Играет без звука. Включится при первом клике/клавише/тапе.');
+          console.log('[Music] 🔇 Играет без звука, размьютится при первом действии');
         }).catch(err => {
           setPlayingIcon(false);
           console.warn('[Music] Автоплей полностью заблокирован:', err.message);
@@ -930,32 +1040,25 @@ body {
       });
     }
 
-    // ---- Кнопка в топбаре ----
+    // Кнопка в топбаре
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
 
-      // Если muted и играет — размьютим
       if (bgMusic.muted && !bgMusic.paused) {
         bgMusic.muted = false;
         soundUnlocked = true;
         const p = bgMusic.play();
         if (p && p.catch) p.catch(() => {});
         setPlayingIcon(true);
-        console.log('[Music] 🔊 Размьючено по клику');
         return;
       }
-
-      // Если на паузе — запускаем
       if (bgMusic.paused) {
         bgMusic.muted = false;
         soundUnlocked = true;
-        bgMusic.play().then(() => {
-          setPlayingIcon(true);
-        }).catch(() => {});
+        bgMusic.play().then(() => setPlayingIcon(true)).catch(() => {});
         return;
       }
-
-      // Иначе — пауза
       bgMusic.pause();
       setPlayingIcon(false);
     });
@@ -963,21 +1066,11 @@ body {
     bgMusic.addEventListener('play', () => setPlayingIcon(true));
     bgMusic.addEventListener('pause', () => setPlayingIcon(false));
 
-    // Возврат к вкладке
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && bgMusic.paused && !soundUnlocked) {
         bgMusic.play().catch(() => {});
       }
     });
-
-    // Диагностика: если через 1.5 сек currentTime всё ещё 0 — файл не играет
-    setTimeout(() => {
-      if (bgMusic.currentTime === 0 && !bgMusic.paused) {
-        console.warn('[Music] currentTime = 0 через 1.5 сек. Возможно, файл не найден или не декодируется. Проверь Network-вкладку.');
-      } else {
-        console.log('[Music] Позиция трека:', bgMusic.currentTime.toFixed(2), 'сек');
-      }
-    }, 1500);
 
     /* ============================================================
        ПАРАЛЛАКС
