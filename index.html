@@ -49,7 +49,37 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,140,90,.4); background-clip: content-box; }
 
-/* ============== ФОН ============== */
+/* ============== ФОН: КАРТИНКА + БЛОБЫ ============== */
+.bg-image {
+  position: fixed;
+  top: -20px;
+  left: -20px;
+  width: calc(100vw + 40px);
+  height: calc(100vh + 40px);
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+  will-change: transform;
+  transition: transform .25s ease-out;
+}
+.bg-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.42) contrast(1.15) saturate(1.1);
+}
+/* Затемняющий градиент поверх картинки для читаемости */
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 900px 600px at 50% 0%, rgba(255,92,43,.12), transparent 70%),
+    radial-gradient(ellipse 800px 600px at 80% 100%, rgba(162,89,255,.14), transparent 70%),
+    linear-gradient(180deg, rgba(8,5,14,.55) 0%, rgba(8,5,14,.35) 45%, rgba(8,5,14,.8) 100%);
+}
+
 .ambient {
   position: fixed; inset: 0;
   z-index: 0;
@@ -59,20 +89,23 @@ body {
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(140px);
-  opacity: .45;
+  filter: blur(150px);
+  opacity: .32;
   will-change: transform;
+  mix-blend-mode: screen;
 }
 .b1 { width: 640px; height: 640px; background: #ff4d1e; top: -240px; left: -180px; animation: drift1 26s ease-in-out infinite; }
 .b2 { width: 540px; height: 540px; background: #7b2cff; bottom: -200px; right: -140px; animation: drift2 30s ease-in-out infinite; }
-.b3 { width: 480px; height: 480px; background: #ff2e63; top: 42%; left: 40%; opacity: .2; animation: drift3 34s ease-in-out infinite; }
+.b3 { width: 480px; height: 480px; background: #ff2e63; top: 42%; left: 40%; opacity: .15; animation: drift3 34s ease-in-out infinite; }
 
 @keyframes drift1 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(140px,90px) scale(1.15)} }
 @keyframes drift2 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-110px,-80px) scale(1.1)} }
 @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-90px,110px) scale(.9)} }
 
 .grain {
-  position: absolute; inset: 0;
+  position: fixed; inset: 0;
+  z-index: 1;
+  pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: .05;
   mix-blend-mode: overlay;
@@ -242,7 +275,7 @@ body {
   gap: 20px;
   padding: 14px 22px;
   border-radius: 20px;
-  background: rgba(255,255,255,.025);
+  background: rgba(12,8,22,.55);
   border: 1px solid var(--line);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -324,9 +357,11 @@ body {
   background:
     radial-gradient(ellipse 720px 420px at 12% -10%, rgba(255,92,43,.22), transparent 65%),
     radial-gradient(ellipse 620px 420px at 88% 110%, rgba(162,89,255,.18), transparent 65%),
-    rgba(255,255,255,.02);
+    rgba(12,8,22,.5);
   border: 1px solid var(--line);
   overflow: hidden;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .hero::before {
   content: '';
@@ -497,9 +532,11 @@ body {
   position: relative;
   padding: 26px;
   border-radius: 22px;
-  background: linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.012));
+  background: linear-gradient(160deg, rgba(20,12,32,.72), rgba(12,8,22,.66));
   border: 1px solid var(--line);
   overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: all .35s cubic-bezier(.5,0,.2,1);
 }
 .card::after {
@@ -514,9 +551,9 @@ body {
 }
 .card:hover {
   border-color: rgba(255,150,100,.28);
-  background: linear-gradient(160deg, rgba(255,140,90,.08), rgba(255,255,255,.02));
+  background: linear-gradient(160deg, rgba(30,16,42,.78), rgba(16,10,26,.7));
   transform: translateY(-4px);
-  box-shadow: 0 24px 48px rgba(0,0,0,.45), 0 0 0 1px rgba(255,150,100,.12);
+  box-shadow: 0 24px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(255,150,100,.14);
 }
 .card:hover::after { opacity: 1; }
 
@@ -567,8 +604,10 @@ body {
   gap: 16px;
   padding: 18px 24px;
   border-radius: 20px;
-  background: rgba(255,255,255,.02);
+  background: rgba(12,8,22,.55);
   border: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   font-size: .78rem;
   color: var(--text-dim);
   letter-spacing: .06em;
@@ -613,21 +652,31 @@ body {
   .hero-stats { gap: 18px 32px; }
 
   .cards { grid-template-columns: 1fr; }
+
+  /* Параллакс на мобилках отключаем, чтобы не лагало */
+  .bg-image { transition: none; }
 }
 </style>
 </head>
 <body>
 
+  <!-- ФОН: background.jpg + затемняющий оверлей -->
+  <div class="bg-image" id="bgImage">
+    <img src="background.jpg" alt="">
+  </div>
+  <div class="bg-overlay"></div>
+
+  <!-- Атмосфера поверх фона -->
   <div class="ambient">
     <div class="blob b1"></div>
     <div class="blob b2"></div>
     <div class="blob b3"></div>
-    <div class="grain"></div>
   </div>
+  <div class="grain"></div>
   <canvas id="embers"></canvas>
 
   <!-- Аудио: фоновая музыка -->
-  <audio id="bgMusic" src="VipFirestorm Menu.mp3" loop preload="auto"></audio>
+  <audio id="bgMusic" src="VipFirestorm Menu.mp3" loop preload="auto" autoplay playsinline></audio>
 
   <div class="app">
 
@@ -714,7 +763,6 @@ body {
           </div>
           <div class="chip">Firestorm</div>
 
-          <!-- Кнопка переключения музыки -->
           <button class="music-btn" id="musicBtn" title="Включить / выключить музыку" aria-label="Переключить музыку">
             <svg id="musicIconOff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 18V5l12-2v13"/>
@@ -731,7 +779,6 @@ body {
         </div>
       </header>
 
-      <!-- HERO -->
       <section class="hero">
         <span class="hero-eyebrow">Эксклюзивный аддон · Firestorm</span>
         <h1 class="hero-title">
@@ -768,10 +815,8 @@ body {
         </div>
       </section>
 
-      <!-- ПАНЕЛИ -->
       <section class="panels">
 
-        <!-- МОДУЛИ -->
         <div class="panel active" id="panel-features">
           <div class="panel-head">
             <h2>Модули системы</h2>
@@ -801,7 +846,6 @@ body {
           </div>
         </div>
 
-        <!-- ТЕЛЕПОРТ -->
         <div class="panel" id="panel-teleport">
           <div class="panel-head">
             <h2>Система телепортации</h2>
@@ -826,7 +870,6 @@ body {
           </div>
         </div>
 
-        <!-- АВТОМАТИЗАЦИЯ -->
         <div class="panel" id="panel-automation">
           <div class="panel-head">
             <h2>Модули автоматизации</h2>
@@ -851,7 +894,6 @@ body {
           </div>
         </div>
 
-        <!-- КОМАНДЫ -->
         <div class="panel" id="panel-commands">
           <div class="panel-head">
             <h2>Интерфейсные команды</h2>
@@ -933,8 +975,7 @@ body {
     renderCounters();
 
     /* ============================================================
-       ФОНОВАЯ МУЗЫКА (VipFirestorm Menu.mp3)
-       Автоплей с фолбэком на первое взаимодействие пользователя
+       МУЗЫКА — АВТОСТАРТ ПРИ ЗАХОДЕ
        ============================================================ */
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
@@ -955,36 +996,42 @@ body {
       }
     }
 
-    function tryPlay() {
+    function tryPlayWithSound() {
+      bgMusic.muted = false;
       const p = bgMusic.play();
       if (p && typeof p.then === 'function') {
-        p.then(() => updateMusicUI(true)).catch(() => updateMusicUI(false));
+        p.then(() => updateMusicUI(true)).catch(() => tryPlayMuted());
       }
     }
 
-    // Попытка автоплея при загрузке
-    tryPlay();
-
-    // Фолбэк: первый клик/тап/скролл запускает музыку
-    let started = false;
-    function armAutostart() {
-      if (started) return;
-      started = true;
-      if (bgMusic.paused) tryPlay();
-      document.removeEventListener('click', armAutostart);
-      document.removeEventListener('touchstart', armAutostart);
-      document.removeEventListener('keydown', armAutostart);
-      document.removeEventListener('scroll', armAutostart);
+    function tryPlayMuted() {
+      bgMusic.muted = true;
+      const p = bgMusic.play();
+      if (p && typeof p.then === 'function') {
+        p.then(() => updateMusicUI(true)).catch(() => {});
+      }
     }
-    document.addEventListener('click', armAutostart, { once: true });
-    document.addEventListener('touchstart', armAutostart, { once: true });
-    document.addEventListener('keydown', armAutostart, { once: true });
-    document.addEventListener('scroll', armAutostart, { once: true, passive: true });
 
-    // Ручное управление кнопкой
+    tryPlayWithSound();
+
+    let unmuted = false;
+    function unmuteOnce() {
+      if (unmuted) return;
+      unmuted = true;
+      bgMusic.muted = false;
+      if (bgMusic.paused) {
+        bgMusic.play().catch(() => {});
+      }
+      updateMusicUI(!bgMusic.paused);
+    }
+    ['click', 'touchstart', 'keydown', 'scroll', 'mousemove'].forEach(evt => {
+      document.addEventListener(evt, unmuteOnce, { once: true, passive: true });
+    });
+
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       if (bgMusic.paused) {
+        bgMusic.muted = false;
         bgMusic.play().then(() => updateMusicUI(true)).catch(() => {});
       } else {
         bgMusic.pause();
@@ -992,9 +1039,21 @@ body {
       }
     });
 
-    // Синхронизация UI с реальным состоянием аудио
     bgMusic.addEventListener('play', () => updateMusicUI(true));
     bgMusic.addEventListener('pause', () => updateMusicUI(false));
+
+    /* ============================================================
+       ПАРАЛЛАКС ФОНА ОТ МЫШИ
+       ============================================================ */
+    const bgImage = document.getElementById('bgImage');
+    const isTouch = matchMedia('(hover: none)').matches;
+    if (!isTouch) {
+      document.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 24;
+        const y = (e.clientY / window.innerHeight - 0.5) * 24;
+        bgImage.style.transform = `translate(${x}px, ${y}px)`;
+      });
+    }
 
     /* ============================================================
        УГОЛЬКИ
