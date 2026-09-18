@@ -49,7 +49,6 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,140,90,.4); background-clip: content-box; }
 
-/* ============== ФОН ============== */
 .bg-image {
   position: fixed;
   top: -20px;
@@ -79,12 +78,7 @@ body {
     linear-gradient(180deg, rgba(8,5,14,.55) 0%, rgba(8,5,14,.35) 45%, rgba(8,5,14,.8) 100%);
 }
 
-.ambient {
-  position: fixed; inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
+.ambient { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
 .blob {
   position: absolute;
   border-radius: 50%;
@@ -102,21 +96,13 @@ body {
 @keyframes drift3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-90px,110px) scale(.9)} }
 
 .grain {
-  position: fixed; inset: 0;
-  z-index: 1;
-  pointer-events: none;
+  position: fixed; inset: 0; z-index: 1; pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   opacity: .05;
   mix-blend-mode: overlay;
 }
+#embers { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 
-#embers {
-  position: fixed; inset: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-/* ============== СЕТКА ============== */
 .app {
   position: relative;
   z-index: 2;
@@ -127,7 +113,6 @@ body {
   gap: 20px;
 }
 
-/* ============== САЙДБАР ============== */
 .rail {
   position: fixed;
   top: 24px; left: 24px; bottom: 24px;
@@ -145,7 +130,6 @@ body {
   box-shadow: 0 24px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05);
   transition: width .45s cubic-bezier(.5,0,.15,1);
 }
-
 @media (hover: hover) {
   .rail:hover { width: 250px; }
   .rail:hover .nav-lbl,
@@ -181,13 +165,7 @@ body {
   letter-spacing: -.02em;
 }
 
-.nav {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  flex: 1;
-  overflow: hidden;
-}
+.nav { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow: hidden; }
 .nav-item {
   position: relative;
   display: flex;
@@ -206,10 +184,7 @@ body {
   cursor: pointer;
   transition: all .25s;
 }
-.nav-item:hover {
-  background: var(--surface-hi);
-  color: var(--text);
-}
+.nav-item:hover { background: var(--surface-hi); color: var(--text); }
 .nav-item.active {
   background: linear-gradient(135deg, rgba(255,92,43,.18), rgba(255,46,99,.06));
   border-color: rgba(255,140,90,.22);
@@ -224,11 +199,7 @@ body {
   background: linear-gradient(180deg, #ff5c2b, #ffb347);
   box-shadow: 0 0 12px #ff5c2b;
 }
-.nav-ico {
-  width: 28px; height: 28px;
-  flex-shrink: 0;
-  display: grid; place-items: center;
-}
+.nav-ico { width: 28px; height: 28px; flex-shrink: 0; display: grid; place-items: center; }
 .nav-ico svg { width: 19px; height: 19px; }
 .nav-lbl { opacity: 0; transition: opacity .3s .05s; }
 
@@ -258,13 +229,7 @@ body {
   100% { box-shadow: 0 0 0 0 rgba(255,179,71,0); }
 }
 
-/* ============== ОСНОВНАЯ ОБЛАСТЬ ============== */
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  min-width: 0;
-}
+.main { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
 
 .topbar {
   display: flex;
@@ -300,11 +265,7 @@ body {
   font-weight: 500;
   letter-spacing: .02em;
 }
-.chip b {
-  color: #ffb37a;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
+.chip b { color: #ffb37a; font-weight: 600; font-variant-numeric: tabular-nums; }
 .chip svg { color: #ffb37a; flex-shrink: 0; }
 
 .music-btn {
@@ -346,7 +307,6 @@ body {
 }
 .music-btn svg { width: 16px; height: 16px; }
 
-/* HERO */
 .hero {
   position: relative;
   padding: 52px 48px 40px;
@@ -421,12 +381,7 @@ body {
   margin-bottom: 34px;
 }
 
-.hero-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 42px;
-}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 42px; }
 
 .btn {
   display: inline-flex;
@@ -494,10 +449,8 @@ body {
 }
 
 .panels { display: flex; flex-direction: column; gap: 20px; }
-
 .panel { display: none; }
 .panel.active { display: block; animation: fadeUp .55s cubic-bezier(.2,.9,.3,1); }
-
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
@@ -511,18 +464,9 @@ body {
   letter-spacing: -.025em;
   margin-bottom: 10px;
 }
-.panel-head p {
-  color: var(--text-dim);
-  max-width: 680px;
-  line-height: 1.65;
-  font-size: .95rem;
-}
+.panel-head p { color: var(--text-dim); max-width: 680px; line-height: 1.65; font-size: .95rem; }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
 
 .card {
   position: relative;
@@ -552,7 +496,6 @@ body {
   box-shadow: 0 24px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(255,150,100,.14);
 }
 .card:hover::after { opacity: 1; }
-
 .card-ico {
   width: 46px; height: 46px;
   border-radius: 13px;
@@ -575,13 +518,7 @@ body {
   position: relative;
   z-index: 1;
 }
-.card p {
-  color: var(--text-dim);
-  font-size: .88rem;
-  line-height: 1.65;
-  position: relative;
-  z-index: 1;
-}
+.card p { color: var(--text-dim); font-size: .88rem; line-height: 1.65; position: relative; z-index: 1; }
 .card code {
   font-family: 'Sora', monospace;
   background: rgba(255,140,90,.12);
@@ -613,7 +550,6 @@ body {
 
 @media (max-width: 860px) {
   .app { padding: 16px 16px 110px; }
-
   .rail {
     top: auto;
     left: 16px; right: 16px; bottom: 16px;
@@ -624,9 +560,7 @@ body {
     padding: 10px 12px;
     border-radius: 22px;
   }
-  @media (hover: hover) {
-    .rail:hover { width: auto; }
-  }
+  @media (hover: hover) { .rail:hover { width: auto; } }
   .brand { padding: 0 12px 0 0; border-bottom: none; border-right: 1px solid var(--line); margin: 0 8px 0 0; }
   .brand-txt { display: none; }
   .nav { flex-direction: row; flex: 1; justify-content: space-around; gap: 4px; overflow: visible; }
@@ -634,19 +568,15 @@ body {
   .nav-item.active::before { display: none; }
   .nav-lbl { display: none; }
   .rail-foot { display: none; }
-
   .topbar { padding: 12px 16px; gap: 12px; }
   .crumb { font-size: .68rem; }
   .chips { gap: 6px; }
   .chip { padding: 6px 10px; font-size: .7rem; }
-
   .hero { padding: 34px 26px 28px; border-radius: 24px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .btn { justify-content: center; }
   .hero-stats { gap: 18px 32px; }
-
   .cards { grid-template-columns: 1fr; }
-
   .bg-image { transition: none; }
 }
 </style>
@@ -666,7 +596,6 @@ body {
   <div class="grain"></div>
   <canvas id="embers"></canvas>
 
-  <!-- Аудио: фоновая музыка. Стартует без звука сразу, размьючивается при первом действии -->
   <audio id="bgMusic" src="VipFirestorm Menu.mp3" loop preload="auto" playsinline></audio>
 
   <div class="app">
@@ -679,9 +608,7 @@ body {
             <path d="M12 7L17 12L12 17L7 12L12 7Z"/>
           </svg>
         </div>
-        <div class="brand-txt">
-          <strong>VipFirestorm</strong>
-        </div>
+        <div class="brand-txt"><strong>VipFirestorm</strong></div>
       </div>
 
       <nav class="nav">
@@ -812,26 +739,10 @@ body {
             <p>Передовой аддон для максимального комфорта в World of Warcraft Firestorm. Полный контроль над игровыми механиками — от телепортации до лот-контроля.</p>
           </div>
           <div class="cards">
-            <article class="card">
-              <div class="card-ico">◈</div>
-              <h3>Классовый телепорт</h3>
-              <p>Интерфейс мгновенного доступа ко всем ключевым точкам мира под специализацию вашего персонажа.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">✉</div>
-              <h3>Авто-приём ПМ</h3>
-              <p>Интеллектуальная система приёма в группу по ключевым словам в личных сообщениях с фильтрацией спама.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">⟳</div>
-              <h3>FastReparty</h3>
-              <p>Мгновенный перезапуск рейдовых групп одной кнопкой с полным сохранением состава.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">⛁</div>
-              <h3>Лот-контроль</h3>
-              <p>Автоматическая очистка почты, сбор золота и быстрый менеджмент сумок в один клик.</p>
-            </article>
+            <article class="card"><div class="card-ico">◈</div><h3>Классовый телепорт</h3><p>Интерфейс мгновенного доступа ко всем ключевым точкам мира под специализацию вашего персонажа.</p></article>
+            <article class="card"><div class="card-ico">✉</div><h3>Авто-приём ПМ</h3><p>Интеллектуальная система приёма в группу по ключевым словам в личных сообщениях с фильтрацией спама.</p></article>
+            <article class="card"><div class="card-ico">⟳</div><h3>FastReparty</h3><p>Мгновенный перезапуск рейдовых групп одной кнопкой с полным сохранением состава.</p></article>
+            <article class="card"><div class="card-ico">⛁</div><h3>Лот-контроль</h3><p>Автоматическая очистка почты, сбор золота и быстрый менеджмент сумок в один клик.</p></article>
           </div>
         </div>
 
@@ -841,21 +752,9 @@ body {
             <p>Быстрый переход между локациями дополнений. Забудьте про долгое ожидание и поиск порталов в столицах.</p>
           </div>
           <div class="cards">
-            <article class="card">
-              <div class="card-ico">⬢</div>
-              <h3>Штормград / Огриммар</h3>
-              <p>Моментальный прыжок к основным вендорам, аукционам и банковским слотам вашей фракции.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">✦</div>
-              <h3>Актуальные зоны</h3>
-              <p>Прямой доступ к локациям текущего контента Firestorm без промежуточных точек.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">◉</div>
-              <h3>Рейдовые порталы</h3>
-              <p>Быстрое перемещение ко входам рейдов и подземелий актуального сезона.</p>
-            </article>
+            <article class="card"><div class="card-ico">⬢</div><h3>Штормград / Огриммар</h3><p>Моментальный прыжок к основным вендорам, аукционам и банковским слотам вашей фракции.</p></article>
+            <article class="card"><div class="card-ico">✦</div><h3>Актуальные зоны</h3><p>Прямой доступ к локациям текущего контента Firestorm без промежуточных точек.</p></article>
+            <article class="card"><div class="card-ico">◉</div><h3>Рейдовые порталы</h3><p>Быстрое перемещение ко входам рейдов и подземелий актуального сезона.</p></article>
           </div>
         </div>
 
@@ -865,21 +764,9 @@ body {
             <p>Скрипты, ускоряющие рутинные действия в рейдах и подземельях. Настройте один раз — работает каждый день.</p>
           </div>
           <div class="cards">
-            <article class="card">
-              <div class="card-ico">⚡</div>
-              <h3>Авто-приглашение</h3>
-              <p>Активация по фразам <code>+</code> <code>inv</code> <code>инв</code> с настраиваемым списком ключевых слов.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">⟳</div>
-              <h3>Умный ресет</h3>
-              <p>Мгновенный сброс подземелий в пати-моде с автоматическим подтверждением.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">⌘</div>
-              <h3>Менеджер группы</h3>
-              <p>Автоматическое назначение ролей, исключение неактивных игроков и приглашение замен.</p>
-            </article>
+            <article class="card"><div class="card-ico">⚡</div><h3>Авто-приглашение</h3><p>Активация по фразам <code>+</code> <code>inv</code> <code>инв</code> с настраиваемым списком ключевых слов.</p></article>
+            <article class="card"><div class="card-ico">⟳</div><h3>Умный ресет</h3><p>Мгновенный сброс подземелий в пати-моде с автоматическим подтверждением.</p></article>
+            <article class="card"><div class="card-ico">⌘</div><h3>Менеджер группы</h3><p>Автоматическое назначение ролей, исключение неактивных игроков и приглашение замен.</p></article>
           </div>
         </div>
 
@@ -889,21 +776,9 @@ body {
             <p>Список консольных команд для управления аддоном прямо из чата игры. Все команды работают без открытия меню.</p>
           </div>
           <div class="cards">
-            <article class="card">
-              <div class="card-ico">⌘</div>
-              <h3>/vf или /vipf</h3>
-              <p>Открытие главного графического меню телепортации.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">⟳</div>
-              <h3>/freparty</h3>
-              <p>Мгновенное пересоздание рейдовой группы с сохранением состава.</p>
-            </article>
-            <article class="card">
-              <div class="card-ico">⚡</div>
-              <h3>/vfa</h3>
-              <p>Открытие панели автоматизации и фильтров авто-приглашения.</p>
-            </article>
+            <article class="card"><div class="card-ico">⌘</div><h3>/vf или /vipf</h3><p>Открытие главного графического меню телепортации.</p></article>
+            <article class="card"><div class="card-ico">⟳</div><h3>/freparty</h3><p>Мгновенное пересоздание рейдовой группы с сохранением состава.</p></article>
+            <article class="card"><div class="card-ico">⚡</div><h3>/vfa</h3><p>Открытие панели автоматизации и фильтров авто-приглашения.</p></article>
           </div>
         </div>
 
@@ -924,7 +799,6 @@ body {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       const target = document.getElementById('panel-' + id);
       if (target) target.classList.add('active');
-
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
       if (el && el.classList) el.classList.add('active');
     }
@@ -942,9 +816,7 @@ body {
     }
     function renderCounters() {
       const pretty = getDownloadCount().toLocaleString('ru-RU');
-      document.querySelectorAll('[data-count]').forEach(el => {
-        el.textContent = pretty;
-      });
+      document.querySelectorAll('[data-count]').forEach(el => { el.textContent = pretty; });
     }
     function registerDownload() {
       if (!localStorage.getItem(KEY_DONE)) {
@@ -960,128 +832,155 @@ body {
     renderCounters();
 
     /* ============================================================
-       МУЗЫКА
+       МУЗЫКА — ИСПРАВЛЕННАЯ ЛОГИКА
        ------------------------------------------------------------
-       1) Сразу при загрузке: ставим muted=true и вызываем play().
-          Это РАЗРЕШЕНО всеми браузерами → трек играет с 0-й секунды.
-       2) При ПЕРВОМ действии пользователя (клик, движение мыши,
-          тап, клавиша, скролл, колесо) — снимаем muted.
-          Даже движение мыши в большинстве браузеров трактуется
-          как "user gesture" — звук включится сам без клика.
-       3) После размьюта отписываемся от всех событий.
+       ВАЖНО: раньше в списке "разблокирующих" событий были
+       mousemove и pointermove. Они срабатывают сразу при наведении
+       мыши — НО браузер их НЕ считает "жестом пользователя".
+       Функция unlock вызывалась вхолостую, ставила флаг и больше
+       не пыталась включить звук. Убрал их — теперь только
+       НАСТОЯЩИЕ user-gesture события.
        ============================================================ */
     const bgMusic = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
-    const musicIconOn = document.getElementById('musicIconOn');
-    const musicIconOff = document.getElementById('musicIconOff');
+    const iconOn = document.getElementById('musicIconOn');
+    const iconOff = document.getElementById('musicIconOff');
 
     bgMusic.volume = 0.5;
 
-    function updateMusicUI(isPlaying) {
+    bgMusic.addEventListener('error', () => {
+      console.error('[Music] Ошибка загрузки файла. Проверь имя и расположение VipFirestorm Menu.mp3', bgMusic.error);
+    });
+    bgMusic.addEventListener('loadedmetadata', () => {
+      console.log('[Music] Файл OK. Длительность:', bgMusic.duration.toFixed(1), 'сек');
+    });
+
+    function setPlayingIcon(isPlaying) {
       if (isPlaying) {
         musicBtn.classList.add('playing');
-        musicIconOn.style.display = '';
-        musicIconOff.style.display = 'none';
+        iconOn.style.display = '';
+        iconOff.style.display = 'none';
       } else {
         musicBtn.classList.remove('playing');
-        musicIconOn.style.display = 'none';
-        musicIconOff.style.display = '';
+        iconOn.style.display = 'none';
+        iconOff.style.display = '';
       }
     }
 
-    // 1) Стартуем сразу — без звука
-    bgMusic.muted = true;
-    const startPromise = bgMusic.play();
-    if (startPromise && typeof startPromise.then === 'function') {
-      startPromise.then(() => {
-        updateMusicUI(true);
-        // Пробуем сразу со звуком (сработает, если браузер уже разрешает)
-        attemptUnmute();
-      }).catch(() => {
-        // Если play() отклонён — попробуем по loadeddata
-        bgMusic.addEventListener('loadeddata', () => {
-          bgMusic.play().then(() => {
-            updateMusicUI(true);
-            attemptUnmute();
-          }).catch(() => {});
-        }, { once: true });
-      });
-    }
+    // Флаг: уже разблокировали звук
+    let soundUnlocked = false;
 
-    // Пытаемся снять mute прямо сейчас (вдруг политика лояльна)
-    function attemptUnmute() {
+    // ---- Устанавливаем обработчики на НАСТОЯЩИЕ жесты ----
+    const GESTURE_EVENTS = ['pointerdown', 'mousedown', 'click', 'keydown', 'touchstart', 'touchend'];
+
+    function handleGesture() {
+      if (soundUnlocked) return;
+      soundUnlocked = true;
+
+      // Снимаем mute и гарантируем воспроизведение
       bgMusic.muted = false;
-      // Если браузер отклонил — он поставит трек на паузу.
-      // Проверяем через 100мс и откатываемся на muted-play.
-      setTimeout(() => {
-        if (bgMusic.paused) {
-          bgMusic.muted = true;
-          bgMusic.play().catch(() => {});
-        }
-      }, 100);
-    }
 
-    // 2) Размьютим при первом действии пользователя (любом)
-    let unlocked = false;
-    function unlockAudio() {
-      if (unlocked) return;
-      unlocked = true;
-
-      bgMusic.muted = false;
-      // Если браузер уже поставил на паузу — перезапускаем
       if (bgMusic.paused) {
-        bgMusic.play().catch(() => {});
+        bgMusic.play().then(() => {
+          setPlayingIcon(true);
+          console.log('[Music] ▶ Играет со звуком');
+        }).catch(err => {
+          console.warn('[Music] Не удалось запустить:', err.message);
+        });
       } else {
-        // На некоторых движках нужно дёрнуть play(), чтобы применился muted=false
+        console.log('[Music] 🔊 Звук разблокирован');
+        // Иногда нужно дёрнуть play(), чтобы браузер применил unmuted
         const p = bgMusic.play();
         if (p && p.catch) p.catch(() => {});
+        setPlayingIcon(true);
       }
-      updateMusicUI(true);
 
-      // Снимаем все слушатели
-      UNLOCK_EVENTS.forEach(evt => {
-        document.removeEventListener(evt, unlockAudio, true);
-        window.removeEventListener(evt, unlockAudio, true);
+      // Отписываемся
+      GESTURE_EVENTS.forEach(evt => {
+        document.removeEventListener(evt, handleGesture, true);
+        window.removeEventListener(evt, handleGesture, true);
       });
     }
 
-    const UNLOCK_EVENTS = [
-      'pointerdown', 'mousedown', 'click',
-      'touchstart', 'touchend',
-      'keydown',
-      'scroll', 'wheel',
-      'mousemove', 'pointermove'
-    ];
-    UNLOCK_EVENTS.forEach(evt => {
-      document.addEventListener(evt, unlockAudio, { capture: true, passive: true });
-      window.addEventListener(evt, unlockAudio, { capture: true, passive: true });
+    GESTURE_EVENTS.forEach(evt => {
+      document.addEventListener(evt, handleGesture, { capture: true });
+      window.addEventListener(evt, handleGesture, { capture: true });
     });
 
-    // Кнопка в топбаре — вкл/выкл вручную
+    // ---- Стартовая попытка ----
+    // 1) Пробуем со звуком сразу (сработает, если браузер уже доверяет сайту)
+    bgMusic.muted = false;
+    const initialPlay = bgMusic.play();
+
+    if (initialPlay && typeof initialPlay.then === 'function') {
+      initialPlay.then(() => {
+        setPlayingIcon(true);
+        soundUnlocked = true; // уже со звуком — разблокировка не нужна
+        console.log('[Music] ▶ Играет со звуком сразу');
+      }).catch(() => {
+        // 2) Не разрешил — стартуем БЕЗ звука
+        bgMusic.muted = true;
+        bgMusic.play().then(() => {
+          setPlayingIcon(true);
+          console.log('[Music] 🔇 Играет без звука. Включится при первом клике/клавише/тапе.');
+        }).catch(err => {
+          setPlayingIcon(false);
+          console.warn('[Music] Автоплей полностью заблокирован:', err.message);
+        });
+      });
+    }
+
+    // ---- Кнопка в топбаре ----
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (bgMusic.paused || bgMusic.muted) {
-        unlocked = true;
+
+      // Если muted и играет — размьютим
+      if (bgMusic.muted && !bgMusic.paused) {
         bgMusic.muted = false;
-        bgMusic.play().then(() => updateMusicUI(true)).catch(() => {});
-      } else {
-        bgMusic.pause();
-        updateMusicUI(false);
+        soundUnlocked = true;
+        const p = bgMusic.play();
+        if (p && p.catch) p.catch(() => {});
+        setPlayingIcon(true);
+        console.log('[Music] 🔊 Размьючено по клику');
+        return;
       }
+
+      // Если на паузе — запускаем
+      if (bgMusic.paused) {
+        bgMusic.muted = false;
+        soundUnlocked = true;
+        bgMusic.play().then(() => {
+          setPlayingIcon(true);
+        }).catch(() => {});
+        return;
+      }
+
+      // Иначе — пауза
+      bgMusic.pause();
+      setPlayingIcon(false);
     });
 
-    bgMusic.addEventListener('play', () => updateMusicUI(true));
-    bgMusic.addEventListener('pause', () => updateMusicUI(false));
+    bgMusic.addEventListener('play', () => setPlayingIcon(true));
+    bgMusic.addEventListener('pause', () => setPlayingIcon(false));
 
-    // Если пользователь свернул вкладку и вернулся — продолжаем
+    // Возврат к вкладке
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && bgMusic.paused && !unlocked) {
+      if (!document.hidden && bgMusic.paused && !soundUnlocked) {
         bgMusic.play().catch(() => {});
       }
     });
 
+    // Диагностика: если через 1.5 сек currentTime всё ещё 0 — файл не играет
+    setTimeout(() => {
+      if (bgMusic.currentTime === 0 && !bgMusic.paused) {
+        console.warn('[Music] currentTime = 0 через 1.5 сек. Возможно, файл не найден или не декодируется. Проверь Network-вкладку.');
+      } else {
+        console.log('[Music] Позиция трека:', bgMusic.currentTime.toFixed(2), 'сек');
+      }
+    }, 1500);
+
     /* ============================================================
-       ПАРАЛЛАКС ФОНА
+       ПАРАЛЛАКС
        ============================================================ */
     const bgImage = document.getElementById('bgImage');
     const isTouch = matchMedia('(hover: none)').matches;
@@ -1099,11 +998,7 @@ body {
     const canvas = document.getElementById('embers');
     const ctx = canvas.getContext('2d');
     let W = 0, H = 0;
-
-    function resize() {
-      W = canvas.width = window.innerWidth;
-      H = canvas.height = window.innerHeight;
-    }
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
     resize();
     window.addEventListener('resize', resize);
 
@@ -1119,7 +1014,6 @@ body {
         flick: Math.random() * Math.PI * 2
       };
     }
-
     const embers = [];
     const COUNT = Math.min(70, Math.floor(window.innerWidth / 22));
     for (let i = 0; i < COUNT; i++) embers.push(spawnEmber(false));
@@ -1127,26 +1021,19 @@ body {
     function draw() {
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'lighter';
-
       for (const e of embers) {
         e.flick += 0.05;
         const a = e.alpha * (0.65 + 0.35 * Math.sin(e.flick));
-
         const grd = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.r * 6);
         grd.addColorStop(0, `hsla(${e.hue}, 100%, 68%, ${a})`);
         grd.addColorStop(1, `hsla(${e.hue}, 100%, 50%, 0)`);
         ctx.fillStyle = grd;
-
         ctx.beginPath();
         ctx.arc(e.x, e.y, e.r * 6, 0, Math.PI * 2);
         ctx.fill();
-
         e.x += e.vx;
         e.y += e.vy;
-
-        if (e.y < -20 || e.x < -30 || e.x > W + 30) {
-          Object.assign(e, spawnEmber(true));
-        }
+        if (e.y < -20 || e.x < -30 || e.x > W + 30) Object.assign(e, spawnEmber(true));
       }
       requestAnimationFrame(draw);
     }
