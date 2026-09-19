@@ -76,7 +76,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .chip-cloud.offline { background: rgba(255,255,255,.04); }
 .chip-cloud.error { background: rgba(255,46,99,.1); border-color: rgba(255,46,99,.4); color: #ffb0c7; }
 
-/* === MESSAGE CHIP === */
 .chip-msg { position: relative; cursor: pointer; transition: all .25s; font-family: inherit; }
 .chip-msg:hover { background: rgba(255,140,90,.12); border-color: rgba(255,140,90,.4); color: #ffb37a; transform: translateY(-1px); }
 .chip-msg.has-unread { border-color: rgba(255,92,43,.5); background: linear-gradient(135deg, rgba(255,92,43,.14), rgba(255,46,99,.06)); color: #ffc7a3; }
@@ -84,7 +83,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .chip-msg.has-unread b { color: #fff; }
 .pm-badge { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 100px; background: linear-gradient(135deg, #ff2e63, #b8003e); color: #fff; font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: .58rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(255,46,99,.5); border: 2px solid #0a050e; animation: pulse 2s infinite; line-height: 1; }
 
-/* === PM INBOX === */
 .pm-inbox-list { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
 .pm-inbox-empty { padding: 40px 20px; text-align: center; border: 1px dashed rgba(255,255,255,.12); border-radius: 16px; color: var(--text-mute); font-size: .85rem; line-height: 1.6; }
 .pm-inbox-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); cursor: pointer; transition: all .2s; font: inherit; color: inherit; text-align: left; width: 100%; }
@@ -149,28 +147,10 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .video-label { display: inline-flex; align-items: center; gap: 10px; padding: 8px 16px; border-radius: 100px; background: rgba(255,140,90,.08); border: 1px solid rgba(255,140,90,.25); font-size: .74rem; color: #ffb37a; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 18px; font-family: 'Unbounded', sans-serif; }
 .video-label::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); box-shadow: 0 0 10px #ff5c2b; animation: pulse 2s infinite; }
 
-.video-frame {
-  position: relative;
-  border-radius: 22px;
-  padding: 10px;
-  background: linear-gradient(160deg, rgba(255,140,90,.14), rgba(162,89,255,.1));
-  border: 1px solid rgba(255,140,90,.4);
-  transition: all .35s;
-  animation: videoGlow 4s ease-in-out infinite;
-}
-.video-frame:hover {
-  border-color: rgba(255,140,90,.65);
-  transform: translateY(-2px);
-  animation: videoGlowHover 2.5s ease-in-out infinite;
-}
-@keyframes videoGlow {
-  0%, 100% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 45px rgba(255,92,43,.32), 0 0 90px rgba(255,92,43,.16); }
-  50% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 70px rgba(255,140,60,.55), 0 0 140px rgba(255,92,43,.3); }
-}
-@keyframes videoGlowHover {
-  0%, 100% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 60px rgba(255,140,60,.55), 0 0 130px rgba(255,92,43,.28); }
-  50% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 100px rgba(255,179,71,.75), 0 0 180px rgba(255,92,43,.4); }
-}
+.video-frame { position: relative; border-radius: 22px; padding: 10px; background: linear-gradient(160deg, rgba(255,140,90,.14), rgba(162,89,255,.1)); border: 1px solid rgba(255,140,90,.4); transition: all .35s; animation: videoGlow 4s ease-in-out infinite; }
+.video-frame:hover { border-color: rgba(255,140,90,.65); transform: translateY(-2px); animation: videoGlowHover 2.5s ease-in-out infinite; }
+@keyframes videoGlow { 0%, 100% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 45px rgba(255,92,43,.32), 0 0 90px rgba(255,92,43,.16); } 50% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 70px rgba(255,140,60,.55), 0 0 140px rgba(255,92,43,.3); } }
+@keyframes videoGlowHover { 0%, 100% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 60px rgba(255,140,60,.55), 0 0 130px rgba(255,92,43,.28); } 50% { box-shadow: 0 30px 60px rgba(0,0,0,.55), 0 0 100px rgba(255,179,71,.75), 0 0 180px rgba(255,92,43,.4); } }
 .video-embed { position: relative; aspect-ratio: 16 / 9; width: 100%; border-radius: 14px; overflow: hidden; background: #000; z-index: 1; }
 .video-embed #ytPlayer, .video-embed iframe { position: absolute; inset: 0; width: 100% !important; height: 100% !important; border: 0; display: block; }
 
@@ -191,66 +171,22 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 
 .updates-shell { display: flex; flex-direction: column; gap: 16px; }
 .updates-actions { display: flex; justify-content: flex-end; }
-.upd-add-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 22px; border-radius: 100px;
-  background: linear-gradient(135deg, #ffb347, #ff9500);
-  color: #1a0a05; font: inherit; font-family: 'Unbounded', sans-serif;
-  font-weight: 700; font-size: .78rem; letter-spacing: .05em;
-  text-transform: uppercase; white-space: nowrap;
-  border: 1px solid #ffb37a; cursor: pointer;
-  box-shadow: 0 10px 26px rgba(255,179,71,.4);
-  transition: all .25s;
-}
+.upd-add-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 100px; background: linear-gradient(135deg, #ffb347, #ff9500); color: #1a0a05; font: inherit; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; border: 1px solid #ffb37a; cursor: pointer; box-shadow: 0 10px 26px rgba(255,179,71,.4); transition: all .25s; }
 .upd-add-btn:hover { transform: translateY(-2px); box-shadow: 0 16px 38px rgba(255,179,71,.6); }
 
 .updates-list { display: flex; flex-direction: column; gap: 16px; }
-.upd-card {
-  position: relative; padding: 26px 30px;
-  border-radius: 22px;
-  background: linear-gradient(160deg, rgba(20,12,32,.72), rgba(12,8,22,.66));
-  border: 1px solid var(--line);
-  backdrop-filter: blur(12px);
-  transition: all .3s;
-  animation: fadeUp .4s ease both;
-}
+.upd-card { position: relative; padding: 26px 30px; border-radius: 22px; background: linear-gradient(160deg, rgba(20,12,32,.72), rgba(12,8,22,.66)); border: 1px solid var(--line); backdrop-filter: blur(12px); transition: all .3s; animation: fadeUp .4s ease both; }
 .upd-card:hover { border-color: rgba(255,180,110,.35); box-shadow: 0 16px 40px rgba(0,0,0,.4); }
 .upd-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
-.upd-card-title {
-  font-family: 'Unbounded', sans-serif; font-size: 1.15rem; font-weight: 700;
-  color: var(--text); line-height: 1.3; word-break: break-word; flex: 1; min-width: 0;
-}
+.upd-card-title { font-family: 'Unbounded', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--text); line-height: 1.3; word-break: break-word; flex: 1; min-width: 0; }
 .upd-card-title .upd-hash { color: #ffb37a; margin-right: 6px; }
-.upd-card-meta {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  font-size: .72rem; color: var(--text-mute); letter-spacing: .06em;
-  font-family: 'Unbounded', sans-serif; font-weight: 600;
-  margin-bottom: 14px;
-}
+.upd-card-meta { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: .72rem; color: var(--text-mute); letter-spacing: .06em; font-family: 'Unbounded', sans-serif; font-weight: 600; margin-bottom: 14px; }
 .upd-author-row { display: inline-flex; align-items: center; gap: 8px; }
-.upd-author-avatar {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: linear-gradient(135deg, #ff5c2b, #ffb347);
-  display: grid; place-items: center;
-  color: #1a0a05; font-weight: 800; font-size: .72rem;
-  overflow: hidden; flex-shrink: 0;
-  border: 2px solid rgba(255,179,71,.4);
-  box-shadow: 0 0 12px rgba(255,179,71,.35);
-  font-family: 'Unbounded', sans-serif;
-}
+.upd-author-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; color: #1a0a05; font-weight: 800; font-size: .72rem; overflow: hidden; flex-shrink: 0; border: 2px solid rgba(255,179,71,.4); box-shadow: 0 0 12px rgba(255,179,71,.35); font-family: 'Unbounded', sans-serif; }
 .upd-author-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.upd-author-row .upd-author {
-  color: #ffb347; font-size: .78rem; letter-spacing: .04em;
-  font-family: 'Unbounded', sans-serif; font-weight: 700;
-}
+.upd-author-row .upd-author { color: #ffb347; font-size: .78rem; letter-spacing: .04em; font-family: 'Unbounded', sans-serif; font-weight: 700; }
 .upd-card-actions { display: flex; gap: 8px; flex-shrink: 0; }
-.upd-btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-  padding: 6px 12px; border-radius: 9px;
-  font: inherit; font-family: 'Sora', sans-serif; font-size: .74rem; font-weight: 700;
-  cursor: pointer; transition: all .2s; border: 1px solid transparent;
-  white-space: nowrap;
-}
+.upd-btn { display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 6px 12px; border-radius: 9px; font: inherit; font-family: 'Sora', sans-serif; font-size: .74rem; font-weight: 700; cursor: pointer; transition: all .2s; border: 1px solid transparent; white-space: nowrap; }
 .upd-btn-edit { border-color: rgba(255,179,71,.4); background: rgba(255,179,71,.1); color: #ffb347; }
 .upd-btn-edit:hover { background: rgba(255,179,71,.25); }
 .upd-btn-del { border-color: rgba(255,46,99,.4); background: rgba(255,46,99,.1); color: #ffb0c7; }
@@ -278,62 +214,23 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .updates-empty b { display: block; font-family: 'Unbounded', sans-serif; font-size: 1.05rem; color: var(--text-dim); margin-bottom: 8px; }
 
 .update-editor-modal { max-width: 820px; }
-.update-editor-title-input {
-  width: 100%; padding: 13px 16px;
-  background: rgba(8,4,16,.6); border: 1px solid rgba(255,255,255,.09);
-  border-radius: 12px; color: var(--text); font: inherit;
-  font-size: 1rem; font-weight: 700; outline: none;
-  font-family: 'Unbounded', sans-serif;
-  margin-bottom: 14px;
-}
+.update-editor-title-input { width: 100%; padding: 13px 16px; background: rgba(8,4,16,.6); border: 1px solid rgba(255,255,255,.09); border-radius: 12px; color: var(--text); font: inherit; font-size: 1rem; font-weight: 700; outline: none; font-family: 'Unbounded', sans-serif; margin-bottom: 14px; }
 .update-editor-title-input:focus { border-color: rgba(255,140,90,.5); background: rgba(8,4,16,.85); box-shadow: 0 0 0 3px rgba(255,92,43,.12); }
 
-.content-toolbar {
-  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
-  padding: 10px 12px; border-radius: 14px;
-  background: linear-gradient(160deg, rgba(30,18,45,.85), rgba(14,8,22,.85));
-  border: 1px solid rgba(255,179,71,.3);
-  margin-bottom: 12px;
-}
+.content-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; background: linear-gradient(160deg, rgba(30,18,45,.85), rgba(14,8,22,.85)); border: 1px solid rgba(255,179,71,.3); margin-bottom: 12px; }
 .ct-group { display: inline-flex; align-items: center; gap: 4px; padding: 3px; border-radius: 10px; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.05); }
-.ct-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  min-width: 32px; height: 32px; padding: 0 8px;
-  border-radius: 8px; border: 1px solid transparent;
-  background: transparent; color: var(--text-dim);
-  font: inherit; font-family: 'Sora', sans-serif; font-size: .9rem;
-  font-weight: 700; cursor: pointer; transition: all .18s;
-}
+.ct-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 32px; padding: 0 8px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--text-dim); font: inherit; font-family: 'Sora', sans-serif; font-size: .9rem; font-weight: 700; cursor: pointer; transition: all .18s; }
 .ct-btn:hover { background: rgba(255,179,71,.15); color: #ffb347; border-color: rgba(255,179,71,.35); }
 .ct-btn.active { background: linear-gradient(135deg, rgba(255,179,71,.3), rgba(255,140,0,.2)); color: #ffb347; border-color: rgba(255,179,71,.5); }
-.ct-select {
-  height: 32px; padding: 0 8px; border-radius: 8px;
-  border: 1px solid transparent; background: transparent;
-  color: var(--text-dim); font: inherit; font-size: .8rem;
-  font-family: 'Sora', sans-serif; cursor: pointer; outline: none;
-}
+.ct-select { height: 32px; padding: 0 8px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--text-dim); font: inherit; font-size: .8rem; font-family: 'Sora', sans-serif; cursor: pointer; outline: none; }
 .ct-select:hover { background: rgba(255,179,71,.12); color: #ffb347; }
 .ct-select option { background: #1a0f28; color: var(--text); }
-.ct-color-wrap {
-  position: relative; display: inline-flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px; border-radius: 8px;
-  border: 1px solid rgba(255,179,71,.3);
-  background: rgba(255,179,71,.1); cursor: pointer;
-  transition: all .18s; overflow: hidden;
-}
+.ct-color-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; border: 1px solid rgba(255,179,71,.3); background: rgba(255,179,71,.1); cursor: pointer; transition: all .18s; overflow: hidden; }
 .ct-color-wrap:hover { background: rgba(255,179,71,.25); }
 .ct-color-wrap span { font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: .9rem; color: #ffb347; pointer-events: none; }
 .ct-color-wrap input[type="color"] { position: absolute; inset: -4px; opacity: 0; cursor: pointer; border: none; }
 
-.update-editor-body {
-  min-height: 240px; max-height: 45vh; overflow-y: auto;
-  padding: 20px 22px;
-  border-radius: 14px;
-  background: linear-gradient(160deg, rgba(20,12,32,.7), rgba(12,8,22,.6));
-  border: 1px solid rgba(255,179,71,.3);
-  color: var(--text-dim); line-height: 1.75; font-size: .95rem;
-  outline: none; transition: all .25s;
-}
+.update-editor-body { min-height: 240px; max-height: 45vh; overflow-y: auto; padding: 20px 22px; border-radius: 14px; background: linear-gradient(160deg, rgba(20,12,32,.7), rgba(12,8,22,.6)); border: 1px solid rgba(255,179,71,.3); color: var(--text-dim); line-height: 1.75; font-size: .95rem; outline: none; transition: all .25s; }
 .update-editor-body:focus { border-color: rgba(255,179,71,.7); box-shadow: 0 0 0 3px rgba(255,179,71,.12); }
 .update-editor-body h1, .update-editor-body h2, .update-editor-body h3, .update-editor-body h4 { font-family: 'Unbounded', sans-serif; color: var(--text); margin: 16px 0 8px; line-height: 1.25; }
 .update-editor-body h1 { font-size: 1.35rem; font-weight: 700; }
@@ -422,7 +319,8 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .modal-msg.err { background: rgba(255,46,99,.1); color: #ffb0c7; }
 
 .profile-avatar-row { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 26px; }
-.profile-avatar { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; color: #1a0a05; font-weight: 800; font-size: 2.4rem; overflow: hidden; border: 3px solid rgba(255,140,90,.4); font-family: 'Unbounded', sans-serif; }
+.profile-avatar { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; color: #1a0a05; font-weight: 800; font-size: 2.4rem; overflow: hidden; border: 3px solid rgba(255,140,90,.4); font-family: 'Unbounded', sans-serif; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+.profile-avatar:hover { transform: scale(1.05); box-shadow: 0 0 0 4px rgba(255,140,90,.15), 0 12px 30px rgba(255,92,43,.35); }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .profile-avatar-actions { display: flex; gap: 10px; }
 .av-btn { padding: 9px 16px; border-radius: 10px; font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer; border: 1px solid rgba(255,140,90,.3); background: rgba(255,140,90,.08); color: #ffb37a; transition: all .22s; }
@@ -538,9 +436,9 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(24px); padding: 12px 24px; border-radius: 14px; background: linear-gradient(135deg, #ffb347, #ff9500); color: #1a0a05; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .82rem; box-shadow: 0 16px 44px rgba(255,179,71,.55); opacity: 0; pointer-events: none; transition: all .35s cubic-bezier(.2,.8,.3,1); z-index: 99999; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* === USER PROFILE MODAL === */
 .user-profile-head { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 20px; }
-.user-profile-avatar { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; color: #1a0a05; font-weight: 800; font-size: 2rem; overflow: hidden; border: 3px solid rgba(255,140,90,.4); font-family: 'Unbounded', sans-serif; }
+.user-profile-avatar { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; color: #1a0a05; font-weight: 800; font-size: 2rem; overflow: hidden; border: 3px solid rgba(255,140,90,.4); font-family: 'Unbounded', sans-serif; cursor: pointer; transition: transform .2s, box-shadow .2s; }
+.user-profile-avatar:hover { transform: scale(1.05); box-shadow: 0 0 0 4px rgba(255,140,90,.15), 0 12px 30px rgba(255,92,43,.35); }
 .user-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .user-profile-name { font-family: 'Unbounded', sans-serif; font-size: 1.15rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .user-profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
@@ -557,7 +455,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .up-action.delete:hover { background: rgba(255,46,99,.35); color: #fff; }
 .profile-note { font-size: .68rem; color: var(--text-mute); margin-top: 6px; text-align: center; line-height: 1.5; }
 
-/* === PERSONAL MESSAGES === */
 .pm-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.08); }
 .pm-section-title { font-family: 'Unbounded', sans-serif; font-size: .72rem; font-weight: 700; color: #ffb347; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; text-align: center; }
 .pm-box { display: flex; flex-direction: column; height: 260px; border-radius: 14px; overflow: hidden; background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.07); }
@@ -570,7 +467,6 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .pm-locked { padding: 16px; text-align: center; font-size: .8rem; color: var(--text-mute); }
 .pm-locked a { color: #ffb37a; cursor: pointer; text-decoration: underline; }
 
-/* === RENAME OVERLAY === */
 .rename-overlay { position: fixed; inset: 0; z-index: 99999; background: radial-gradient(ellipse 800px 600px at 50% 40%, rgba(255,179,71,.2), transparent 65%), linear-gradient(180deg, #0a050e, #1a1004); display: none; align-items: center; justify-content: center; padding: 24px; }
 .rename-overlay.show { display: flex; animation: fadeUp .5s; }
 .rename-card { max-width: 520px; width: 100%; padding: 44px 40px; border-radius: 28px; background: radial-gradient(ellipse at top, rgba(255,179,71,.16), transparent 60%), linear-gradient(160deg, rgba(38,22,10,.96), rgba(20,10,6,.96)); border: 1px solid rgba(255,179,71,.5); box-shadow: 0 40px 90px rgba(0,0,0,.75); text-align: center; }
@@ -580,14 +476,12 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .rename-sub { color: var(--text-dim); font-size: .92rem; line-height: 1.65; margin-bottom: 22px; }
 .rename-reason { margin-bottom: 20px; padding: 12px 16px; border-radius: 12px; background: rgba(255,46,99,.1); border: 1px solid rgba(255,46,99,.28); color: #ffb0c7; font-size: .85rem; text-align: left; }
 
-/* === CLICKABLE AVATARS / NAMES === */
 .chat-msg-avatar[data-uid], .chat-msg-name[data-uid],
 .review-avatar[data-uid], .review-name[data-uid],
 .upd-author-avatar[data-uid], .upd-author[data-uid] { cursor: pointer; transition: transform .2s; }
 .chat-msg-avatar[data-uid]:hover, .review-avatar[data-uid]:hover, .upd-author-avatar[data-uid]:hover { transform: scale(1.08); }
 .chat-msg-name[data-uid]:hover, .review-name[data-uid]:hover { text-decoration: underline; }
 
-/* === AVATAR EDITOR === */
 .av-editor-stage { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 320px; margin: 0 auto 20px; border-radius: 18px; overflow: hidden; background: #000; cursor: grab; touch-action: none; border: 2px solid rgba(255,140,90,.4); box-shadow: 0 12px 34px rgba(0,0,0,.5); }
 .av-editor-stage:active { cursor: grabbing; }
 .av-editor-stage canvas { display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
@@ -607,6 +501,34 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .av-editor-btn.save:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,92,43,.5); }
 .av-editor-reset { grid-column: 1 / -1; padding: 10px 16px; border-radius: 10px; font: inherit; font-family: 'Sora', sans-serif; font-weight: 700; font-size: .74rem; cursor: pointer; transition: all .2s; border: 1px solid rgba(255,179,71,.3); background: rgba(255,179,71,.08); color: #ffb347; }
 .av-editor-reset:hover { background: rgba(255,179,71,.2); }
+
+.avatar-view-overlay { position: fixed; inset: 0; z-index: 999999; background: rgba(4,2,8,.94); backdrop-filter: blur(16px); display: none; align-items: center; justify-content: center; padding: 40px; }
+.avatar-view-overlay.show { display: flex; animation: fadeUp .3s; }
+.avatar-view-img { max-width: 88vw; max-height: 82vh; border-radius: 20px; box-shadow: 0 40px 100px rgba(0,0,0,.9), 0 0 80px rgba(255,92,43,.25); border: 2px solid rgba(255,140,90,.4); display: block; object-fit: contain; background: #000; animation: fadeUp .4s; }
+.avatar-view-close { position: absolute; top: 24px; right: 24px; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.08); color: #fff; cursor: pointer; display: grid; place-items: center; font-size: 1.6rem; line-height: 1; transition: all .25s; backdrop-filter: blur(20px); z-index: 2; }
+.avatar-view-close:hover { background: linear-gradient(135deg, rgba(255,46,99,.55), rgba(184,0,62,.55)); border-color: rgba(255,46,99,.6); transform: rotate(90deg) scale(1.08); }
+.avatar-view-caption { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); padding: 10px 22px; border-radius: 100px; background: rgba(0,0,0,.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,140,90,.3); color: #ffb37a; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .8rem; letter-spacing: .05em; display: inline-flex; align-items: center; gap: 8px; max-width: 80vw; }
+.avatar-view-caption span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.avatar-view-hint { position: absolute; top: 28px; left: 28px; font-size: .68rem; color: var(--text-mute); font-family: 'Unbounded', sans-serif; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.avatar-view-empty { padding: 60px 40px; text-align: center; color: var(--text-mute); font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .9rem; }
+
+/* === HTML EDITOR === */
+.html-editor-modal { max-width: 1200px; width: 96vw; }
+.html-editor-info { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; padding: 10px 14px; margin-bottom: 12px; border-radius: 10px; background: rgba(255,179,71,.08); border: 1px solid rgba(255,179,71,.25); font-size: .78rem; color: #ffb347; }
+.html-editor-info span:first-child { color: #ffb0c7; }
+.html-editor-ta { width: 100%; min-height: 55vh; max-height: 65vh; padding: 16px; background: #0a0514; border: 1px solid rgba(255,179,71,.3); border-radius: 12px; color: #ffd7b5; font-family: 'Consolas','Monaco','Courier New',monospace; font-size: .78rem; line-height: 1.55; outline: none; resize: vertical; white-space: pre; overflow: auto; tab-size: 2; }
+.html-editor-ta:focus { border-color: rgba(255,179,71,.7); box-shadow: 0 0 0 3px rgba(255,179,71,.12); }
+.html-editor-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+.html-editor-actions button { padding: 13px 14px; border-radius: 11px; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .74rem; cursor: pointer; border: 1px solid; transition: all .22s; letter-spacing: .02em; }
+.html-editor-save { background: linear-gradient(135deg,#ff5c2b,#ff9500); color: #1a0a05; border-color: #ffb37a; }
+.html-editor-save:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,92,43,.5); }
+.html-editor-preview { background: rgba(255,179,71,.12); color: #ffb347; border-color: rgba(255,179,71,.4); }
+.html-editor-preview:hover { background: rgba(255,179,71,.25); }
+.html-editor-reset { background: rgba(255,46,99,.1); color: #ffb0c7; border-color: rgba(255,46,99,.4); }
+.html-editor-reset:hover { background: rgba(255,46,99,.25); color: #fff; }
+.html-editor-reload { background: rgba(99,179,255,.12); color: #8bc4ff; border-color: rgba(99,179,255,.4); grid-column: 1 / -1; }
+.html-editor-reload:hover { background: rgba(99,179,255,.25); }
+.html-editor-tag { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border-radius: 100px; background: rgba(74,222,128,.14); border: 1px solid rgba(74,222,128,.4); color: #a5f3c0; font-size: .68rem; font-family: 'Unbounded', sans-serif; font-weight: 700; letter-spacing: .06em; }
 
 @media (max-width: 1180px) { .hero-inner { gap: 36px; } .reviews-layout { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); } }
 @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } .reviews-layout { grid-template-columns: 1fr; } .review-form-card { position: static; } }
@@ -637,6 +559,13 @@ body.modal-open, body.ban-locked { overflow: hidden; }
   .upd-card { padding: 20px; }
   .upd-card-head { flex-direction: column; gap: 10px; }
   .upd-card-actions { align-self: flex-start; }
+  .avatar-view-overlay { padding: 20px; }
+  .avatar-view-img { max-width: 92vw; max-height: 78vh; }
+  .avatar-view-close { top: 14px; right: 14px; width: 42px; height: 42px; }
+  .avatar-view-caption { bottom: 16px; font-size: .72rem; }
+  .avatar-view-hint { display: none; }
+  .html-editor-actions { grid-template-columns: 1fr; }
+  .html-editor-ta { min-height: 40vh; font-size: .72rem; }
 }
 </style>
 </head>
@@ -678,6 +607,17 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     <div class="form-field"><label for="renameInput">Новый ник</label><input type="text" id="renameInput" maxlength="24" placeholder="Введите новый ник"></div>
     <button type="button" class="modal-submit" onclick="submitForcedRename()">Сохранить новый ник</button>
     <div class="modal-msg" id="renameMsg"></div>
+  </div>
+</div>
+
+<div class="avatar-view-overlay" id="avatarViewOverlay" onclick="if(event.target===this)closeAvatarView()">
+  <button type="button" class="avatar-view-close" onclick="closeAvatarView()" title="Закрыть (Esc)">×</button>
+  <div class="avatar-view-hint">Полное изображение</div>
+  <img class="avatar-view-img" id="avatarViewImg" alt="Аватар" style="display:none;">
+  <div class="avatar-view-empty" id="avatarViewEmpty" style="display:none;">Пользователь не загружал аватар</div>
+  <div class="avatar-view-caption" id="avatarViewCaption" style="display:none;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span id="avatarViewCaptionText"></span>
   </div>
 </div>
 
@@ -880,7 +820,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
   <div class="modal wide" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeUserProfile()">×</button>
     <div class="user-profile-head">
-      <div class="user-profile-avatar" id="upAvatar"></div>
+      <div class="user-profile-avatar" id="upAvatar" title="Открыть в полном размере"></div>
       <div class="user-profile-name" id="upName"></div>
       <div class="review-date" id="upRegDate" style="font-size:.7rem;"></div>
     </div>
@@ -919,7 +859,7 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     <div class="modal-title">Профиль</div>
     <div class="modal-sub">Меняй ник и аватарку.</div>
     <div class="profile-avatar-row">
-      <div class="profile-avatar" id="profileAvatar"></div>
+      <div class="profile-avatar" id="profileAvatar" title="Открыть в полном размере"></div>
       <div class="profile-avatar-actions">
         <button type="button" class="av-btn" onclick="document.getElementById('avatarInput').click()">Загрузить</button>
         <button type="button" class="av-btn danger" onclick="removeAvatar()">Удалить</button>
@@ -943,7 +883,9 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 
     <div class="profile-section" id="creatorTools" style="display:none">
       <div class="profile-section-title">🛠 Инструменты Создателя</div>
-      <button type="button" class="admin-btn" id="siteToggleBtn" onclick="toggleSiteDisabled()">🔒 Отключить сайт</button>
+      <button type="button" class="admin-btn" onclick="openHtmlEditor()">📝 Редактировать HTML сайта</button>
+      <div style="font-size: .7rem; color: var(--text-mute); margin-top: 6px; text-align: center; line-height: 1.5;">Позволяет менять разметку и стили всего сайта. Видно всем посетителям.</div>
+      <button type="button" class="admin-btn" id="siteToggleBtn" onclick="toggleSiteDisabled()" style="margin-top: 10px;">🔒 Отключить сайт</button>
       <div style="font-size: .7rem; color: var(--text-mute); margin-top: 6px; text-align: center; line-height: 1.5;">При отключении сайт будет недоступен всем, кроме вас.</div>
     </div>
 
@@ -954,6 +896,26 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     </div>
 
     <button type="button" class="logout-btn" onclick="logout()">Выйти</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="htmlEditorModal">
+  <div class="modal xwide html-editor-modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeHtmlEditor()">×</button>
+    <div class="modal-title">📝 Редактор HTML</div>
+    <div class="modal-sub">Только для Создателя · изменения видны всем посетителям</div>
+    <div class="html-editor-info">
+      <span>⚠️ Меняйте аккуратно — сломанный HTML сломает сайт.</span>
+      <span class="html-editor-tag" id="htmlEditorStatus" style="margin-left:auto;">Оригинал</span>
+    </div>
+    <textarea class="html-editor-ta" id="htmlEditorTa" spellcheck="false" wrap="off"></textarea>
+    <div class="html-editor-actions">
+      <button type="button" class="html-editor-save" onclick="saveCustomHtml()">💾 Сохранить</button>
+      <button type="button" class="html-editor-preview" onclick="previewCustomHtml()">👁 Предпросмотр</button>
+      <button type="button" class="html-editor-reset" onclick="resetCustomHtml()">🗑 Сбросить</button>
+      <button type="button" class="html-editor-reload" onclick="reloadHtmlFromSource()">↻ Загрузить оригинал с сервера</button>
+    </div>
+    <div class="modal-msg" id="htmlEditorMsg"></div>
   </div>
 </div>
 
@@ -1513,6 +1475,8 @@ const updateEditorModal = document.getElementById('updateEditorModal');
 const userProfileModal = document.getElementById('userProfileModal');
 const avatarEditorModal = document.getElementById('avatarEditorModal');
 const pmInboxModal = document.getElementById('pmInboxModal');
+const avatarViewOverlay = document.getElementById('avatarViewOverlay');
+const htmlEditorModal = document.getElementById('htmlEditorModal');
 
 function openAuth(tab) { authModal.classList.add('open'); document.body.classList.add('modal-open'); switchAuthTab(tab === 'register' ? 'register' : 'login'); }
 function closeAuth() { authModal.classList.remove('open'); document.body.classList.remove('modal-open'); document.getElementById('loginMsg').classList.remove('show'); document.getElementById('regMsg').classList.remove('show'); }
@@ -1589,7 +1553,50 @@ function openProfile() {
 function closeProfile() { profileModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
 profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
 
-/* === Аватар: файл → редактор === */
+document.getElementById('profileAvatar').addEventListener('click', () => {
+  const u = getCurrentUser();
+  if (u) openAvatarView(u.id);
+});
+document.getElementById('upAvatar').addEventListener('click', () => {
+  if (currentViewedUserId) openAvatarView(currentViewedUserId);
+});
+
+function openAvatarView(userId) {
+  if (!userId) return;
+  const u = loadUsers().find(x => x.id === userId);
+  if (!u) return;
+  const src = u.avatarFull || u.avatar;
+  const img = document.getElementById('avatarViewImg');
+  const emptyEl = document.getElementById('avatarViewEmpty');
+  const cap = document.getElementById('avatarViewCaption');
+  const capTxt = document.getElementById('avatarViewCaptionText');
+  if (!src) {
+    img.style.display = 'none';
+    cap.style.display = 'none';
+    emptyEl.style.display = '';
+    avatarViewOverlay.classList.add('show');
+    document.body.classList.add('modal-open');
+    return;
+  }
+  img.src = src;
+  img.style.display = '';
+  emptyEl.style.display = 'none';
+  cap.style.display = '';
+  capTxt.textContent = u.nickname;
+  avatarViewOverlay.classList.add('show');
+  document.body.classList.add('modal-open');
+}
+function closeAvatarView() {
+  avatarViewOverlay.classList.remove('show');
+  if (!document.querySelector('.modal-overlay.open') &&
+      !document.getElementById('banOverlay').classList.contains('show') &&
+      !document.getElementById('renameOverlay').classList.contains('show') &&
+      !document.getElementById('siteDisabledOverlay').classList.contains('show')) {
+    document.body.classList.remove('modal-open');
+  }
+  setTimeout(() => { document.getElementById('avatarViewImg').src = ''; }, 250);
+}
+
 document.getElementById('avatarInput').addEventListener('change', e => {
   const file = e.target.files && e.target.files[0];
   if (file) {
@@ -1601,7 +1608,7 @@ document.getElementById('avatarInput').addEventListener('change', e => {
 
 function removeAvatar() {
   const u = getCurrentUser(); if (!u) return;
-  u.avatar = null; saveUser(u);
+  u.avatar = null; u.avatarFull = null; saveUser(u);
   renderAvatar(document.getElementById('profileAvatar'), u);
   updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
   showProfileMsg('Аватарка удалена', 'ok');
@@ -1791,6 +1798,8 @@ async function unbanUser(userId) {
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
+    if (htmlEditorModal.classList.contains('open')) { closeHtmlEditor(); return; }
+    if (avatarViewOverlay.classList.contains('show')) { closeAvatarView(); return; }
     if (authModal.classList.contains('open')) closeAuth();
     if (avatarEditorModal.classList.contains('open')) closeAvatarEditor();
     if (pmInboxModal.classList.contains('open')) closePmInbox();
@@ -1808,10 +1817,148 @@ async function debugFirebase() {
   try {
     const r = await fetch(FB_URL + '/.json?t=' + Date.now(), { cache: 'no-store' });
     const d = await r.json() || {};
-    const info = '📊 Firebase:\n\n👥 Users: ' + Object.keys(d.users||{}).length + '\n⭐ Reviews: ' + Object.keys(d.reviews||{}).length + '\n💬 Chat: ' + Object.keys(d.chat||{}).length + '\n🚫 Bans: ' + Object.keys(d.bans||{}).length + '\n📝 Updates: ' + Object.keys(d.updates||{}).length + '\n⚙️ siteDisabled: ' + !!(d.config && d.config.siteDisabled);
+    const info = '📊 Firebase:\n\n👥 Users: ' + Object.keys(d.users||{}).length + '\n⭐ Reviews: ' + Object.keys(d.reviews||{}).length + '\n💬 Chat: ' + Object.keys(d.chat||{}).length + '\n🚫 Bans: ' + Object.keys(d.bans||{}).length + '\n📝 Updates: ' + Object.keys(d.updates||{}).length + '\n⚙️ siteDisabled: ' + !!(d.config && d.config.siteDisabled) + '\n📄 customHtml: ' + !!(d.config && d.config.customHtml);
     console.log('[FB dump]', d);
     alert(info);
   } catch (e) { alert('Ошибка: ' + e.message); }
+}
+
+/* ============================================================
+   HTML EDITOR (только для Создателя)
+   ============================================================ */
+function setHtmlEditorStatus(text, isOk) {
+  const el = document.getElementById('htmlEditorStatus');
+  if (!el) return;
+  el.textContent = text;
+  el.style.background = isOk ? 'rgba(74,222,128,.14)' : 'rgba(255,179,71,.14)';
+  el.style.borderColor = isOk ? 'rgba(74,222,128,.4)' : 'rgba(255,179,71,.4)';
+  el.style.color = isOk ? '#a5f3c0' : '#ffb347';
+}
+
+function openHtmlEditor() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) { showToast('⚠️ Только Создатель'); return; }
+  const ta = document.getElementById('htmlEditorTa');
+  const msg = document.getElementById('htmlEditorMsg');
+  msg.classList.remove('show');
+  const cfg = FB_DATA.config || {};
+  if (cfg.customHtml) {
+    ta.value = cfg.customHtml;
+    setHtmlEditorStatus('Сохранённая версия', true);
+  } else {
+    setHtmlEditorStatus('Загрузка оригинала...');
+    fetch(location.href, { cache: 'no-store' })
+      .then(r => r.text())
+      .then(t => { ta.value = t; setHtmlEditorStatus('Оригинал с сервера'); })
+      .catch(() => {
+        ta.value = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        setHtmlEditorStatus('Текущий DOM');
+      });
+  }
+  htmlEditorModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeHtmlEditor() {
+  htmlEditorModal.classList.remove('open');
+  if (!document.querySelector('.modal-overlay.open')) document.body.classList.remove('modal-open');
+}
+htmlEditorModal.addEventListener('click', e => { if (e.target === htmlEditorModal) closeHtmlEditor(); });
+
+async function reloadHtmlFromSource() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  const ta = document.getElementById('htmlEditorTa');
+  setHtmlEditorStatus('Загрузка оригинала...');
+  try {
+    const r = await fetch(location.href, { cache: 'no-store' });
+    ta.value = await r.text();
+    setHtmlEditorStatus('Оригинал с сервера');
+  } catch (e) {
+    ta.value = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+    setHtmlEditorStatus('Текущий DOM');
+  }
+}
+
+async function saveCustomHtml() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  const ta = document.getElementById('htmlEditorTa');
+  const msg = document.getElementById('htmlEditorMsg');
+  const html = ta.value;
+  if (!html.trim()) { msg.textContent = 'Пусто'; msg.className = 'modal-msg show err'; return; }
+  const cfg = Object.assign({}, FB_DATA.config || {});
+  cfg.customHtml = html;
+  cfg.customHtmlUpdatedAt = Date.now();
+  cfg.customHtmlUpdatedBy = me.nickname;
+  FB_DATA.config = cfg;
+  msg.textContent = 'Сохранение...';
+  msg.className = 'modal-msg show ok';
+  const ok = await fbSave('config', cfg);
+  if (ok) {
+    msg.textContent = '✅ Сохранено! Посетители увидят после обновления страницы';
+    msg.className = 'modal-msg show ok';
+    setHtmlEditorStatus('Сохранённая версия', true);
+    showToast('💾 HTML сохранён');
+  } else {
+    msg.textContent = '⚠️ Ошибка сохранения';
+    msg.className = 'modal-msg show err';
+  }
+}
+
+async function resetCustomHtml() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  if (!confirm('Сбросить кастомный HTML? Все посетители увидят оригинал.')) return;
+  const cfg = Object.assign({}, FB_DATA.config || {});
+  delete cfg.customHtml;
+  delete cfg.customHtmlUpdatedAt;
+  delete cfg.customHtmlUpdatedBy;
+  FB_DATA.config = cfg;
+  await fbSave('config', cfg);
+  try { sessionStorage.removeItem('vf_custom_hash'); } catch (e) {}
+  showToast('🗑 Кастомный HTML сброшен');
+  const msg = document.getElementById('htmlEditorMsg');
+  msg.textContent = 'Сброшено. Обновите страницу.';
+  msg.className = 'modal-msg show ok';
+  setHtmlEditorStatus('Сброшено');
+}
+
+function previewCustomHtml() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator) return;
+  const html = document.getElementById('htmlEditorTa').value;
+  if (!html.trim()) { showToast('Пусто'); return; }
+  const w = window.open('', '_blank');
+  if (!w) { showToast('Разрешите всплывающие окна'); return; }
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+}
+
+function hashCodeStr(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h = h & h; }
+  return String(h);
+}
+
+function applyCustomHtmlIfNeeded() {
+  const cfg = FB_DATA.config || {};
+  const custom = cfg.customHtml;
+  if (!custom) {
+    try { sessionStorage.removeItem('vf_custom_hash'); } catch (e) {}
+    return;
+  }
+  const me = getCurrentUser();
+  if (me && me.isCreator) return;
+  let h = '';
+  try { h = hashCodeStr(custom); } catch (e) { h = ''; }
+  try { if (sessionStorage.getItem('vf_custom_hash') === h) return; } catch (e) {}
+  try { sessionStorage.setItem('vf_custom_hash', h); } catch (e) {}
+  try {
+    document.open();
+    document.write(custom);
+    document.close();
+  } catch (e) { console.warn('[Custom HTML] Ошибка:', e); }
 }
 
 /* ============================================================
@@ -2509,25 +2656,17 @@ if (!matchMedia('(hover: none)').matches) {
 }
 
 /* ============================================================
-   РЕДАКТОР АВАТАРА (перетаскивание / масштаб / поворот)
+   РЕДАКТОР АВАТАРА
    ============================================================ */
 const AV_SIZE = 400;
+const AV_FULL_MAX = 1200;
 const avEditorStage = document.getElementById('avEditorStage');
 const avEditorCanvas = document.getElementById('avEditorCanvas');
 const avEditorCtx = avEditorCanvas.getContext('2d');
 
 const avState = {
-  img: null,
-  baseScale: 1,
-  zoom: 1,
-  rotation: 0,
-  offsetX: 0,
-  offsetY: 0,
-  dragging: false,
-  lastX: 0,
-  lastY: 0,
-  pointerId: null,
-  targetUserId: null
+  img: null, baseScale: 1, zoom: 1, rotation: 0, offsetX: 0, offsetY: 0,
+  dragging: false, lastX: 0, lastY: 0, pointerId: null, targetUserId: null
 };
 
 function drawAvatarEditor() {
@@ -2549,10 +2688,7 @@ function drawAvatarEditor() {
 
 function resetAvatarEditor() {
   if (!avState.img) return;
-  avState.zoom = 1;
-  avState.rotation = 0;
-  avState.offsetX = 0;
-  avState.offsetY = 0;
+  avState.zoom = 1; avState.rotation = 0; avState.offsetX = 0; avState.offsetY = 0;
   document.getElementById('avZoom').value = '100';
   document.getElementById('avZoomVal').textContent = '100%';
   document.getElementById('avRotate').value = '0';
@@ -2562,7 +2698,7 @@ function resetAvatarEditor() {
 
 function openAvatarEditor(file, targetUserId) {
   if (!file || !file.type.startsWith('image/')) { showToast('Нужно выбрать изображение'); return; }
-  if (file.size > 8 * 1024 * 1024) { showToast('Файл слишком большой (макс 8 МБ)'); return; }
+  if (file.size > 12 * 1024 * 1024) { showToast('Файл слишком большой (макс 12 МБ)'); return; }
   const reader = new FileReader();
   reader.onload = ev => {
     const img = new Image();
@@ -2571,10 +2707,7 @@ function openAvatarEditor(file, targetUserId) {
       avState.targetUserId = targetUserId || null;
       const minSide = Math.min(img.width, img.height);
       avState.baseScale = AV_SIZE / minSide;
-      avState.zoom = 1;
-      avState.rotation = 0;
-      avState.offsetX = 0;
-      avState.offsetY = 0;
+      avState.zoom = 1; avState.rotation = 0; avState.offsetX = 0; avState.offsetY = 0;
       document.getElementById('avZoom').value = '100';
       document.getElementById('avZoomVal').textContent = '100%';
       document.getElementById('avRotate').value = '0';
@@ -2596,10 +2729,7 @@ function openAvatarEditor(file, targetUserId) {
 function closeAvatarEditor() {
   avatarEditorModal.classList.remove('open');
   document.body.classList.remove('modal-open');
-  avState.img = null;
-  avState.dragging = false;
-  avState.targetUserId = null;
-  avState.pointerId = null;
+  avState.img = null; avState.dragging = false; avState.targetUserId = null; avState.pointerId = null;
 }
 
 function saveAvatarEditor() {
@@ -2612,34 +2742,38 @@ function saveAvatarEditor() {
   octx.drawImage(avEditorCanvas, 0, 0, AV_SIZE, AV_SIZE, 0, 0, 200, 200);
   const dataUrl = out.toDataURL('image/jpeg', 0.85);
 
+  let fw = avState.img.width, fh = avState.img.height;
+  const scale = Math.min(1, AV_FULL_MAX / Math.max(fw, fh));
+  fw = Math.round(fw * scale); fh = Math.round(fh * scale);
+  const fullCanvas = document.createElement('canvas');
+  fullCanvas.width = fw; fullCanvas.height = fh;
+  const fctx = fullCanvas.getContext('2d');
+  fctx.fillStyle = '#000';
+  fctx.fillRect(0, 0, fw, fh);
+  fctx.drawImage(avState.img, 0, 0, fw, fh);
+  const fullDataUrl = fullCanvas.toDataURL('image/jpeg', 0.86);
+
   const targetId = avState.targetUserId || (getCurrentUser() && getCurrentUser().id);
   const target = loadUsers().find(u => u.id === targetId);
   if (!target) { showToast('Пользователь не найден'); closeAvatarEditor(); return; }
   target.avatar = dataUrl;
+  target.avatarFull = fullDataUrl;
   saveUser(target);
 
   const me = getCurrentUser();
-  if (me && me.id === target.id) {
-    renderAvatar(document.getElementById('profileAvatar'), target);
-  }
+  if (me && me.id === target.id) renderAvatar(document.getElementById('profileAvatar'), target);
   updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
-  if (userProfileModal.classList.contains('open') && currentViewedUserId === target.id) {
-    renderUserProfile();
-  }
-  if (profileModal.classList.contains('open') && me && me.id === target.id) {
-    showProfileMsg('Аватарка обновлена', 'ok');
-  }
+  if (userProfileModal.classList.contains('open') && currentViewedUserId === target.id) renderUserProfile();
+  if (profileModal.classList.contains('open') && me && me.id === target.id) showProfileMsg('Аватарка обновлена', 'ok');
   showToast('✅ Аватарка обновлена');
   closeAvatarEditor();
 }
 
-/* --- Drag --- */
 avEditorStage.addEventListener('pointerdown', e => {
   if (!avState.img) return;
   avState.dragging = true;
   avState.pointerId = e.pointerId;
-  avState.lastX = e.clientX;
-  avState.lastY = e.clientY;
+  avState.lastX = e.clientX; avState.lastY = e.clientY;
   try { avEditorStage.setPointerCapture(e.pointerId); } catch (err) {}
   e.preventDefault();
 });
@@ -2648,10 +2782,8 @@ avEditorStage.addEventListener('pointermove', e => {
   const rect = avEditorStage.getBoundingClientRect();
   const dx = (e.clientX - avState.lastX) * (AV_SIZE / rect.width);
   const dy = (e.clientY - avState.lastY) * (AV_SIZE / rect.height);
-  avState.offsetX += dx;
-  avState.offsetY += dy;
-  avState.lastX = e.clientX;
-  avState.lastY = e.clientY;
+  avState.offsetX += dx; avState.offsetY += dy;
+  avState.lastX = e.clientX; avState.lastY = e.clientY;
   drawAvatarEditor();
 });
 function endDrag(e) {
@@ -2679,7 +2811,7 @@ document.getElementById('avRotate').addEventListener('input', e => {
 avatarEditorModal.addEventListener('click', e => { if (e.target === avatarEditorModal) closeAvatarEditor(); });
 
 /* ============================================================
-   ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ, ЛС, ПРИНУДИТЕЛЬНЫЙ РЕНЕЙМ
+   ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ, ЛС, РЕНЕЙМ
    ============================================================ */
 let currentViewedUserId = null;
 
@@ -2697,12 +2829,7 @@ function sendPM(toId, text) {
   text = String(text || '').trim();
   if (!text || text.length > 500) return;
   const cid = convIdFor(me.id, toId);
-  const msg = {
-    id: 'pm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-    fromId: me.id, toId, text,
-    date: new Date().toISOString(),
-    read: false
-  };
+  const msg = { id: 'pm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), fromId: me.id, toId, text, date: new Date().toISOString(), read: false };
   if (!FB_DATA.pms[cid]) FB_DATA.pms[cid] = {};
   FB_DATA.pms[cid][msg.id] = msg;
   fbSave('pms/' + cid + '/' + msg.id, msg);
@@ -2717,11 +2844,7 @@ function markPmsRead(otherId) {
   let changed = false;
   for (const mid in conv) {
     const m = conv[mid];
-    if (m && m.toId === me.id && !m.read) {
-      m.read = true;
-      changed = true;
-      fbSave('pms/' + cid + '/' + mid, m);
-    }
+    if (m && m.toId === me.id && !m.read) { m.read = true; changed = true; fbSave('pms/' + cid + '/' + mid, m); }
   }
   if (changed) renderPmBadge();
 }
@@ -2734,10 +2857,7 @@ function renderPMsInProfile() {
   const me = getCurrentUser();
   if (!me) { box.style.display = 'none'; formEl.style.display = 'none'; locked.style.display = ''; return; }
   box.style.display = ''; formEl.style.display = ''; locked.style.display = 'none';
-
-  // Пометить как прочитанные
   markPmsRead(currentViewedUserId);
-
   const list = loadPMs(currentViewedUserId);
   if (!list.length) { box.innerHTML = '<div class="pm-empty">Сообщений нет. Начните диалог!</div>'; return; }
   box.innerHTML = list.map(m => {
@@ -2929,6 +3049,8 @@ async function submitForcedRename() {
   setCloudStatus('offline', 'Подключение...');
   const ok = await fbLoadAll(true);
   if (ok) {
+    // Применяем кастомный HTML если он сохранён и пользователь не Создатель
+    applyCustomHtmlIfNeeded();
     updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
     checkBan(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename(); renderPmBadge();
   } else {
