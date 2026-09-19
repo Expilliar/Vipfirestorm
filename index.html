@@ -514,6 +514,55 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .toast { position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(24px); padding: 12px 24px; border-radius: 14px; background: linear-gradient(135deg, #ffb347, #ff9500); color: #1a0a05; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .82rem; box-shadow: 0 16px 44px rgba(255,179,71,.55); opacity: 0; pointer-events: none; transition: all .35s cubic-bezier(.2,.8,.3,1); z-index: 99999; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
+/* === USER PROFILE MODAL === */
+.user-profile-head { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 20px; }
+.user-profile-avatar { width: 96px; height: 96px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; color: #1a0a05; font-weight: 800; font-size: 2rem; overflow: hidden; border: 3px solid rgba(255,140,90,.4); font-family: 'Unbounded', sans-serif; }
+.user-profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-profile-name { font-family: 'Unbounded', sans-serif; font-size: 1.15rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.user-profile-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+.ups-stat { padding: 12px 8px; border-radius: 12px; background: rgba(255,255,255,.04); border: 1px solid var(--line); text-align: center; }
+.ups-stat b { display: block; font-family: 'Unbounded', sans-serif; font-size: 1.05rem; font-weight: 700; color: #ffb37a; margin-bottom: 4px; }
+.ups-stat span { font-size: .62rem; color: var(--text-mute); letter-spacing: .08em; text-transform: uppercase; }
+.user-profile-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
+.up-action { padding: 10px 8px; border-radius: 11px; font: inherit; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .68rem; cursor: pointer; border: 1px solid; transition: all .2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.up-action.ban { border-color: rgba(255,46,99,.4); background: rgba(255,46,99,.1); color: #ffb0c7; }
+.up-action.ban:hover { background: rgba(255,46,99,.25); }
+.up-action.rename { border-color: rgba(255,179,71,.4); background: rgba(255,179,71,.1); color: #ffb347; }
+.up-action.rename:hover { background: rgba(255,179,71,.25); }
+.up-action.delete { border-color: rgba(255,46,99,.6); background: rgba(255,46,99,.15); color: #ff8fb5; }
+.up-action.delete:hover { background: rgba(255,46,99,.35); color: #fff; }
+.profile-note { font-size: .68rem; color: var(--text-mute); margin-top: 6px; text-align: center; line-height: 1.5; }
+
+/* === PERSONAL MESSAGES === */
+.pm-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.08); }
+.pm-section-title { font-family: 'Unbounded', sans-serif; font-size: .72rem; font-weight: 700; color: #ffb347; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 10px; text-align: center; }
+.pm-box { display: flex; flex-direction: column; height: 260px; border-radius: 14px; overflow: hidden; background: rgba(0,0,0,.22); border: 1px solid rgba(255,255,255,.07); }
+.pm-messages { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.pm-msg { max-width: 84%; padding: 8px 12px; border-radius: 12px; font-size: .82rem; line-height: 1.5; word-break: break-word; white-space: pre-wrap; animation: fadeUp .25s; }
+.pm-msg.me { align-self: flex-end; background: linear-gradient(135deg, rgba(255,92,43,.28), rgba(255,149,0,.16)); color: #ffd8bf; border-bottom-right-radius: 4px; }
+.pm-msg.them { align-self: flex-start; background: rgba(255,255,255,.06); color: var(--text-dim); border-bottom-left-radius: 4px; }
+.pm-msg-time { font-size: .6rem; color: var(--text-mute); margin-top: 3px; display: block; }
+.pm-empty { flex: 1; display: flex; align-items: center; justify-content: center; color: var(--text-mute); font-size: .8rem; padding: 20px; text-align: center; }
+.pm-locked { padding: 16px; text-align: center; font-size: .8rem; color: var(--text-mute); }
+.pm-locked a { color: #ffb37a; cursor: pointer; text-decoration: underline; }
+
+/* === RENAME OVERLAY === */
+.rename-overlay { position: fixed; inset: 0; z-index: 99999; background: radial-gradient(ellipse 800px 600px at 50% 40%, rgba(255,179,71,.2), transparent 65%), linear-gradient(180deg, #0a050e, #1a1004); display: none; align-items: center; justify-content: center; padding: 24px; }
+.rename-overlay.show { display: flex; animation: fadeUp .5s; }
+.rename-card { max-width: 520px; width: 100%; padding: 44px 40px; border-radius: 28px; background: radial-gradient(ellipse at top, rgba(255,179,71,.16), transparent 60%), linear-gradient(160deg, rgba(38,22,10,.96), rgba(20,10,6,.96)); border: 1px solid rgba(255,179,71,.5); box-shadow: 0 40px 90px rgba(0,0,0,.75); text-align: center; }
+.rename-icon { width: 84px; height: 84px; margin: 0 auto 22px; border-radius: 50%; background: radial-gradient(circle at 30% 25%, #ffd27a, #ff9500 50%, #b85e00 100%); display: grid; place-items: center; box-shadow: 0 16px 40px rgba(255,179,71,.55); animation: banPulse 2.4s ease-in-out infinite; }
+.rename-icon svg { width: 40px; height: 40px; color: #1a0a05; }
+.rename-title { font-family: 'Unbounded', sans-serif; font-size: clamp(1.3rem, 3.5vw, 1.7rem); font-weight: 800; margin-bottom: 10px; background: linear-gradient(110deg, #ffb37a, #ff9500 60%, #b85e00); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.rename-sub { color: var(--text-dim); font-size: .92rem; line-height: 1.65; margin-bottom: 22px; }
+.rename-reason { margin-bottom: 20px; padding: 12px 16px; border-radius: 12px; background: rgba(255,46,99,.1); border: 1px solid rgba(255,46,99,.28); color: #ffb0c7; font-size: .85rem; text-align: left; }
+
+/* === CLICKABLE AVATARS / NAMES === */
+.chat-msg-avatar[data-uid], .chat-msg-name[data-uid],
+.review-avatar[data-uid], .review-name[data-uid],
+.upd-author-avatar[data-uid], .upd-author[data-uid] { cursor: pointer; transition: transform .2s; }
+.chat-msg-avatar[data-uid]:hover, .review-avatar[data-uid]:hover, .upd-author-avatar[data-uid]:hover { transform: scale(1.08); }
+.chat-msg-name[data-uid]:hover, .review-name[data-uid]:hover { text-decoration: underline; }
+
 @media (max-width: 1180px) { .hero-inner { gap: 36px; } .reviews-layout { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); } }
 @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } .reviews-layout { grid-template-columns: 1fr; } .review-form-card { position: static; } }
 @media (max-width: 860px) {
@@ -570,6 +619,20 @@ body.modal-open, body.ban-locked { overflow: hidden; }
     <p class="site-disabled-sub">Доступ к VipFirestorm приостановлен создателем.</p>
     <p class="site-disabled-sub" style="font-size:.85rem;">Пожалуйста, зайдите позже.</p>
     <div class="site-disabled-note">Создатель может продолжать работу в обычном режиме.</div>
+  </div>
+</div>
+
+<div class="rename-overlay" id="renameOverlay">
+  <div class="rename-card">
+    <div class="rename-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    </div>
+    <h1 class="rename-title">Смените ник</h1>
+    <p class="rename-sub">Ваш текущий ник нарушает правила сайта. Пожалуйста, выберите новое имя.</p>
+    <div class="rename-reason" id="renameReasonBox" style="display:none;">Причина: <b id="renameReasonText"></b></div>
+    <div class="form-field"><label for="renameInput">Новый ник</label><input type="text" id="renameInput" maxlength="24" placeholder="Введите новый ник"></div>
+    <button type="button" class="modal-submit" onclick="submitForcedRename()">Сохранить новый ник</button>
+    <div class="modal-msg" id="renameMsg"></div>
   </div>
 </div>
 
@@ -754,6 +817,43 @@ body.modal-open, body.ban-locked { overflow: hidden; }
   </div>
 </div>
 
+<div class="modal-overlay" id="userProfileModal">
+  <div class="modal wide" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeUserProfile()">×</button>
+    <div class="user-profile-head">
+      <div class="user-profile-avatar" id="upAvatar"></div>
+      <div class="user-profile-name" id="upName"></div>
+      <div class="review-date" id="upRegDate" style="font-size:.7rem;"></div>
+    </div>
+    <div class="user-profile-stats">
+      <div class="ups-stat"><b id="upChatCount">0</b><span>В чате</span></div>
+      <div class="ups-stat"><b id="upReviewCount">0</b><span>Отзывов</span></div>
+      <div class="ups-stat"><b id="upRegDays">0</b><span>Дней на сайте</span></div>
+    </div>
+    <div class="user-profile-actions" id="upActions" style="display:none;">
+      <button class="up-action ban" id="upBanBtn" onclick="openBanModalFromUserProfile()">🚫 Забанить</button>
+      <button class="up-action rename" id="upRenameBtn" onclick="forceRenameFromUserProfile()">✏️ Ренейм</button>
+      <button class="up-action delete" id="upDeleteBtn" onclick="deleteUserFromUserProfile()">🗑 Удалить</button>
+    </div>
+    <div class="profile-section" id="upCreatorTools" style="display:none;">
+      <div class="profile-section-title">👑 Права Создателя</div>
+      <button type="button" class="admin-btn" onclick="creatorChangeNick()">✏️ Изменить ник пользователя</button>
+      <button type="button" class="admin-btn" onclick="creatorChangeAvatar()" style="margin-top:8px;">🖼 Изменить аватар пользователя</button>
+    </div>
+    <div class="pm-section" id="upPmSection" style="display:none;">
+      <div class="pm-section-title">💌 Личные сообщения</div>
+      <div class="pm-box">
+        <div class="pm-messages" id="upPmMessages"></div>
+        <form class="chat-form" id="upPmForm" style="padding:8px 10px;">
+          <input type="text" class="chat-input" id="upPmInput" placeholder="Написать сообщение..." maxlength="500" autocomplete="off">
+          <button type="submit" class="chat-send" aria-label="Отправить"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+        </form>
+        <div class="pm-locked" id="upPmLocked" style="display:none"><a onclick="closeUserProfile();openAuth()">Войдите</a>, чтобы писать</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="profileModal">
   <div class="modal" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeProfile()">×</button>
@@ -767,7 +867,11 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       </div>
       <input type="file" id="avatarInput" accept="image/*" style="display:none">
     </div>
-    <div class="form-field"><label for="profileNick">Ник</label><input type="text" id="profileNick" maxlength="24"></div>
+    <div class="form-field">
+      <label for="profileNick">Ник</label>
+      <input type="text" id="profileNick" maxlength="24">
+      <div class="profile-note" id="profileNickNote" style="display:none;">🔒 Изменять ник может только администратор.</div>
+    </div>
     <button type="button" class="modal-submit" onclick="saveProfile()">Сохранить</button>
     <div class="modal-msg" id="profileMsg"></div>
 
@@ -930,7 +1034,7 @@ const FB_URL = 'https://vipfirestorm-ee1f6-default-rtdb.firebaseio.com';
 window.addEventListener('error', e => console.error('[VF Error]', e.message));
 window.addEventListener('unhandledrejection', e => console.error('[VF Promise]', e.reason));
 
-let FB_DATA = { users: {}, reviews: {}, chat: {}, bans: {}, updates: {}, config: {} };
+let FB_DATA = { users: {}, reviews: {}, chat: {}, bans: {}, updates: {}, pms: {}, renames: {}, config: {} };
 let FB_READY = false;
 let FB_SAVING = 0;
 let FB_BUSY = 0;
@@ -958,6 +1062,8 @@ function normalizeData(d) {
     chat: d.chat && typeof d.chat === 'object' ? d.chat : {},
     bans: d.bans && typeof d.bans === 'object' ? d.bans : {},
     updates: d.updates && typeof d.updates === 'object' ? d.updates : {},
+    pms: d.pms && typeof d.pms === 'object' ? d.pms : {},
+    renames: d.renames && typeof d.renames === 'object' ? d.renames : {},
     config: d.config && typeof d.config === 'object' ? d.config : {}
   };
 }
@@ -1079,7 +1185,27 @@ function applySSEChange(path, data) {
   if (parts.length === 0) { FB_DATA = normalizeData(data); FB_READY = true; return; }
   const branch = parts[0];
   if (branch === 'config') { FB_DATA.config = (data && typeof data === 'object') ? data : {}; return; }
-  if (!['users','reviews','chat','bans','updates'].includes(branch)) return;
+  if (!['users','reviews','chat','bans','updates','pms','renames'].includes(branch)) return;
+  if (branch === 'renames') {
+    if (parts.length === 1) { FB_DATA.renames = (data && typeof data === 'object') ? data : {}; return; }
+    if (data === null) { if (FB_DATA.renames) delete FB_DATA.renames[parts[1]]; }
+    else { if (!FB_DATA.renames) FB_DATA.renames = {}; FB_DATA.renames[parts[1]] = data; }
+    return;
+  }
+  if (branch === 'pms') {
+    if (parts.length === 1) { FB_DATA.pms = (data && typeof data === 'object') ? data : {}; return; }
+    const cid = parts[1];
+    if (parts.length === 2) {
+      if (data === null) { if (FB_DATA.pms) delete FB_DATA.pms[cid]; }
+      else { if (!FB_DATA.pms) FB_DATA.pms = {}; FB_DATA.pms[cid] = data; }
+      return;
+    }
+    const mid = parts[2];
+    if (!FB_DATA.pms[cid]) FB_DATA.pms[cid] = {};
+    if (data === null) delete FB_DATA.pms[cid][mid];
+    else FB_DATA.pms[cid][mid] = data;
+    return;
+  }
   if (parts.length === 1) { FB_DATA[branch] = (data && typeof data === 'object') ? data : {}; return; }
   if (data === null) { if (FB_DATA[branch]) delete FB_DATA[branch][parts[1]]; }
   else { if (!FB_DATA[branch]) FB_DATA[branch] = {}; FB_DATA[branch][parts[1]] = data; }
@@ -1091,9 +1217,20 @@ function renderAllFromSSE() {
   renderChat();
   renderUpdates();
   checkSiteDisabled();
+  checkForcedRename();
   updateSiteToggleButton();
   if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
   if (bansModal.classList.contains('open')) renderBansModal();
+  const upModal = document.getElementById('userProfileModal');
+  if (upModal && upModal.classList.contains('open')) {
+    renderUserProfile();
+    const me = getCurrentUser();
+    const u = loadUsers().find(x => x.id === currentViewedUserId);
+    const stillExists = !!u;
+    const selfBanned = me && currentViewedUserId === me.id && isUserBanned(me.id);
+    if (!stillExists || selfBanned) closeUserProfile();
+    else if (me && currentViewedUserId !== me.id) renderPMsInProfile();
+  }
 }
 
 /* ============================================================
@@ -1216,7 +1353,8 @@ function checkSiteDisabled() {
     try { bgMusic.pause(); } catch (e) {}
   } else {
     overlay.classList.remove('show');
-    if (!document.getElementById('banOverlay').classList.contains('show'))
+    if (!document.getElementById('banOverlay').classList.contains('show') &&
+        !document.getElementById('renameOverlay').classList.contains('show'))
       document.body.classList.remove('ban-locked');
   }
 }
@@ -1278,6 +1416,7 @@ const banModal = document.getElementById('banModal');
 const bansModal = document.getElementById('bansModal');
 const chatModal = document.getElementById('chatModal');
 const updateEditorModal = document.getElementById('updateEditorModal');
+const userProfileModal = document.getElementById('userProfileModal');
 
 function openAuth(tab) { authModal.classList.add('open'); document.body.classList.add('modal-open'); switchAuthTab(tab === 'register' ? 'register' : 'login'); }
 function closeAuth() { authModal.classList.remove('open'); document.body.classList.remove('modal-open'); document.getElementById('loginMsg').classList.remove('show'); document.getElementById('regMsg').classList.remove('show'); }
@@ -1304,7 +1443,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   setSession(user.id);
   msg.textContent = 'Добро пожаловать, ' + user.nickname + '!';
   msg.className = 'modal-msg show ok';
-  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton();
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
   setTimeout(() => closeAuth(), 700);
   document.getElementById('loginForm').reset();
 });
@@ -1328,7 +1467,7 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
   saveUser(user); setSession(user.id);
   msg.textContent = isCreator ? '👑 Добро пожаловать, Создатель!' : 'Аккаунт создан!';
   msg.className = 'modal-msg show ok';
-  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton();
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
   setTimeout(() => closeAuth(), 900);
   document.getElementById('registerForm').reset();
 });
@@ -1336,7 +1475,13 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
 function openProfile() {
   const u = getCurrentUser();
   if (!u) { openAuth(); return; }
-  document.getElementById('profileNick').value = u.nickname;
+  const nickInput = document.getElementById('profileNick');
+  nickInput.value = u.nickname;
+  nickInput.disabled = !u.isAdmin;
+  nickInput.style.opacity = u.isAdmin ? '1' : '.55';
+  nickInput.style.cursor = u.isAdmin ? 'text' : 'not-allowed';
+  const noteEl = document.getElementById('profileNickNote');
+  if (noteEl) noteEl.style.display = u.isAdmin ? 'none' : '';
   renderAvatar(document.getElementById('profileAvatar'), u);
   document.getElementById('profileMsg').classList.remove('show');
   document.getElementById('adminTools').style.display = u.isAdmin ? '' : 'none';
@@ -1389,6 +1534,11 @@ async function saveProfile() {
   const u = getCurrentUser(); if (!u) return;
   const newNick = document.getElementById('profileNick').value.trim();
   if (newNick.length < 2) { showProfileMsg('Ник слишком короткий', 'err'); return; }
+  if (!u.isAdmin && newNick !== u.nickname) {
+    document.getElementById('profileNick').value = u.nickname;
+    showProfileMsg('Только администратор может менять ник', 'err');
+    return;
+  }
   await fbLoadAll(true);
   const users = loadUsers();
   if (users.some(x => x.id !== u.id && x.nickname.toLowerCase() === newNick.toLowerCase())) { showProfileMsg('Этот ник уже занят', 'err'); return; }
@@ -1456,9 +1606,12 @@ function renderAdminUsers() {
       : `<button class="ban-btn" title="Забанить" onclick="openBanModal('${escapeHtml(u.id)}', '${escapeHtml(u.nickname)}')">🚫</button>`) : '';
     const delBtn = canDelete ? `<button class="del-btn" title="Удалить" onclick="deleteUser('${escapeHtml(u.id)}')">🗑</button>` : '';
     const created = u.createdAt ? new Date(u.createdAt).toLocaleDateString('ru-RU') : '';
-    return `<div class="admin-user-row"><div class="admin-user-info"><div class="admin-user-avatar">${avHtml}</div><div class="admin-user-name">${renderNameWithBadges(u, 'aun-text')}${isMe ? ' <span style="color:var(--text-mute);font-weight:400;font-size:.72rem;">(вы)</span>' : ''}${created ? ` <span style="color:var(--text-mute);font-weight:400;font-size:.62rem;">· ${created}</span>` : ''}</div></div><div class="admin-user-actions">${banBtn}${delBtn}<label class="admin-toggle ${canToggle ? '' : 'disabled'}" title="${canToggle ? 'Админка' : (isCreator ? 'Нельзя снять с Создателя' : 'Нельзя менять себе')}"><input type="checkbox" ${u.isAdmin ? 'checked' : ''} ${canToggle ? '' : 'disabled'} data-uid="${u.id}"><span class="toggle-slider"></span></label></div></div>`;
+    return `<div class="admin-user-row"><div class="admin-user-info"><div class="admin-user-avatar" data-uid="${escapeHtml(u.id)}" style="cursor:pointer">${avHtml}</div><div class="admin-user-name" data-uid="${escapeHtml(u.id)}" style="cursor:pointer">${renderNameWithBadges(u, 'aun-text')}${isMe ? ' <span style="color:var(--text-mute);font-weight:400;font-size:.72rem;">(вы)</span>' : ''}${created ? ` <span style="color:var(--text-mute);font-weight:400;font-size:.62rem;">· ${created}</span>` : ''}</div></div><div class="admin-user-actions">${banBtn}${delBtn}<label class="admin-toggle ${canToggle ? '' : 'disabled'}" title="${canToggle ? 'Админка' : (isCreator ? 'Нельзя снять с Создателя' : 'Нельзя менять себе')}"><input type="checkbox" ${u.isAdmin ? 'checked' : ''} ${canToggle ? '' : 'disabled'} data-uid="${u.id}"><span class="toggle-slider"></span></label></div></div>`;
   }).join('');
   list.querySelectorAll('input[data-uid]').forEach(cb => cb.addEventListener('change', () => toggleAdmin(cb.dataset.uid, cb.checked)));
+  list.querySelectorAll('.admin-user-avatar[data-uid], .admin-user-name[data-uid]').forEach(el => {
+    el.addEventListener('click', ev => { ev.stopPropagation(); closeAdminPanel(); openUserProfile(el.dataset.uid); });
+  });
 }
 
 function renderAdminBans() {
@@ -1511,6 +1664,7 @@ async function deleteUser(userId) {
   const hisChat = loadChat().filter(m => m.userId === userId);
   for (const m of hisChat) { delete FB_DATA.chat[m.id]; await fbDelete('chat/' + m.id); }
   if (hisChat.length) await fbPutBranch('chat');
+  if (FB_DATA.renames && FB_DATA.renames[userId]) { delete FB_DATA.renames[userId]; await fbDelete('renames/' + userId); await fbPutBranch('renames'); }
   await deleteBan(userId);
   delete FB_DATA.users[userId];
   await fbDelete('users/' + userId);
@@ -1561,6 +1715,7 @@ async function unbanUser(userId) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (authModal.classList.contains('open')) closeAuth();
+    if (userProfileModal.classList.contains('open')) closeUserProfile();
     if (profileModal.classList.contains('open')) closeProfile();
     if (adminModal.classList.contains('open')) closeAdminPanel();
     if (banModal.classList.contains('open')) closeBanModal();
@@ -1615,6 +1770,8 @@ function renderUpdates() {
     }
     const editBtn = isCreator ? `<button class="upd-btn upd-btn-edit" onclick="openUpdateEditor('${escapeHtml(u.id)}')">✏️ Изменить</button>` : '';
     const delBtn = isCreator ? `<button class="upd-btn upd-btn-del" onclick="deleteUpdate('${escapeHtml(u.id)}')">🗑 Удалить</button>` : '';
+    const authorUid = authorUser ? escapeHtml(authorUser.id) : '';
+    const aClick = authorUid ? `data-uid="${authorUid}"` : '';
     return `
       <article class="upd-card" data-id="${escapeHtml(u.id)}">
         <div class="upd-card-head">
@@ -1623,14 +1780,18 @@ function renderUpdates() {
         </div>
         <div class="upd-card-meta">
           <span class="upd-author-row">
-            <span class="upd-author-avatar">${avatarHtml}</span>
-            <span class="upd-author">${escapeHtml(authorStr)}</span>
+            <span class="upd-author-avatar" ${aClick}>${avatarHtml}</span>
+            <span class="upd-author" ${aClick}>${escapeHtml(authorStr)}</span>
           </span>
           ${dateStr ? `<span>· ${escapeHtml(dateStr)}</span>` : ''}
         </div>
         ${bodyHtml ? `<div class="upd-body">${bodyHtml}</div>` : ''}
       </article>`;
   }).join('');
+
+  list.querySelectorAll('[data-uid]').forEach(el => {
+    el.addEventListener('click', ev => { ev.stopPropagation(); openUserProfile(el.dataset.uid); });
+  });
 }
 
 function openUpdateEditor(id) {
@@ -1853,22 +2014,31 @@ function renderReviews() {
     }
     const pinBtn = amICreator ? `<button type="button" class="review-pin ${r.pinned ? 'active' : ''}" data-pin="${escapeHtml(r.id)}" title="${r.pinned ? 'Открепить' : 'Закрепить'}">📌</button>` : '';
     const delBtn = amIAdmin ? `<button type="button" class="review-delete" data-del="${escapeHtml(r.id)}">×</button>` : '';
-    return `<article class="review-item ${r.pinned ? 'pinned' : ''}" data-id="${escapeHtml(r.id)}">${pinBtn}${delBtn}<div class="review-author"><div class="review-avatar">${avatarHtml}</div><div class="review-head"><div class="review-name">${nameHtml}</div><div class="review-date">${formatDate(r.date)}</div></div></div><div class="review-stars">${stars}</div>${r.text ? `<div class="review-text">${escapeHtml(r.text)}</div>` : ''}</article>`;
+    const uid = linked ? escapeHtml(linked.id) : '';
+    const clickAttr = uid ? `data-uid="${uid}"` : '';
+    return `<article class="review-item ${r.pinned ? 'pinned' : ''}" data-id="${escapeHtml(r.id)}">${pinBtn}${delBtn}<div class="review-author"><div class="review-avatar" ${clickAttr}>${avatarHtml}</div><div class="review-head"><div class="review-name" ${clickAttr}>${nameHtml}</div><div class="review-date">${formatDate(r.date)}</div></div></div><div class="review-stars">${stars}</div>${r.text ? `<div class="review-text">${escapeHtml(r.text)}</div>` : ''}</article>`;
   }).join('');
   if (amIAdmin) {
     reviewsList.querySelectorAll('.review-delete').forEach(btn => {
-      btn.addEventListener('click', async () => { btn.disabled = true; await deleteReviewFromDb(btn.dataset.del); renderReviews(); });
+      btn.addEventListener('click', async ev => {
+        ev.stopPropagation();
+        btn.disabled = true; await deleteReviewFromDb(btn.dataset.del); renderReviews();
+      });
     });
   }
   if (amICreator) {
     reviewsList.querySelectorAll('.review-pin').forEach(btn => {
-      btn.addEventListener('click', async () => {
+      btn.addEventListener('click', async ev => {
+        ev.stopPropagation();
         btn.disabled = true;
         await togglePinReview(btn.dataset.pin);
         renderReviews();
       });
     });
   }
+  reviewsList.querySelectorAll('[data-uid]').forEach(el => {
+    el.addEventListener('click', ev => { ev.stopPropagation(); openUserProfile(el.dataset.uid); });
+  });
 }
 
 function syncReviewsForm() {
@@ -1969,7 +2139,9 @@ function renderChatInto(containerEl) {
     }
     const time = (() => { try { const d = new Date(m.date); return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); } catch (e) { return ''; } })();
     const delBtn = canDelete ? `<button type="button" class="chat-msg-delete" data-del-id="${escapeHtml(m.id)}" title="Удалить">×</button>` : '';
-    return `<div class="chat-msg ${isMine ? 'own' : ''}" data-id="${escapeHtml(m.id)}">${delBtn}<div class="chat-msg-avatar">${avatarHtml}</div><div class="chat-msg-body"><div class="chat-msg-head"><div class="chat-msg-name">${nameHtml}</div><div class="chat-msg-time">${time}</div></div><div class="chat-msg-text">${escapeHtml(m.text)}</div></div></div>`;
+    const uid = linked ? escapeHtml(linked.id) : '';
+    const clickAttr = uid ? `data-uid="${uid}"` : '';
+    return `<div class="chat-msg ${isMine ? 'own' : ''}" data-id="${escapeHtml(m.id)}">${delBtn}<div class="chat-msg-avatar" ${clickAttr}>${avatarHtml}</div><div class="chat-msg-body"><div class="chat-msg-head"><div class="chat-msg-name" ${clickAttr}>${nameHtml}</div><div class="chat-msg-time">${time}</div></div><div class="chat-msg-text">${escapeHtml(m.text)}</div></div></div>`;
   }).join('');
   if (nearBottom) containerEl.scrollTop = containerEl.scrollHeight;
   if (canDelete) {
@@ -1983,6 +2155,9 @@ function renderChatInto(containerEl) {
       });
     });
   }
+  containerEl.querySelectorAll('[data-uid]').forEach(el => {
+    el.addEventListener('click', ev => { ev.stopPropagation(); openUserProfile(el.dataset.uid); });
+  });
 }
 
 function renderChat() {
@@ -2140,6 +2315,230 @@ if (!matchMedia('(hover: none)').matches) {
 }
 
 /* ============================================================
+   ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ, ЛС, ПРИНУДИТЕЛЬНЫЙ РЕНЕЙМ
+   ============================================================ */
+let currentViewedUserId = null;
+
+function convIdFor(a, b) { return [String(a), String(b)].sort().join('__'); }
+function loadPMs(otherId) {
+  const me = getCurrentUser();
+  if (!me || !otherId) return [];
+  const cid = convIdFor(me.id, otherId);
+  const conv = (FB_DATA.pms && FB_DATA.pms[cid]) || {};
+  return Object.values(conv).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
+}
+function sendPM(toId, text) {
+  const me = getCurrentUser();
+  if (!me || !toId) return;
+  text = String(text || '').trim();
+  if (!text || text.length > 500) return;
+  const cid = convIdFor(me.id, toId);
+  const msg = { id: 'pm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), fromId: me.id, toId, text, date: new Date().toISOString() };
+  if (!FB_DATA.pms[cid]) FB_DATA.pms[cid] = {};
+  FB_DATA.pms[cid][msg.id] = msg;
+  fbSave('pms/' + cid + '/' + msg.id, msg);
+}
+
+function renderPMsInProfile() {
+  const box = document.getElementById('upPmMessages');
+  const formEl = document.getElementById('upPmForm');
+  const locked = document.getElementById('upPmLocked');
+  if (!box || !currentViewedUserId) return;
+  const me = getCurrentUser();
+  if (!me) { box.style.display = 'none'; formEl.style.display = 'none'; locked.style.display = ''; return; }
+  box.style.display = ''; formEl.style.display = ''; locked.style.display = 'none';
+  const list = loadPMs(currentViewedUserId);
+  if (!list.length) { box.innerHTML = '<div class="pm-empty">Сообщений нет. Начните диалог!</div>'; return; }
+  box.innerHTML = list.map(m => {
+    const mine = m.fromId === me.id;
+    let t = '';
+    try { const d = new Date(m.date); t = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); } catch (e) {}
+    return `<div class="pm-msg ${mine ? 'me' : 'them'}">${escapeHtml(m.text)}<span class="pm-msg-time">${t}</span></div>`;
+  }).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+function renderUserProfile() {
+  if (!currentViewedUserId) return;
+  const u = loadUsers().find(x => x.id === currentViewedUserId);
+  if (!u) { closeUserProfile(); return; }
+  const me = getCurrentUser();
+  const isSelf = !!(me && me.id === u.id);
+  renderAvatar(document.getElementById('upAvatar'), u);
+  document.getElementById('upName').innerHTML = renderNameWithBadges(u, '');
+  const regDate = u.createdAt ? new Date(u.createdAt) : null;
+  document.getElementById('upRegDate').textContent = regDate
+    ? '📅 Регистрация: ' + String(regDate.getDate()).padStart(2,'0') + '.' + String(regDate.getMonth()+1).padStart(2,'0') + '.' + regDate.getFullYear()
+    : '';
+  document.getElementById('upChatCount').textContent = loadChat().filter(m => m.userId === u.id).length;
+  document.getElementById('upReviewCount').textContent = loadReviews().filter(r => r.userId === u.id).length;
+  document.getElementById('upRegDays').textContent = regDate ? Math.max(1, Math.floor((Date.now() - regDate.getTime()) / 86400000)) : 0;
+
+  const actions = document.getElementById('upActions');
+  const canBanRename = !!(me && me.isAdmin && !isSelf && !u.isCreator);
+  const canDelete = !!(me && me.isAdmin && !isSelf && (me.isCreator || (!u.isCreator && !u.isAdmin)));
+  if (canBanRename || canDelete) {
+    actions.style.display = '';
+    document.getElementById('upBanBtn').style.display = canBanRename ? '' : 'none';
+    document.getElementById('upRenameBtn').style.display = canBanRename ? '' : 'none';
+    document.getElementById('upDeleteBtn').style.display = canDelete ? '' : 'none';
+  } else { actions.style.display = 'none'; }
+
+  document.getElementById('upCreatorTools').style.display = (me && me.isCreator && !isSelf) ? '' : 'none';
+  document.getElementById('upPmSection').style.display = (isSelf || !me) ? 'none' : '';
+  if (!isSelf && me) renderPMsInProfile();
+}
+
+async function openUserProfile(userId) {
+  if (!userId) return;
+  currentViewedUserId = userId;
+  await fbLoadAll(true);
+  const u = loadUsers().find(x => x.id === userId);
+  if (!u) { showToast('Пользователь не найден'); currentViewedUserId = null; return; }
+  renderUserProfile();
+  userProfileModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closeUserProfile() {
+  userProfileModal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  currentViewedUserId = null;
+}
+userProfileModal.addEventListener('click', e => { if (e.target === userProfileModal) closeUserProfile(); });
+
+document.getElementById('upPmForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const inp = document.getElementById('upPmInput');
+  const t = inp.value.trim();
+  if (!t || !currentViewedUserId) return;
+  inp.value = '';
+  sendPM(currentViewedUserId, t);
+  renderPMsInProfile();
+});
+
+function openBanModalFromUserProfile() {
+  const other = loadUsers().find(u => u.id === currentViewedUserId);
+  if (!other) return;
+  const id = other.id, nick = other.nickname;
+  closeUserProfile();
+  openBanModal(id, nick);
+}
+function deleteUserFromUserProfile() {
+  if (!currentViewedUserId) return;
+  const id = currentViewedUserId;
+  closeUserProfile();
+  deleteUser(id);
+}
+function forceRenameFromUserProfile() {
+  const me = getCurrentUser();
+  if (!me || !me.isAdmin || !currentViewedUserId) return;
+  const other = loadUsers().find(u => u.id === currentViewedUserId);
+  if (!other) return;
+  if (other.isCreator) { showToast('Нельзя ренеймить Создателя'); return; }
+  const reason = prompt('Причина ренейма (необязательно):') || '';
+  const data = { userId: other.id, by: me.nickname, byId: me.id, reason, date: Date.now() };
+  if (!FB_DATA.renames) FB_DATA.renames = {};
+  FB_DATA.renames[other.id] = data;
+  fbSave('renames/' + other.id, data);
+  showToast('✏️ Запрос ренейма отправлен пользователю');
+}
+
+function creatorChangeNick() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator || !currentViewedUserId) return;
+  const other = loadUsers().find(u => u.id === currentViewedUserId);
+  if (!other || other.id === me.id) { showToast('Используйте свой профиль для этого'); return; }
+  const newNick = prompt('Новый ник для ' + other.nickname + ':', other.nickname);
+  if (!newNick) return;
+  const trimmed = newNick.trim();
+  if (trimmed.length < 2) { showToast('Ник слишком короткий'); return; }
+  if (loadUsers().some(x => x.id !== other.id && x.nickname.toLowerCase() === trimmed.toLowerCase())) { showToast('Ник уже занят'); return; }
+  other.nickname = trimmed;
+  saveUser(other);
+  if (FB_DATA.renames && FB_DATA.renames[other.id]) { delete FB_DATA.renames[other.id]; fbDelete('renames/' + other.id); }
+  showToast('✏️ Ник изменён на ' + trimmed);
+  renderUserProfile(); renderChat(); renderReviews(); renderUpdates();
+}
+function creatorChangeAvatar() {
+  const me = getCurrentUser();
+  if (!me || !me.isCreator || !currentViewedUserId) return;
+  const other = loadUsers().find(u => u.id === currentViewedUserId);
+  if (!other || other.id === me.id) { showToast('Используйте свой профиль для этого'); return; }
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = ev => {
+    const file = ev.target.files && ev.target.files[0];
+    if (!file || !file.type.startsWith('image/')) return;
+    if (file.size > 8 * 1024 * 1024) { showToast('Файл слишком большой (макс 8 МБ)'); return; }
+    const reader = new FileReader();
+    reader.onload = e2 => {
+      const img = new Image();
+      img.onload = () => {
+        const size = 200, canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const minSide = Math.min(img.width, img.height);
+        ctx.drawImage(img, (img.width - minSide) / 2, (img.height - minSide) / 2, minSide, minSide, 0, 0, size, size);
+        other.avatar = canvas.toDataURL('image/jpeg', 0.82);
+        saveUser(other);
+        showToast('🖼 Аватар обновлён');
+        renderUserProfile(); renderChat(); renderReviews(); renderUpdates();
+      };
+      img.src = e2.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+  inp.click();
+}
+
+function checkForcedRename() {
+  const me = getCurrentUser();
+  if (!me) return false;
+  const req = FB_DATA.renames && FB_DATA.renames[me.id];
+  const overlay = document.getElementById('renameOverlay');
+  if (!req) {
+    if (overlay.classList.contains('show')) {
+      overlay.classList.remove('show');
+      if (!document.getElementById('banOverlay').classList.contains('show') &&
+          !document.getElementById('siteDisabledOverlay').classList.contains('show'))
+        document.body.classList.remove('ban-locked');
+    }
+    return false;
+  }
+  if (overlay.classList.contains('show')) return true;
+  const reasonBox = document.getElementById('renameReasonBox');
+  if (req.reason) { reasonBox.style.display = ''; document.getElementById('renameReasonText').textContent = req.reason; }
+  else reasonBox.style.display = 'none';
+  document.getElementById('renameInput').value = '';
+  document.getElementById('renameMsg').classList.remove('show');
+  overlay.classList.add('show');
+  document.body.classList.add('ban-locked');
+  return true;
+}
+async function submitForcedRename() {
+  const me = getCurrentUser();
+  if (!me) return;
+  const input = document.getElementById('renameInput');
+  const msg = document.getElementById('renameMsg');
+  const newNick = input.value.trim();
+  if (newNick.length < 2) { msg.textContent = 'Ник слишком короткий (мин. 2)'; msg.className = 'modal-msg show err'; return; }
+  if (newNick.toLowerCase() === me.nickname.toLowerCase()) { msg.textContent = 'Это ваш текущий ник'; msg.className = 'modal-msg show err'; return; }
+  await fbLoadAll(true);
+  if (loadUsers().some(x => x.id !== me.id && x.nickname.toLowerCase() === newNick.toLowerCase())) {
+    msg.textContent = 'Этот ник уже занят'; msg.className = 'modal-msg show err'; return;
+  }
+  me.nickname = newNick;
+  saveUser(me);
+  if (FB_DATA.renames) { delete FB_DATA.renames[me.id]; await fbDelete('renames/' + me.id); await fbPutBranch('renames'); }
+  msg.textContent = '✅ Ник обновлён!'; msg.className = 'modal-msg show ok';
+  updateAuthUI(); renderChat(); renderReviews(); renderUpdates();
+  setTimeout(() => {
+    document.getElementById('renameOverlay').classList.remove('show');
+    document.body.classList.remove('ban-locked');
+  }, 900);
+}
+
+/* ============================================================
    ИНИЦИАЛИЗАЦИЯ
    ============================================================ */
 (async function init() {
@@ -2157,7 +2556,7 @@ if (!matchMedia('(hover: none)').matches) {
   const ok = await fbLoadAll(true);
   if (ok) {
     updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
-    checkBan(); checkSiteDisabled(); updateSiteToggleButton();
+    checkBan(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
   } else {
     updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
   }
@@ -2170,12 +2569,12 @@ if (!matchMedia('(hover: none)').matches) {
     const ok2 = await fbLoadAll();
     if (ok2) {
       updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
-      checkSiteDisabled(); updateSiteToggleButton();
+      checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
       if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
     }
   }, 2000);
 
-  setInterval(() => { checkBan(); checkSiteDisabled(); }, 60000);
+  setInterval(() => { checkBan(); checkSiteDisabled(); checkForcedRename(); }, 30000);
   console.log('[VF] Готово. SSE:', SSE_STATE);
 })();
 </script>
