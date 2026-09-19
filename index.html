@@ -76,6 +76,30 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .chip-cloud.offline { background: rgba(255,255,255,.04); }
 .chip-cloud.error { background: rgba(255,46,99,.1); border-color: rgba(255,46,99,.4); color: #ffb0c7; }
 
+/* === MESSAGE CHIP === */
+.chip-msg { position: relative; cursor: pointer; transition: all .25s; font-family: inherit; }
+.chip-msg:hover { background: rgba(255,140,90,.12); border-color: rgba(255,140,90,.4); color: #ffb37a; transform: translateY(-1px); }
+.chip-msg.has-unread { border-color: rgba(255,92,43,.5); background: linear-gradient(135deg, rgba(255,92,43,.14), rgba(255,46,99,.06)); color: #ffc7a3; }
+.chip-msg.has-unread svg { color: #ff5c2b; }
+.chip-msg.has-unread b { color: #fff; }
+.pm-badge { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 100px; background: linear-gradient(135deg, #ff2e63, #b8003e); color: #fff; font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: .58rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(255,46,99,.5); border: 2px solid #0a050e; animation: pulse 2s infinite; line-height: 1; }
+
+/* === PM INBOX === */
+.pm-inbox-list { display: flex; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
+.pm-inbox-empty { padding: 40px 20px; text-align: center; border: 1px dashed rgba(255,255,255,.12); border-radius: 16px; color: var(--text-mute); font-size: .85rem; line-height: 1.6; }
+.pm-inbox-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.06); cursor: pointer; transition: all .2s; font: inherit; color: inherit; text-align: left; width: 100%; }
+.pm-inbox-item:hover { background: rgba(255,140,90,.08); border-color: rgba(255,140,90,.3); transform: translateX(2px); }
+.pm-inbox-item.unread { background: linear-gradient(135deg, rgba(255,92,43,.08), rgba(255,46,99,.03)); border-color: rgba(255,92,43,.28); }
+.pm-inbox-avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, #ff5c2b, #ffb347); display: grid; place-items: center; color: #1a0a05; font-weight: 800; font-size: 1rem; overflow: hidden; font-family: 'Unbounded', sans-serif; border: 2px solid rgba(255,140,90,.3); }
+.pm-inbox-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.pm-inbox-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.pm-inbox-name { font-family: 'Unbounded', sans-serif; font-size: .82rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; flex-wrap: wrap; min-width: 0; }
+.pm-inbox-nick { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-inbox-preview { font-size: .78rem; color: var(--text-mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pm-inbox-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.pm-inbox-time { font-size: .62rem; color: var(--text-mute); font-family: 'Unbounded', sans-serif; font-weight: 600; }
+.pm-inbox-badge { min-width: 18px; height: 18px; padding: 0 6px; border-radius: 100px; background: linear-gradient(135deg, #ff5c2b, #ff2e63); color: #fff; font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: .58rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255,46,99,.4); line-height: 1; }
+
 .auth-btn { display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 100px; background: linear-gradient(135deg, #ff5c2b, #ff9500); color: #1a0a05; font: inherit; font-weight: 700; font-size: .78rem; border: 1px solid #ffb37a; cursor: pointer; transition: all .25s; box-shadow: 0 8px 22px rgba(255,92,43,.35); white-space: nowrap; }
 .auth-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 30px rgba(255,92,43,.5); }
 .auth-btn svg { width: 14px; height: 14px; }
@@ -563,6 +587,27 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 .chat-msg-avatar[data-uid]:hover, .review-avatar[data-uid]:hover, .upd-author-avatar[data-uid]:hover { transform: scale(1.08); }
 .chat-msg-name[data-uid]:hover, .review-name[data-uid]:hover { text-decoration: underline; }
 
+/* === AVATAR EDITOR === */
+.av-editor-stage { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 320px; margin: 0 auto 20px; border-radius: 18px; overflow: hidden; background: #000; cursor: grab; touch-action: none; border: 2px solid rgba(255,140,90,.4); box-shadow: 0 12px 34px rgba(0,0,0,.5); }
+.av-editor-stage:active { cursor: grabbing; }
+.av-editor-stage canvas { display: block; width: 100%; height: 100%; user-select: none; -webkit-user-drag: none; }
+.av-editor-mask { position: absolute; inset: 0; pointer-events: none; border-radius: 50%; box-shadow: 0 0 0 9999px rgba(0,0,0,.6); border: 2px solid rgba(255,140,90,.65); }
+.av-editor-controls { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.av-editor-row { display: flex; align-items: center; gap: 12px; }
+.av-editor-row label { font-size: .68rem; color: var(--text-mute); font-family: 'Unbounded', sans-serif; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; min-width: 66px; }
+.av-editor-row input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 4px; background: rgba(255,255,255,.12); outline: none; cursor: pointer; }
+.av-editor-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); cursor: pointer; box-shadow: 0 0 10px rgba(255,92,43,.7), 0 0 0 2px rgba(20,10,30,.9); }
+.av-editor-row input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border: none; border-radius: 50%; background: linear-gradient(135deg, #ff5c2b, #ffb347); cursor: pointer; box-shadow: 0 0 10px rgba(255,92,43,.7); }
+.av-editor-hint { text-align: center; font-size: .72rem; color: var(--text-mute); margin-bottom: 16px; }
+.av-editor-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.av-editor-btn { padding: 13px 18px; border-radius: 12px; font: inherit; font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: .78rem; cursor: pointer; transition: all .2s; border: 1px solid; }
+.av-editor-btn.cancel { border-color: rgba(255,255,255,.15); background: rgba(255,255,255,.05); color: var(--text-dim); }
+.av-editor-btn.cancel:hover { background: rgba(255,255,255,.1); }
+.av-editor-btn.save { border-color: #ffb37a; background: linear-gradient(135deg, #ff5c2b, #ff9500); color: #1a0a05; }
+.av-editor-btn.save:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(255,92,43,.5); }
+.av-editor-reset { grid-column: 1 / -1; padding: 10px 16px; border-radius: 10px; font: inherit; font-family: 'Sora', sans-serif; font-weight: 700; font-size: .74rem; cursor: pointer; transition: all .2s; border: 1px solid rgba(255,179,71,.3); background: rgba(255,179,71,.08); color: #ffb347; }
+.av-editor-reset:hover { background: rgba(255,179,71,.2); }
+
 @media (max-width: 1180px) { .hero-inner { gap: 36px; } .reviews-layout { grid-template-columns: minmax(0, 340px) minmax(0, 1fr); } }
 @media (max-width: 980px) { .hero-inner { grid-template-columns: 1fr; gap: 40px; } .reviews-layout { grid-template-columns: 1fr; } .review-form-card { position: static; } }
 @media (max-width: 860px) {
@@ -688,6 +733,11 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       <div class="chips">
         <div class="chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачали: <b data-count>6</b></div>
         <a class="chip chip-youtube" href="https://www.youtube.com/@Expilliar" target="_blank" rel="noopener"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg><span>YouTube — <b>Expilliar</b></span></a>
+        <button class="chip chip-msg" id="pmChip" onclick="openPmInbox()" style="display:none;" title="Личные сообщения">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <span>Сообщения</span>
+          <b class="pm-badge" id="pmBadge" style="display:none;">0</b>
+        </button>
         <div class="chip chip-cloud offline" id="cloudChip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg><span id="cloudChipText">Подключение...</span></div>
         <button class="auth-btn" id="authBtn" onclick="openAuth()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Войти</button>
         <button class="user-chip" id="userChip" onclick="openProfile()" style="display:none"><span class="user-avatar-mini" id="userAvatarMini"></span><span class="uc-name" id="userNameMini"></span></button>
@@ -814,6 +864,15 @@ body.modal-open, body.ban-locked { overflow: hidden; }
       <div class="modal-msg" id="regMsg"></div>
       <div class="modal-note">Почта не требуется.</div>
     </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pmInboxModal">
+  <div class="modal wide" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closePmInbox()">×</button>
+    <div class="modal-title">💌 Личные сообщения</div>
+    <div class="modal-sub">Ваши диалоги с пользователями</div>
+    <div class="pm-inbox-list" id="pmInboxList"></div>
   </div>
 </div>
 
@@ -1025,6 +1084,37 @@ body.modal-open, body.ban-locked { overflow: hidden; }
   </div>
 </div>
 
+<div class="modal-overlay" id="avatarEditorModal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeAvatarEditor()">×</button>
+    <div class="modal-title">Настройка аватара</div>
+    <div class="modal-sub">Перетаскивайте фото, меняйте масштаб и поворот</div>
+    <div class="av-editor-stage" id="avEditorStage">
+      <canvas id="avEditorCanvas" width="400" height="400"></canvas>
+      <div class="av-editor-mask"></div>
+    </div>
+    <div class="av-editor-hint">🖱 Зажмите и перетащите фото внутри круга</div>
+    <div class="av-editor-controls">
+      <div class="av-editor-row">
+        <label>Масштаб</label>
+        <input type="range" id="avZoom" min="100" max="400" step="1" value="100">
+        <span class="vol-val" id="avZoomVal" style="min-width:52px">100%</span>
+      </div>
+      <div class="av-editor-row">
+        <label>Поворот</label>
+        <input type="range" id="avRotate" min="-180" max="180" step="1" value="0">
+        <span class="vol-val" id="avRotateVal" style="min-width:52px">0°</span>
+      </div>
+    </div>
+    <div class="av-editor-btns">
+      <button type="button" class="av-editor-btn cancel" onclick="closeAvatarEditor()">Отмена</button>
+      <button type="button" class="av-editor-btn save" onclick="saveAvatarEditor()">Сохранить</button>
+      <button type="button" class="av-editor-reset" onclick="resetAvatarEditor()">↺ Сбросить положение и масштаб</button>
+    </div>
+    <div class="modal-msg" id="avEditorMsg"></div>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    FIREBASE
@@ -1219,8 +1309,11 @@ function renderAllFromSSE() {
   checkSiteDisabled();
   checkForcedRename();
   updateSiteToggleButton();
+  renderPmBadge();
   if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
   if (bansModal.classList.contains('open')) renderBansModal();
+  const pmInboxModal = document.getElementById('pmInboxModal');
+  if (pmInboxModal && pmInboxModal.classList.contains('open')) renderPmInbox();
   const upModal = document.getElementById('userProfileModal');
   if (upModal && upModal.classList.contains('open')) {
     renderUserProfile();
@@ -1407,6 +1500,7 @@ function updateAuthUI() {
   }
   syncReviewsForm();
   updateChatLockUI();
+  renderPmBadge();
 }
 
 const authModal = document.getElementById('authModal');
@@ -1417,6 +1511,8 @@ const bansModal = document.getElementById('bansModal');
 const chatModal = document.getElementById('chatModal');
 const updateEditorModal = document.getElementById('updateEditorModal');
 const userProfileModal = document.getElementById('userProfileModal');
+const avatarEditorModal = document.getElementById('avatarEditorModal');
+const pmInboxModal = document.getElementById('pmInboxModal');
 
 function openAuth(tab) { authModal.classList.add('open'); document.body.classList.add('modal-open'); switchAuthTab(tab === 'register' ? 'register' : 'login'); }
 function closeAuth() { authModal.classList.remove('open'); document.body.classList.remove('modal-open'); document.getElementById('loginMsg').classList.remove('show'); document.getElementById('regMsg').classList.remove('show'); }
@@ -1443,7 +1539,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
   setSession(user.id);
   msg.textContent = 'Добро пожаловать, ' + user.nickname + '!';
   msg.className = 'modal-msg show ok';
-  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename(); renderPmBadge();
   setTimeout(() => closeAuth(), 700);
   document.getElementById('loginForm').reset();
 });
@@ -1467,7 +1563,7 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
   saveUser(user); setSession(user.id);
   msg.textContent = isCreator ? '👑 Добро пожаловать, Создатель!' : 'Аккаунт создан!';
   msg.className = 'modal-msg show ok';
-  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename(); renderPmBadge();
   setTimeout(() => closeAuth(), 900);
   document.getElementById('registerForm').reset();
 });
@@ -1493,32 +1589,13 @@ function openProfile() {
 function closeProfile() { profileModal.classList.remove('open'); document.body.classList.remove('modal-open'); }
 profileModal.addEventListener('click', e => { if (e.target === profileModal) closeProfile(); });
 
+/* === Аватар: файл → редактор === */
 document.getElementById('avatarInput').addEventListener('change', e => {
   const file = e.target.files && e.target.files[0];
-  if (!file) return;
-  if (!file.type.startsWith('image/')) { showProfileMsg('Нужно выбрать изображение', 'err'); return; }
-  if (file.size > 8 * 1024 * 1024) { showProfileMsg('Файл слишком большой (макс 8 МБ)', 'err'); return; }
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = new Image();
-    img.onload = () => {
-      const size = 200, canvas = document.createElement('canvas');
-      canvas.width = size; canvas.height = size;
-      const ctx = canvas.getContext('2d');
-      const minSide = Math.min(img.width, img.height);
-      const sx = (img.width - minSide) / 2, sy = (img.height - minSide) / 2;
-      ctx.drawImage(img, sx, sy, minSide, minSide, 0, 0, size, size);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
-      const u = getCurrentUser(); if (!u) return;
-      u.avatar = dataUrl; saveUser(u);
-      renderAvatar(document.getElementById('profileAvatar'), u);
-      updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
-      showProfileMsg('Аватарка обновлена', 'ok');
-    };
-    img.onerror = () => showProfileMsg('Не удалось прочитать изображение', 'err');
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
+  if (file) {
+    const me = getCurrentUser();
+    if (me) openAvatarEditor(file, me.id);
+  }
   e.target.value = '';
 });
 
@@ -1557,7 +1634,7 @@ function showProfileMsg(text, type) {
 function logout() {
   setSession(null);
   closeProfile();
-  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton();
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates(); checkSiteDisabled(); updateSiteToggleButton(); renderPmBadge();
 }
 
 async function openAdminPanel() {
@@ -1670,7 +1747,7 @@ async function deleteUser(userId) {
   await fbDelete('users/' + userId);
   await fbPutBranch('users');
   await fbLoadAll(true);
-  renderAdminUsers(); renderReviews(); renderChat();
+  renderAdminUsers(); renderReviews(); renderChat(); renderPmBadge();
 }
 
 let banTarget = { userId: null, nick: null, minutes: 0 };
@@ -1715,6 +1792,8 @@ async function unbanUser(userId) {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     if (authModal.classList.contains('open')) closeAuth();
+    if (avatarEditorModal.classList.contains('open')) closeAvatarEditor();
+    if (pmInboxModal.classList.contains('open')) closePmInbox();
     if (userProfileModal.classList.contains('open')) closeUserProfile();
     if (profileModal.classList.contains('open')) closeProfile();
     if (adminModal.classList.contains('open')) closeAdminPanel();
@@ -2195,6 +2274,121 @@ chatBar.addEventListener('click', e => { if (e.target.closest('.chat-form, .chat
 chatInput.addEventListener('blur', () => { setTimeout(() => { if (!chatBar.matches(':hover') && !chatBar.querySelector(':focus-within')) chatBar.classList.remove('open'); }, 150); });
 
 /* ============================================================
+   ЛИЧНЫЕ СООБЩЕНИЯ — бейдж и входящие
+   ============================================================ */
+function convIdFor(a, b) { return [String(a), String(b)].sort().join('__'); }
+
+function countUnreadPms() {
+  const me = getCurrentUser();
+  if (!me) return 0;
+  let n = 0;
+  const all = FB_DATA.pms || {};
+  for (const cid in all) {
+    const parts = cid.split('__');
+    if (!parts.includes(me.id)) continue;
+    const conv = all[cid] || {};
+    for (const mid in conv) {
+      const m = conv[mid];
+      if (m && m.toId === me.id && !m.read) n++;
+    }
+  }
+  return n;
+}
+
+function renderPmBadge() {
+  const chip = document.getElementById('pmChip');
+  const badge = document.getElementById('pmBadge');
+  if (!chip || !badge) return;
+  const me = getCurrentUser();
+  if (!me) { chip.style.display = 'none'; badge.style.display = 'none'; return; }
+  chip.style.display = '';
+  const n = countUnreadPms();
+  if (n > 0) {
+    chip.classList.add('has-unread');
+    badge.textContent = n > 99 ? '99+' : n;
+    badge.style.display = '';
+  } else {
+    chip.classList.remove('has-unread');
+    badge.style.display = 'none';
+  }
+}
+
+function buildConversationList() {
+  const me = getCurrentUser();
+  if (!me) return [];
+  const users = loadUsers();
+  const all = FB_DATA.pms || {};
+  const convs = [];
+  for (const cid in all) {
+    const parts = cid.split('__');
+    if (!parts.includes(me.id)) continue;
+    const otherId = parts.find(x => x !== me.id);
+    if (!otherId) continue;
+    const conv = Object.values(all[cid] || {}).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
+    if (!conv.length) continue;
+    const last = conv[conv.length - 1];
+    const unread = conv.filter(m => m.toId === me.id && !m.read).length;
+    const other = users.find(u => u.id === otherId);
+    convs.push({ otherId, other, last, unread, conv });
+  }
+  convs.sort((a, b) => (a.last.date || '') < (b.last.date || '') ? 1 : -1);
+  return convs;
+}
+
+function renderPmInbox() {
+  const list = document.getElementById('pmInboxList');
+  if (!list) return;
+  const me = getCurrentUser();
+  if (!me) {
+    list.innerHTML = '<div class="pm-inbox-empty">Войдите, чтобы видеть сообщения.</div>';
+    return;
+  }
+  const convs = buildConversationList().filter(c => c.other);
+  if (!convs.length) {
+    list.innerHTML = '<div class="pm-inbox-empty">Диалогов пока нет.<br>Откройте профиль пользователя, чтобы написать первым.</div>';
+    return;
+  }
+  list.innerHTML = convs.map(c => {
+    const other = c.other;
+    const av = other.avatar ? `<img src="${other.avatar}" alt="">` : initialsOf(other.nickname);
+    const isMine = c.last.fromId === me.id;
+    const previewText = (isMine ? 'Вы: ' : '') + String(c.last.text || '').slice(0, 60);
+    let t = '';
+    try { const d = new Date(c.last.date); t = String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0'); } catch (e) {}
+    const unreadBadge = c.unread > 0 ? `<span class="pm-inbox-badge">${c.unread > 99 ? '99+' : c.unread}</span>` : '';
+    return `<button type="button" class="pm-inbox-item ${c.unread ? 'unread' : ''}" onclick="openPmConversation('${escapeHtml(c.otherId)}')">
+      <span class="pm-inbox-avatar">${av}</span>
+      <span class="pm-inbox-main">
+        <span class="pm-inbox-name">${renderNameWithBadges(other, 'pm-inbox-nick')}</span>
+        <span class="pm-inbox-preview">${escapeHtml(previewText || '...')}</span>
+      </span>
+      <span class="pm-inbox-meta">
+        <span class="pm-inbox-time">${t}</span>
+        ${unreadBadge}
+      </span>
+    </button>`;
+  }).join('');
+}
+
+function openPmInbox() {
+  const me = getCurrentUser();
+  if (!me) { openAuth(); return; }
+  renderPmInbox();
+  pmInboxModal.classList.add('open');
+  document.body.classList.add('modal-open');
+}
+function closePmInbox() {
+  pmInboxModal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+}
+pmInboxModal.addEventListener('click', e => { if (e.target === pmInboxModal) closePmInbox(); });
+
+async function openPmConversation(otherId) {
+  closePmInbox();
+  await openUserProfile(otherId);
+}
+
+/* ============================================================
    TOAST
    ============================================================ */
 function showToast(text) {
@@ -2315,11 +2509,180 @@ if (!matchMedia('(hover: none)').matches) {
 }
 
 /* ============================================================
+   РЕДАКТОР АВАТАРА (перетаскивание / масштаб / поворот)
+   ============================================================ */
+const AV_SIZE = 400;
+const avEditorStage = document.getElementById('avEditorStage');
+const avEditorCanvas = document.getElementById('avEditorCanvas');
+const avEditorCtx = avEditorCanvas.getContext('2d');
+
+const avState = {
+  img: null,
+  baseScale: 1,
+  zoom: 1,
+  rotation: 0,
+  offsetX: 0,
+  offsetY: 0,
+  dragging: false,
+  lastX: 0,
+  lastY: 0,
+  pointerId: null,
+  targetUserId: null
+};
+
+function drawAvatarEditor() {
+  if (!avState.img) return;
+  const size = AV_SIZE;
+  const ctx = avEditorCtx;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, size, size);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, size, size);
+  ctx.save();
+  ctx.translate(size / 2 + avState.offsetX, size / 2 + avState.offsetY);
+  ctx.rotate(avState.rotation * Math.PI / 180);
+  const sc = avState.baseScale * avState.zoom;
+  ctx.scale(sc, sc);
+  ctx.drawImage(avState.img, -avState.img.width / 2, -avState.img.height / 2);
+  ctx.restore();
+}
+
+function resetAvatarEditor() {
+  if (!avState.img) return;
+  avState.zoom = 1;
+  avState.rotation = 0;
+  avState.offsetX = 0;
+  avState.offsetY = 0;
+  document.getElementById('avZoom').value = '100';
+  document.getElementById('avZoomVal').textContent = '100%';
+  document.getElementById('avRotate').value = '0';
+  document.getElementById('avRotateVal').textContent = '0°';
+  drawAvatarEditor();
+}
+
+function openAvatarEditor(file, targetUserId) {
+  if (!file || !file.type.startsWith('image/')) { showToast('Нужно выбрать изображение'); return; }
+  if (file.size > 8 * 1024 * 1024) { showToast('Файл слишком большой (макс 8 МБ)'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      avState.img = img;
+      avState.targetUserId = targetUserId || null;
+      const minSide = Math.min(img.width, img.height);
+      avState.baseScale = AV_SIZE / minSide;
+      avState.zoom = 1;
+      avState.rotation = 0;
+      avState.offsetX = 0;
+      avState.offsetY = 0;
+      document.getElementById('avZoom').value = '100';
+      document.getElementById('avZoomVal').textContent = '100%';
+      document.getElementById('avRotate').value = '0';
+      document.getElementById('avRotateVal').textContent = '0°';
+      const msg = document.getElementById('avEditorMsg');
+      msg.classList.remove('show');
+      avEditorCanvas.width = AV_SIZE;
+      avEditorCanvas.height = AV_SIZE;
+      drawAvatarEditor();
+      avatarEditorModal.classList.add('open');
+      document.body.classList.add('modal-open');
+    };
+    img.onerror = () => showToast('Не удалось прочитать изображение');
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function closeAvatarEditor() {
+  avatarEditorModal.classList.remove('open');
+  document.body.classList.remove('modal-open');
+  avState.img = null;
+  avState.dragging = false;
+  avState.targetUserId = null;
+  avState.pointerId = null;
+}
+
+function saveAvatarEditor() {
+  if (!avState.img) return;
+  const out = document.createElement('canvas');
+  out.width = 200; out.height = 200;
+  const octx = out.getContext('2d');
+  octx.fillStyle = '#000';
+  octx.fillRect(0, 0, 200, 200);
+  octx.drawImage(avEditorCanvas, 0, 0, AV_SIZE, AV_SIZE, 0, 0, 200, 200);
+  const dataUrl = out.toDataURL('image/jpeg', 0.85);
+
+  const targetId = avState.targetUserId || (getCurrentUser() && getCurrentUser().id);
+  const target = loadUsers().find(u => u.id === targetId);
+  if (!target) { showToast('Пользователь не найден'); closeAvatarEditor(); return; }
+  target.avatar = dataUrl;
+  saveUser(target);
+
+  const me = getCurrentUser();
+  if (me && me.id === target.id) {
+    renderAvatar(document.getElementById('profileAvatar'), target);
+  }
+  updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
+  if (userProfileModal.classList.contains('open') && currentViewedUserId === target.id) {
+    renderUserProfile();
+  }
+  if (profileModal.classList.contains('open') && me && me.id === target.id) {
+    showProfileMsg('Аватарка обновлена', 'ok');
+  }
+  showToast('✅ Аватарка обновлена');
+  closeAvatarEditor();
+}
+
+/* --- Drag --- */
+avEditorStage.addEventListener('pointerdown', e => {
+  if (!avState.img) return;
+  avState.dragging = true;
+  avState.pointerId = e.pointerId;
+  avState.lastX = e.clientX;
+  avState.lastY = e.clientY;
+  try { avEditorStage.setPointerCapture(e.pointerId); } catch (err) {}
+  e.preventDefault();
+});
+avEditorStage.addEventListener('pointermove', e => {
+  if (!avState.dragging) return;
+  const rect = avEditorStage.getBoundingClientRect();
+  const dx = (e.clientX - avState.lastX) * (AV_SIZE / rect.width);
+  const dy = (e.clientY - avState.lastY) * (AV_SIZE / rect.height);
+  avState.offsetX += dx;
+  avState.offsetY += dy;
+  avState.lastX = e.clientX;
+  avState.lastY = e.clientY;
+  drawAvatarEditor();
+});
+function endDrag(e) {
+  if (!avState.dragging) return;
+  avState.dragging = false;
+  try { if (avState.pointerId != null) avEditorStage.releasePointerCapture(avState.pointerId); } catch (err) {}
+  avState.pointerId = null;
+}
+avEditorStage.addEventListener('pointerup', endDrag);
+avEditorStage.addEventListener('pointercancel', endDrag);
+avEditorStage.addEventListener('pointerleave', e => { if (avState.dragging && e.buttons === 0) endDrag(e); });
+
+document.getElementById('avZoom').addEventListener('input', e => {
+  const v = parseInt(e.target.value, 10) || 100;
+  avState.zoom = v / 100;
+  document.getElementById('avZoomVal').textContent = v + '%';
+  drawAvatarEditor();
+});
+document.getElementById('avRotate').addEventListener('input', e => {
+  const v = parseInt(e.target.value, 10) || 0;
+  avState.rotation = v;
+  document.getElementById('avRotateVal').textContent = v + '°';
+  drawAvatarEditor();
+});
+avatarEditorModal.addEventListener('click', e => { if (e.target === avatarEditorModal) closeAvatarEditor(); });
+
+/* ============================================================
    ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ, ЛС, ПРИНУДИТЕЛЬНЫЙ РЕНЕЙМ
    ============================================================ */
 let currentViewedUserId = null;
 
-function convIdFor(a, b) { return [String(a), String(b)].sort().join('__'); }
 function loadPMs(otherId) {
   const me = getCurrentUser();
   if (!me || !otherId) return [];
@@ -2327,16 +2690,40 @@ function loadPMs(otherId) {
   const conv = (FB_DATA.pms && FB_DATA.pms[cid]) || {};
   return Object.values(conv).filter(Boolean).sort((a, b) => (a.date || '') < (b.date || '') ? -1 : 1);
 }
+
 function sendPM(toId, text) {
   const me = getCurrentUser();
   if (!me || !toId) return;
   text = String(text || '').trim();
   if (!text || text.length > 500) return;
   const cid = convIdFor(me.id, toId);
-  const msg = { id: 'pm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), fromId: me.id, toId, text, date: new Date().toISOString() };
+  const msg = {
+    id: 'pm_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    fromId: me.id, toId, text,
+    date: new Date().toISOString(),
+    read: false
+  };
   if (!FB_DATA.pms[cid]) FB_DATA.pms[cid] = {};
   FB_DATA.pms[cid][msg.id] = msg;
   fbSave('pms/' + cid + '/' + msg.id, msg);
+}
+
+function markPmsRead(otherId) {
+  const me = getCurrentUser();
+  if (!me || !otherId) return;
+  const cid = convIdFor(me.id, otherId);
+  const conv = FB_DATA.pms && FB_DATA.pms[cid];
+  if (!conv) return;
+  let changed = false;
+  for (const mid in conv) {
+    const m = conv[mid];
+    if (m && m.toId === me.id && !m.read) {
+      m.read = true;
+      changed = true;
+      fbSave('pms/' + cid + '/' + mid, m);
+    }
+  }
+  if (changed) renderPmBadge();
 }
 
 function renderPMsInProfile() {
@@ -2347,6 +2734,10 @@ function renderPMsInProfile() {
   const me = getCurrentUser();
   if (!me) { box.style.display = 'none'; formEl.style.display = 'none'; locked.style.display = ''; return; }
   box.style.display = ''; formEl.style.display = ''; locked.style.display = 'none';
+
+  // Пометить как прочитанные
+  markPmsRead(currentViewedUserId);
+
   const list = loadPMs(currentViewedUserId);
   if (!list.length) { box.innerHTML = '<div class="pm-empty">Сообщений нет. Начните диалог!</div>'; return; }
   box.innerHTML = list.map(m => {
@@ -2398,6 +2789,7 @@ async function openUserProfile(userId) {
   renderUserProfile();
   userProfileModal.classList.add('open');
   document.body.classList.add('modal-open');
+  setTimeout(() => { try { document.getElementById('upPmInput').focus(); } catch (e) {} }, 150);
 }
 function closeUserProfile() {
   userProfileModal.classList.remove('open');
@@ -2468,25 +2860,7 @@ function creatorChangeAvatar() {
   inp.type = 'file'; inp.accept = 'image/*';
   inp.onchange = ev => {
     const file = ev.target.files && ev.target.files[0];
-    if (!file || !file.type.startsWith('image/')) return;
-    if (file.size > 8 * 1024 * 1024) { showToast('Файл слишком большой (макс 8 МБ)'); return; }
-    const reader = new FileReader();
-    reader.onload = e2 => {
-      const img = new Image();
-      img.onload = () => {
-        const size = 200, canvas = document.createElement('canvas');
-        canvas.width = size; canvas.height = size;
-        const ctx = canvas.getContext('2d');
-        const minSide = Math.min(img.width, img.height);
-        ctx.drawImage(img, (img.width - minSide) / 2, (img.height - minSide) / 2, minSide, minSide, 0, 0, size, size);
-        other.avatar = canvas.toDataURL('image/jpeg', 0.82);
-        saveUser(other);
-        showToast('🖼 Аватар обновлён');
-        renderUserProfile(); renderChat(); renderReviews(); renderUpdates();
-      };
-      img.src = e2.target.result;
-    };
-    reader.readAsDataURL(file);
+    if (file) openAvatarEditor(file, other.id);
   };
   inp.click();
 }
@@ -2556,7 +2930,7 @@ async function submitForcedRename() {
   const ok = await fbLoadAll(true);
   if (ok) {
     updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
-    checkBan(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
+    checkBan(); checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename(); renderPmBadge();
   } else {
     updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
   }
@@ -2569,7 +2943,7 @@ async function submitForcedRename() {
     const ok2 = await fbLoadAll();
     if (ok2) {
       updateAuthUI(); renderReviews(); renderChat(); renderUpdates();
-      checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename();
+      checkSiteDisabled(); updateSiteToggleButton(); checkForcedRename(); renderPmBadge();
       if (adminModal.classList.contains('open')) { renderAdminUsers(); renderAdminBans(); }
     }
   }, 2000);
