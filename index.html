@@ -773,14 +773,16 @@ body.modal-open, body.ban-locked { overflow: hidden; }
           <h1 class="hero-title">Уникальный аддон<br><span class="grad">для сервера Firestorm</span></h1>
           <p class="hero-lead">Комплексный интерфейс для мгновенной телепортации, автоматизации рейдов и умного управления группами. Создан для максимальной скорости и стабильности — без просадок FPS и лишних кликов.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary js-download" href="https://drive.google.com/file/d/19XDkb7SAQKQKL6g7sYLLDPMZYTeMxX3u/view?usp=sharing" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать аддон</a>
+            <!-- ⚙️ Ссылка на скачивание обновляется автоматически из SITE_CONFIG.downloadUrl -->
+            <a class="btn btn-primary js-download" href="https://drive.google.com/file/d/17FjoaKXv9G-YZRNk8gjmMohPUL0BPXUA/view?usp=sharing" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Скачать аддон</a>
             <button class="btn btn-ghost" onclick="switchTab('features', document.getElementById('nav-features'))">Модули системы<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
             <a class="btn btn-primary" href="https://firestorm-servers.com/ru/teasing" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>Начать играть</a>
           </div>
+          <!-- ⚙️ Версия аддона (id="siteVersion") и дата обновления (id="siteLastUpdate") обновляются из SITE_CONFIG -->
           <div class="hero-stats">
             <div class="hs"><b data-count>6</b><span>Скачали аддон</span></div>
-            <div class="hs"><b>V3.5 Test</b><span>Версия Аддона</span></div>
-            <div class="hs"><b>26.09.2026</b><span>Последнее обновление</span></div>
+            <div class="hs"><b id="siteVersion">V3.5 Test</b><span>Версия Аддона</span></div>
+            <div class="hs"><b id="siteLastUpdate">26.09.2026</b><span>Последнее обновление</span></div>
           </div>
         </div>
         <div>
@@ -1164,6 +1166,38 @@ body.modal-open, body.ban-locked { overflow: hidden; }
 </div>
 
 <script>
+/* ============================================================
+   ⚙️  БЫСТРАЯ НАСТРОЙКА САЙТА — РЕДАКТИРУЙ ЗДЕСЬ
+   ============================================================
+   Меняй значения ниже — они автоматически применятся на сайте.
+   ============================================================ */
+const SITE_CONFIG = {
+  // 🔗 Ссылка на скачивание аддона
+  downloadUrl: 'https://drive.google.com/file/d/17FjoaKXv9G-YZRNk8gjmMohPUL0BPXUA/view?usp=sharing',
+
+  // 📌 Версия аддона (показывается в блоке статистики)
+  version: 'V3.5 Test',
+
+  // 📅 Дата последнего обновления
+  lastUpdate: '26.09.2026',
+};
+
+// Применяет SITE_CONFIG ко всем нужным элементам на странице
+function applySiteConfig() {
+  // 1) Ссылка на скачивание — на все кнопки с классом js-download
+  document.querySelectorAll('.js-download').forEach(a => {
+    a.href = SITE_CONFIG.downloadUrl;
+  });
+
+  // 2) Версия аддона
+  const vEl = document.getElementById('siteVersion');
+  if (vEl) vEl.textContent = SITE_CONFIG.version;
+
+  // 3) Дата последнего обновления
+  const dEl = document.getElementById('siteLastUpdate');
+  if (dEl) dEl.textContent = SITE_CONFIG.lastUpdate;
+}
+
 /* ============================================================
    FIREBASE
    ============================================================ */
@@ -3327,6 +3361,9 @@ async function submitForcedRename() {
    ИНИЦИАЛИЗАЦИЯ
    ============================================================ */
 (async function init() {
+  // ⚙️ Применяем SITE_CONFIG (ссылка на скачивание, версия, дата)
+  applySiteConfig();
+
   try {
     localStorage.removeItem('vf_users_v1');
     localStorage.removeItem('vf_reviews_v1');
