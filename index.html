@@ -357,7 +357,7 @@ const EXAMPLES = {
 };
 
 /* =========================================================
-   ЛОКАЛЬНЫЙ ДВИЖОК (из предыдущей версии)
+   ЛОКАЛЬНЫЙ ДВИЖОК
    ========================================================= */
 const DEFAULTS = () => ({
   brightness:1, contrast:1, saturate:1, hue:0, blur:0,
@@ -521,30 +521,26 @@ function renderLocal(canvas, img, s){
 /* =========================================================
    AI-ДВИЖОК (Pollinations)
    ========================================================= */
-function buildAiUrl(prompt, w, h, seed, model){
-  const enc = encodeURIComponent(prompt);
-  const params = new URLSearchParams({
-    width: w, height: h, seed: seed,
-    model: model, nologo: 'true', enhance: 'true'
-  });
-  return `https://image.pollinations.ai/prompt/${enc}?${params.toString()}`;
-}
 
-/* Конвертация файла в dataURL */
-function fileToDataURL(file){
-  return new Promise((res, rej) => {
-    const r = new FileReader();
-    r.onload = () => res(r.result);
-    r.onerror = rej;
-    r.readAsDataURL(file);
-  });
-}
-
-/* Скачиваем AI-картинку как blob (обход CORS на прямой download) */
-async function fetchAsBlob(url){
-  const res = await fetch(url, { mode: 'cors' });
-  if(!res.ok) throw new Error('HTTP ' + res.status);
-  return await res.blob();
+/* Fetch с ретраями для 429/5xx */
+async function fetchWithRetry(url, options = {}, tries = 3){
+  let lastErr;
+  for(let i = 0; i < tries; i++){
+    try {
+      const res = await fetch(url, options);
+      if(res.ok) return res;
+      lastErr = new Error('HTTP ' + res.status);
+      if(res.status === 429 || res.status >= 500){
+        await new Promise(r => setTimeout(r, 1500 * (i + 1)));
+        continue;
+      }
+      throw lastErr;
+    } catch(e){
+      lastErr = e;
+      await new Promise(r => setTimeout(r, 1200));
+    }
+  }
+  throw lastErr;
 }
 
 /* =========================================================
@@ -571,7 +567,8 @@ function showResult(url){
   img.src = url;
   $('stageBar').style.display = 'flex';
 
-  if(state.lastBlobUrl && state.lastBlobUrl.startsWith('blob:')){
+  // отзываем предыдущий blob, чтобы не утекала память
+  if(state.lastBlobUrl && state.lastBlobUrl.startsWith('blob:') && state.lastBlobUrl !== url){
     URL.revokeObjectURL(state.lastBlobUrl);
   }
   state.lastBlobUrl = url;
@@ -589,17 +586,14 @@ function updateExampleChips(){
 }
 
 function updateModeUI(){
-  // видимость загрузки: показываем для edit и local
   $('uploadBox').style.display = (state.mode === 'edit' || state.mode === 'local') ? 'flex' : 'none';
   $('aiSettings').style.display = (state.mode === 'edit' || state.mode === 'gen') ? 'block' : 'none';
 
-  // заголовок кнопки
   const btn = $('runBtn');
   if(state.mode === 'gen')  btn.textContent = '🎨 Сгенерировать';
   if(state.mode === 'edit') btn.textContent = '✨ Преобразовать';
   if(state.mode === 'local') btn.textContent = '⚙️ Обработать';
 
-  // подсказка
   const hints = {
     gen:   '<b>Совет:</b> описывайте сцену полностью — стиль, свет, настроение, детали.<br>Например: <i>«кинематографичный портрет, тёплый закатный свет, мягкое боке»</i>',
     edit:  '<b>Режим редактирования:</b> загрузите фото и опишите, что хотите изменить. ИИ перерисует его, сохранив композицию.<br>Например: <i>«сделай закат, тёплые тона»</i>',
@@ -607,7 +601,6 @@ function updateModeUI(){
   };
   $('hint').innerHTML = hints[state.mode];
 
-  // placeholder
   const ph = {
     gen:   'Опишите желаемое изображение…',
     edit:  'Что изменить на фото?',
@@ -627,7 +620,6 @@ function loadFile(file){
     state.sourceImage = img;
     state.sourceFile = file;
 
-    // превью-миниатюра в зоне загрузки
     const thumb = $('thumb');
     thumb.innerHTML = '';
     const t = document.createElement('img');
@@ -636,13 +628,10 @@ function loadFile(file){
     $('upTitle').textContent = file.name.length > 22 ? file.name.slice(0,20)+'…' : file.name;
     $('upSub').textContent = `${img.naturalWidth}×${img.naturalHeight} · нажмите, чтобы заменить`;
 
-    // сразу показываем на сцене (для local — результат, для edit — как референс)
     showResult(url);
-    // для edit оставим оригинал как визуальную подсказку, пока не запущен AI
     if(state.mode === 'edit'){
       $('meta').textContent = 'Загружено · ' + img.naturalWidth + '×' + img.naturalHeight + ' px';
     }
-    URL.revokeObjectURL(url);
   };
   img.onerror = () => toast('Не удалось прочитать изображение');
   img.src = url;
@@ -682,12 +671,11 @@ async function run(){
     ? 'ИИ перерисовывает фото…<br><span style="opacity:.6;font-size:12px">модель Kontext · 5–20 секунд</span>'
     : 'ИИ рисует…<br><span style="opacity:.6;font-size:12px">обычно 3–15 секунд</span>');
 
-  let url;
   try {
+    let blob;
+
     if(state.mode === 'edit' && state.sourceImage){
-      /* --- img2img через Pollinations Kontext ---
-         Передаём изображение как dataURL в параметре image.
-         Для больших фото уменьшаем до 512px, чтобы уложиться в URL. */
+      /* --- img2img через POST multipart --- */
       const small = document.createElement('canvas');
       const maxSide = 512;
       const sw = state.sourceImage.naturalWidth, sh = state.sourceImage.naturalHeight;
@@ -696,35 +684,45 @@ async function run(){
       small.height = Math.round(sh * k);
       small.getContext('2d').drawImage(state.sourceImage, 0, 0, small.width, small.height);
 
-      const dataUrl = small.toDataURL('image/jpeg', 0.72);
+      // Blob, а не dataURL — иначе URL получится слишком длинным
+      const imgBlob = await new Promise(res => small.toBlob(res, 'image/jpeg', 0.8));
+
+      const fd = new FormData();
+      fd.append('image', imgBlob, 'input.jpg');
+
       const params = new URLSearchParams({
-        width: w, height: h, seed: seed, nologo: 'true',
-        model: 'kontext',
-        image: dataUrl,
+        width: w, height: h, seed: seed,
+        model: 'kontext', nologo: 'true',
         strength: $('strength').value
       });
-      url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params.toString()}`;
+      const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params}`;
+
+      const res = await fetchWithRetry(apiUrl, { method: 'POST', body: fd });
+      blob = await res.blob();
+
     } else {
-      url = buildAiUrl(prompt, w, h, seed, model);
+      /* --- text-to-image через GET --- */
+      const params = new URLSearchParams({
+        width: w, height: h, seed: seed,
+        model: model, nologo: 'true', enhance: 'true'
+      });
+      const apiUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?${params}`;
+
+      // БЕЗ crossOrigin — иначе CORS-ошибка
+      const res = await fetchWithRetry(apiUrl, { method: 'GET' });
+      blob = await res.blob();
     }
 
-    // Прогреваем: загружаем через Image() — так Pollinations отдаёт картинку напрямую
-    await new Promise((resolve, reject) => {
-      const probe = new Image();
-      probe.crossOrigin = 'anonymous';
-      const timeout = setTimeout(() => reject(new Error('timeout')), 90000);
-      probe.onload = () => { clearTimeout(timeout); resolve(); };
-      probe.onerror = () => { clearTimeout(timeout); reject(new Error('load error')); };
-      probe.src = url;
-    });
+    if(!blob || blob.size < 100) throw new Error('Пустой ответ от сервера');
 
-    // Показываем результат
+    const url = URL.createObjectURL(blob);
     showResult(url);
-    $('meta').textContent = `${w} × ${h} px · ${model === 'flux' && state.mode==='edit' ? 'kontext' : model} · seed ${seed}`;
+    $('meta').textContent = `${w} × ${h} px · ${state.mode === 'edit' ? 'kontext' : model} · seed ${seed}`;
     toast('Готово! Можно скачать.');
+
   } catch(err){
-    console.error(err);
-    toast('Не удалось получить ответ от ИИ. Проверьте интернет и попробуйте ещё раз.', 5000);
+    console.error('AI error:', err);
+    toast('Ошибка: ' + err.message + '. Попробуйте ещё раз.', 6000);
   } finally {
     setLoading(false);
   }
@@ -733,32 +731,13 @@ async function run(){
 /* =========================================================
    СКАЧИВАНИЕ
    ========================================================= */
-async function download(){
+function download(){
   if(!state.lastBlobUrl){ toast('Нечего скачивать'); return; }
-
-  // локальный результат — сразу blob
-  if(state.lastBlobUrl.startsWith('blob:')){
-    const a = document.createElement('a');
-    a.href = state.lastBlobUrl;
-    a.download = `aiphoto_${Date.now()}.png`;
-    document.body.appendChild(a); a.click(); a.remove();
-    return;
-  }
-
-  // AI-картинка — тянем как blob (обход cross-origin download)
-  try {
-    toast('Готовим файл…', 1500);
-    const blob = await fetchAsBlob(state.lastBlobUrl);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `aiphoto_${state.lastSeed || Date.now()}.jpg`;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(()=>URL.revokeObjectURL(url), 4000);
-  } catch {
-    // fallback — открываем в новой вкладке
-    window.open(state.lastBlobUrl, '_blank');
-  }
+  const a = document.createElement('a');
+  a.href = state.lastBlobUrl;
+  const ext = state.mode === 'local' ? 'png' : 'jpg';
+  a.download = `aiphoto_${state.lastSeed || Date.now()}.${ext}`;
+  document.body.appendChild(a); a.click(); a.remove();
 }
 
 /* =========================================================
@@ -775,13 +754,11 @@ document.querySelectorAll('.mode').forEach(btn => {
 
 $('runBtn').addEventListener('click', run);
 $('regenBtn').addEventListener('click', () => {
-  // «Ещё вариант» — сбрасываем seed в 0 (случайный) и запускаем
   $('seed').value = 0;
   run();
 });
 $('downloadBtn').addEventListener('click', download);
 
-/* Ctrl+Enter — запуск */
 $('prompt').addEventListener('keydown', e => {
   if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){ e.preventDefault(); run(); }
 });
@@ -802,7 +779,7 @@ $('uploadBox').addEventListener('drop', e => {
   if(f) loadFile(f);
 });
 
-/* Глобальный drag&drop на страницу */
+/* Глобальный drag&drop */
 window.addEventListener('dragover', e => e.preventDefault());
 window.addEventListener('drop', e => {
   e.preventDefault();
